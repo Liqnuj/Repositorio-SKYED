@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Precios — SkyedSocial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">S</div>
+      <span class="nav-logo-text">SkyedSocial</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" onclick="closeNav()">Inicio</a>
+      <a href="eventos.html" onclick="closeNav()">Eventos</a>
+      <a href="servicios.html" onclick="closeNav()">Servicios</a>
+      <a href="lugares.html" onclick="closeNav()">Lugares</a>
+      <a href="precios.html" class="active" onclick="closeNav()">Precios</a>
+      <a href="contacto.html" onclick="closeNav()">Contacto</a>
+      <a href="contacto.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span>/</span><span>Precios</span>
+    </div>
+    <h1 class="page-hero-title">Planes para<br><em>cada celebración</em></h1>
+    <p class="page-hero-sub">Inversiones que crean recuerdos para toda la vida.</p>
+  </div>
+</div>
+
+<!-- PRICING -->
+<section class="pricing-section">
+  <div class="container">
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-name">Esencial</div>
+        <div>
+          <span class="price-amount">$8.5M</span>
+          <span class="price-per"> COP / evento</span>
+        </div>
+        <p class="price-desc">Perfecto para celebraciones íntimas y eventos familiares hasta 80 invitados.</p>
+        <ul class="price-feats">
+          <li class="price-feat">Coordinación el día del evento</li>
+          <li class="price-feat">Decoración básica personalizada</li>
+          <li class="price-feat">Catering para 80 personas</li>
+          <li class="price-feat">Música DJ 4 horas</li>
+          <li class="price-feat">Fotografía profesional</li>
+        </ul>
+        <button class="price-btn price-btn-ghost" onclick="openBooking()">Comenzar →</button>
+      </div>
+      <div class="price-card popular reveal">
+        <span class="popular-badge">⭐ Más elegido</span>
+        <div class="price-name">Premium</div>
+        <div>
+          <span class="price-amount">$18.5M</span>
+          <span class="price-per"> COP / evento</span>
+        </div>
+        <p class="price-desc">La experiencia completa para bodas, quinceañeras y grandes celebraciones hasta 200 invitados.</p>
+        <ul class="price-feats">
+          <li class="price-feat">Coordinación integral completa</li>
+          <li class="price-feat">Decoración premium + flores naturales</li>
+          <li class="price-feat">Catering gourmet 200 personas</li>
+          <li class="price-feat">Banda en vivo + DJ toda la noche</li>
+          <li class="price-feat">Foto + video cinematográfico 4K</li>
+          <li class="price-feat">Efectos especiales incluidos</li>
+          <li class="price-feat">Coordinador personal dedicado</li>
+        </ul>
+        <button class="price-btn price-btn-dark" onclick="openBooking()">Reservar ahora →</button>
+      </div>
+      <div class="price-card reveal">
+        <div class="price-name">Élite</div>
+        <div>
+          <span class="price-amount">$38M+</span>
+          <span class="price-per"> COP / evento</span>
+        </div>
+        <p class="price-desc">Experiencia sin límites para eventos de 300+ personas con personalización absoluta.</p>
+        <ul class="price-feats">
+          <li class="price-feat">Todo lo del plan Premium</li>
+          <li class="price-feat">Venue exclusivo incluido</li>
+          <li class="price-feat">Chef privado + sommelier</li>
+          <li class="price-feat">Shows artísticos especiales</li>
+          <li class="price-feat">Transportación para invitados VIP</li>
+          <li class="price-feat">Álbum premium físico y digital</li>
+          <li class="price-feat">Soporte post-evento</li>
+        </ul>
+        <button class="price-btn price-btn-ghost" onclick="openBooking()">Cotizar →</button>
+      </div>
+    </div>
+    <p style="text-align:center;margin-top:2rem;font-size:.85rem;color:rgba(255,255,255,.35)">Todos los precios son referenciales. Cotización personalizada según fechas y requerimientos específicos.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+          <div class="nav-logo-icon">S</div>
+          <span class="nav-logo-text">SkyedSocial</span>
+        </div>
+        <p class="footer-desc">Creamos eventos que trascienden el tiempo. Cada detalle, cada emoción, perfectamente orquestados para ti.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn">📸</a><a href="#" class="social-btn">📘</a>
+          <a href="#" class="social-btn">🎵</a><a href="#" class="social-btn">📌</a><a href="#" class="social-btn">💬</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Eventos</h4><ul class="footer-links">
+        <li><a href="eventos.html">Bodas</a></li><li><a href="eventos.html">Quinceañeras</a></li>
+        <li><a href="eventos.html">Cumpleaños</a></li><li><a href="eventos.html">Corporativos</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Servicios</h4><ul class="footer-links">
+        <li><a href="servicios.html">Decoración</a></li><li><a href="servicios.html">Catering</a></li>
+        <li><a href="servicios.html">Fotografía</a></li><li><a href="lugares.html">Lugares</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Empresa</h4><ul class="footer-links">
+        <li><a href="index.html#nosotros">Sobre nosotros</a></li><li><a href="testimonios.html">Testimonios</a></li>
+        <li><a href="precios.html">Precios</a></li><li><a href="contacto.html">Contacto</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2024 SkyedSocial. Todos los derechos reservados.</p>
+      <div class="footer-legal"><a href="#">Privacidad</a><a href="#">Términos</a></div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg"></span></div>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="shared.js"></script>
+<script>initReveal();</script>
+</body>
+</html>

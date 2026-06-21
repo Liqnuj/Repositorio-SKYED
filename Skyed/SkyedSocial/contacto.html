@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contacto — SkyedSocial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">S</div>
+      <span class="nav-logo-text">SkyedSocial</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" onclick="closeNav()">Inicio</a>
+      <a href="eventos.html" onclick="closeNav()">Eventos</a>
+      <a href="servicios.html" onclick="closeNav()">Servicios</a>
+      <a href="lugares.html" onclick="closeNav()">Lugares</a>
+      <a href="precios.html" onclick="closeNav()">Precios</a>
+      <a href="contacto.html" class="active" onclick="closeNav()">Contacto</a>
+      <a href="contacto.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span>/</span><span>Contacto</span>
+    </div>
+    <h1 class="page-hero-title">Hagamos realidad<br><em>tu evento soñado</em></h1>
+    <p class="page-hero-sub">Cuéntanos tu idea y te enviamos una propuesta personalizada en menos de 24 horas.</p>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<section class="booking-section" id="contacto">
+  <div class="container">
+    <div class="booking-grid">
+      <div class="booking-info reveal">
+        <span class="section-label" style="background:rgba(201,168,76,.15);color:var(--gold-light)">Contáctanos</span>
+        <h2 class="section-title" style="color:var(--white)">Estamos listos<br><em style="color:var(--gold-light)">para ayudarte</em></h2>
+        <p class="section-sub" style="color:rgba(255,255,255,.6)">Cuéntanos tu idea y nuestro equipo de expertos te enviará una propuesta personalizada en menos de 24 horas.</p>
+        <ul class="booking-features">
+          <li class="booking-feat">
+            <div class="booking-feat-icon">📍</div>
+            <div class="booking-feat-text"><strong>Bogotá, Colombia</strong><span>Servicio en toda Colombia y el exterior</span></div>
+          </li>
+          <li class="booking-feat">
+            <div class="booking-feat-icon">📞</div>
+            <div class="booking-feat-text"><strong>+57 300 123 4567</strong><span>Lunes a sábado, 8am – 8pm</span></div>
+          </li>
+          <li class="booking-feat">
+            <div class="booking-feat-icon">✉️</div>
+            <div class="booking-feat-text"><strong>hola@skyedsocial.co</strong><span>Respuesta en menos de 24 horas</span></div>
+          </li>
+          <li class="booking-feat">
+            <div class="booking-feat-icon">💬</div>
+            <div class="booking-feat-text"><strong>WhatsApp directo</strong><span>Consultas rápidas por chat</span></div>
+          </li>
+        </ul>
+      </div>
+      <div class="booking-form reveal" id="contactForm">
+        <div class="form-title">Solicita tu cotización gratuita</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tu nombre</label>
+            <input type="text" id="fname" placeholder="Ej: María García">
+          </div>
+          <div class="form-group">
+            <label>Teléfono / WhatsApp</label>
+            <input type="tel" id="fphone" placeholder="+57 300 000 0000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="femail" placeholder="tu@correo.com">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de evento</label>
+            <select id="ftype">
+              <option value="">Seleccionar...</option>
+              <option>Boda</option>
+              <option>Quinceañera</option>
+              <option>Cumpleaños</option>
+              <option>Corporativo</option>
+              <option>Baby shower</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Fecha estimada</label>
+            <input type="date" id="fdate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>N° de invitados</label>
+            <input type="number" id="fguests" placeholder="Ej: 150">
+          </div>
+          <div class="form-group">
+            <label>Presupuesto aprox.</label>
+            <select id="fbudget">
+              <option value="">Seleccionar...</option>
+              <option>Menos de $10M COP</option>
+              <option>$10M – $20M COP</option>
+              <option>$20M – $40M COP</option>
+              <option>Más de $40M COP</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Cuéntanos tu visión</label>
+          <textarea id="fmessage" placeholder="¿Qué imaginas para tu evento? Tema, estilo, detalles especiales..."></textarea>
+        </div>
+        <button class="form-submit" onclick="submitForm()">✦ Enviar solicitud</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+          <div class="nav-logo-icon">S</div>
+          <span class="nav-logo-text">SkyedSocial</span>
+        </div>
+        <p class="footer-desc">Creamos eventos que trascienden el tiempo. Cada detalle, cada emoción, perfectamente orquestados para ti.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn">📸</a><a href="#" class="social-btn">📘</a>
+          <a href="#" class="social-btn">🎵</a><a href="#" class="social-btn">📌</a><a href="#" class="social-btn">💬</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Eventos</h4><ul class="footer-links">
+        <li><a href="eventos.html">Bodas</a></li><li><a href="eventos.html">Quinceañeras</a></li>
+        <li><a href="eventos.html">Cumpleaños</a></li><li><a href="eventos.html">Corporativos</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Servicios</h4><ul class="footer-links">
+        <li><a href="servicios.html">Decoración</a></li><li><a href="servicios.html">Catering</a></li>
+        <li><a href="servicios.html">Fotografía</a></li><li><a href="lugares.html">Lugares</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Empresa</h4><ul class="footer-links">
+        <li><a href="index.html#nosotros">Sobre nosotros</a></li><li><a href="testimonios.html">Testimonios</a></li>
+        <li><a href="precios.html">Precios</a></li><li><a href="contacto.html">Contacto</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2024 SkyedSocial. Todos los derechos reservados.</p>
+      <div class="footer-legal"><a href="#">Privacidad</a><a href="#">Términos</a></div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg"></span></div>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="shared.js"></script>
+<script>initReveal();</script>
+</body>
+</html>

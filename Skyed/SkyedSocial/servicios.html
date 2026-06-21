@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Servicios — SkyedSocial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">S</div>
+      <span class="nav-logo-text">SkyedSocial</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" onclick="closeNav()">Inicio</a>
+      <a href="eventos.html" onclick="closeNav()">Eventos</a>
+      <a href="servicios.html" class="active" onclick="closeNav()">Servicios</a>
+      <a href="lugares.html" onclick="closeNav()">Lugares</a>
+      <a href="precios.html" onclick="closeNav()">Precios</a>
+      <a href="contacto.html" onclick="closeNav()">Contacto</a>
+      <a href="contacto.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span>/</span><span>Servicios</span>
+    </div>
+    <h1 class="page-hero-title">Todo lo que tu evento<br><em>necesita y más</em></h1>
+    <p class="page-hero-sub">Un ecosistema completo de servicios para que cada momento sea perfecto.</p>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section class="services-section">
+  <div class="container">
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon">🌸</div>
+        <div class="service-title">Decoración & Florería</div>
+        <div class="service-desc">Transformamos cada espacio en una obra de arte con arreglos florales, centros de mesa y ambientaciones únicas.</div>
+        <ul class="service-features">
+          <li>Arcos florales naturales y artificiales</li>
+          <li>Centros de mesa personalizados</li>
+          <li>Decoración temática a medida</li>
+          <li>Iluminación de atmósfera</li>
+        </ul>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">🍽️</div>
+        <div class="service-title">Catering Gourmet</div>
+        <div class="service-desc">Menús creados por chefs de alta cocina, adaptados a todos los gustos y restricciones dietéticas.</div>
+        <ul class="service-features">
+          <li>Cocina colombiana e internacional</li>
+          <li>Buffet y servicio a la mesa</li>
+          <li>Barra de cócteles y mocktails</li>
+          <li>Pastelería artesanal</li>
+        </ul>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">📸</div>
+        <div class="service-title">Fotografía & Video</div>
+        <div class="service-desc">Capturamos cada instante con equipos profesionales y edición cinematográfica de primer nivel.</div>
+        <ul class="service-features">
+          <li>Sesión fotográfica pre-evento</li>
+          <li>Cobertura total del evento</li>
+          <li>Video cinematográfico 4K</li>
+          <li>Álbum digital y físico premium</li>
+        </ul>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">🎵</div>
+        <div class="service-title">Música & Entretenimiento</div>
+        <div class="service-desc">Desde bandas en vivo hasta DJs de talla internacional y shows especiales que sorprenden.</div>
+        <ul class="service-features">
+          <li>DJ profesional con equipo premium</li>
+          <li>Bandas en vivo y solistas</li>
+          <li>Shows de magia y animación</li>
+          <li>Zona de actividades interactivas</li>
+        </ul>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">🏛️</div>
+        <div class="service-title">Gestión de Lugares</div>
+        <div class="service-desc">Acceso exclusivo a los venues más exclusivos de la ciudad y alrededores para tu evento.</div>
+        <ul class="service-features">
+          <li>Haciendas y hoteles boutique</li>
+          <li>Salones de eventos premium</li>
+          <li>Espacios al aire libre</li>
+          <li>Negociación y contratos incluidos</li>
+        </ul>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon">✨</div>
+        <div class="service-title">Efectos Especiales</div>
+        <div class="service-desc">Crea momentos mágicos con nuestros efectos visuales de vanguardia que dejan sin palabras.</div>
+        <ul class="service-features">
+          <li>Fuentes de luz y lásers</li>
+          <li>Máquina de niebla y burbujas</li>
+          <li>Mapping proyectado</li>
+          <li>Fuegos fríos de pista</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section">
+  <div class="container">
+    <div class="text-center reveal">
+      <span class="section-label">Cómo trabajamos</span>
+      <h2 class="section-title">Tu evento en <em>4 pasos</em></h2>
+      <p class="section-sub">Un proceso claro y transparente para que tengas total confianza desde el primer día.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal">
+        <div class="step-num">1</div>
+        <div class="step-title">Consulta inicial</div>
+        <div class="step-desc">Conversamos sobre tu visión, necesidades, presupuesto y fecha para entender exactamente lo que sueñas.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">2</div>
+        <div class="step-title">Propuesta a medida</div>
+        <div class="step-desc">Diseñamos una propuesta detallada con opciones de personalización, proveedores y presupuesto desglosado.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">3</div>
+        <div class="step-title">Coordinación total</div>
+        <div class="step-desc">Gestionamos cada proveedor, confirmamos detalles y hacemos visitas previas para garantizar que todo esté perfecto.</div>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">4</div>
+        <div class="step-title">¡El día perfecto!</div>
+        <div class="step-desc">Nuestro equipo está presente de principio a fin para que tú solo te preocupes por vivir el momento.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+          <div class="nav-logo-icon">S</div>
+          <span class="nav-logo-text">SkyedSocial</span>
+        </div>
+        <p class="footer-desc">Creamos eventos que trascienden el tiempo. Cada detalle, cada emoción, perfectamente orquestados para ti.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn">📸</a><a href="#" class="social-btn">📘</a>
+          <a href="#" class="social-btn">🎵</a><a href="#" class="social-btn">📌</a><a href="#" class="social-btn">💬</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Eventos</h4><ul class="footer-links">
+        <li><a href="eventos.html">Bodas</a></li><li><a href="eventos.html">Quinceañeras</a></li>
+        <li><a href="eventos.html">Cumpleaños</a></li><li><a href="eventos.html">Corporativos</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Servicios</h4><ul class="footer-links">
+        <li><a href="servicios.html">Decoración</a></li><li><a href="servicios.html">Catering</a></li>
+        <li><a href="servicios.html">Fotografía</a></li><li><a href="lugares.html">Lugares</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Empresa</h4><ul class="footer-links">
+        <li><a href="index.html#nosotros">Sobre nosotros</a></li><li><a href="testimonios.html">Testimonios</a></li>
+        <li><a href="precios.html">Precios</a></li><li><a href="contacto.html">Contacto</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2024 SkyedSocial. Todos los derechos reservados.</p>
+      <div class="footer-legal"><a href="#">Privacidad</a><a href="#">Términos</a></div>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg"></span></div>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="shared.js"></script>
+<script>initReveal();</script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eventos — SkyedSocial</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav id="navbar">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <div class="nav-logo-icon">S</div>
+      <span class="nav-logo-text">SkyedSocial</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html" onclick="closeNav()">Inicio</a>
+      <a href="eventos.html" class="active" onclick="closeNav()">Eventos</a>
+      <a href="servicios.html" onclick="closeNav()">Servicios</a>
+      <a href="lugares.html" onclick="closeNav()">Lugares</a>
+      <a href="precios.html" onclick="closeNav()">Precios</a>
+      <a href="contacto.html" onclick="closeNav()">Contacto</a>
+      <a href="contacto.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>
+    </div>
+    <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="container">
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span>/</span><span>Eventos</span>
+    </div>
+    <h1 class="page-hero-title">Nuestros <em>eventos</em></h1>
+    <p class="page-hero-sub">Desde bodas íntimas hasta recepciones espectaculares — personalizamos cada detalle a tu medida.</p>
+  </div>
+</div>
+
+<!-- EVENTS -->
+<section class="events-section">
+  <div class="container">
+    <div class="filter-bar" id="filterBar">
+      <button class="filter-btn active" onclick="filterEvents('todos',this)">Todos</button>
+      <button class="filter-btn" onclick="filterEvents('bodas',this)">Bodas</button>
+      <button class="filter-btn" onclick="filterEvents('quinceaneras',this)">Quinceañeras</button>
+      <button class="filter-btn" onclick="filterEvents('cumpleanios',this)">Cumpleaños</button>
+      <button class="filter-btn" onclick="filterEvents('corporativos',this)">Corporativos</button>
+      <button class="filter-btn" onclick="filterEvents('baby',this)">Baby shower</button>
+    </div>
+    <div class="events-grid" id="eventsGrid"></div>
+    <div class="events-load">
+      <button class="btn-primary" onclick="loadMore()">Ver más eventos →</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div style="display:flex;align-items:center;gap:.75rem;margin-bottom:1rem">
+          <div class="nav-logo-icon">S</div>
+          <span class="nav-logo-text">SkyedSocial</span>
+        </div>
+        <p class="footer-desc">Creamos eventos que trascienden el tiempo. Cada detalle, cada emoción, perfectamente orquestados para ti.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn">📸</a><a href="#" class="social-btn">📘</a>
+          <a href="#" class="social-btn">🎵</a><a href="#" class="social-btn">📌</a><a href="#" class="social-btn">💬</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Eventos</h4><ul class="footer-links">
+        <li><a href="eventos.html">Bodas</a></li><li><a href="eventos.html">Quinceañeras</a></li>
+        <li><a href="eventos.html">Cumpleaños</a></li><li><a href="eventos.html">Corporativos</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Servicios</h4><ul class="footer-links">
+        <li><a href="servicios.html">Decoración</a></li><li><a href="servicios.html">Catering</a></li>
+        <li><a href="servicios.html">Fotografía</a></li><li><a href="lugares.html">Lugares</a></li>
+      </ul></div>
+      <div class="footer-col"><h4>Empresa</h4><ul class="footer-links">
+        <li><a href="index.html#nosotros">Sobre nosotros</a></li><li><a href="testimonios.html">Testimonios</a></li>
+        <li><a href="precios.html">Precios</a></li><li><a href="contacto.html">Contacto</a></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2024 SkyedSocial. Todos los derechos reservados.</p>
+      <div class="footer-legal"><a href="#">Privacidad</a><a href="#">Términos</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-img" id="modalImg"></div>
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg"></span></div>
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script src="shared.js"></script>
+<script>
+  renderEvents('todos');
+  initReveal();
+  setTimeout(()=>document.querySelectorAll('.reveal').forEach(el=>observer.observe(el)),500);
+</script>
+</body>
+</html>
