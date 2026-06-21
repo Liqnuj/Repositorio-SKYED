@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SKYED — Eventos profesionales de ciclismo: ruta, MTB, gravel, pista y BMX. Inscríbete en las mejores competencias." />
+  <title>SKYED — Eventos profesionales de ciclismo</title>
+  <link rel="icon" href="img/logo.png" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/index.css" />
+  <link rel="stylesheet" href="css/accesibilidad.css" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="index.html" class="brand" aria-label="Inicio SKYED">
+        <img src="img/logo.png" alt="" />
+        <span>SKY<em>ED</em></span>
+      </a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list" aria-label="Abrir menú">☰</button>
+      <ul class="nav-links" id="nav-list">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
+        <li><a href="nosotros.html">Nosotros</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+      <div class="nav-cta">
+        <span data-auth-user style="display:none;color:var(--primary);font-weight:600"></span>
+        <a href="login.html" class="btn btn-primary" data-auth-login>Iniciar sesión</a>
+        <a href="#" class="btn btn-ghost" data-auth-register style="display:none">Cerrar sesión</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- HERO con carrusel -->
+    <section class="hero" aria-label="Galería principal">
+      <div class="slides">
+        <div class="slide active" style="background-image:url('img/hero1.jpg')"></div>
+        <div class="slide" style="background-image:url('img/hero2.jpg')"></div>
+        <div class="slide" style="background-image:url('img/hero3.jpg')"></div>
+      </div>
+      <button class="carousel-arrow prev" aria-label="Slide anterior">‹</button>
+      <button class="carousel-arrow next" aria-label="Slide siguiente">›</button>
+      <div class="hero-content">
+        <span class="eyebrow">Temporada 2026 abierta</span>
+        <h1>Vive el <em>ciclismo</em> como nunca antes</h1>
+        <p>Inscríbete en los mejores eventos de ruta, MTB, gravel, pista y BMX. Una plataforma, miles de pedaladas.</p>
+        <div class="hero-actions">
+          <a href="eventos.html" class="btn btn-primary">Ver eventos</a>
+        </div>
+      </div>
+      <div class="carousel-dots" role="tablist" aria-label="Navegación del carrusel"></div>
+    </section>
+
+    <!-- STATS  -->
+    <section class="stats" aria-label="Cifras de la comunidad">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-num" data-target="120" data-suffix="+">0</span>
+          <span class="stat-label">Eventos al año</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="25" data-suffix=" K">0</span>
+          <span class="stat-label">Ciclistas activos</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="72" data-suffix="%">0</span>
+          <span class="stat-label">Ciclistas que repiten</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-num" data-target="98" data-suffix="%">0</span>
+          <span class="stat-label">Satisfacción</span>
+        </div>
+      </div>
+    </section>
+    <br>
+    <br>
+    <br>
+
+
+<section class="skyed-features" aria-label="Características de SKYED">
+
+  <h2 class="skyed-features__title">Todo lo que necesitas para participar</h2>
+  <p class="skyed-features__sub">
+    Descubre todo lo que ofrecemos para que puedas disfrutar al máximo de tu experiencia en SKYED.
+  </p>
+
+  <div class="skyed-features__grid">
+
+    <!-- Tarjeta 1 -->
+    <div class="skyed-card skyed-card--purple">
+      <div class="skyed-card__glow"></div>
+      <div class="skyed-card__icon">
+        <svg viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <h3 class="skyed-card__title">Encuentra eventos cerca</h3>
+      <p class="skyed-card__desc">Mapa interactivo con jugadores y canchas disponibles en tiempo real</p>
+    </div>
+
+    <!-- Tarjeta 2 -->
+    <div class="skyed-card skyed-card--amber">
+      <div class="skyed-card__glow"></div>
+      <div class="skyed-card__icon">
+        <svg viewBox="0 0 24 24"><path d="m13 2-2 2.5h3L12 7"/><path d="M10 14v-3"/><path d="M14 14v-3"/><path d="M11 19H6.5a3.5 3.5 0 0 1 0-7h.085"/><path d="M13 19h4.5a3.5 3.5 0 0 0 0-7h-.085"/></svg>
+      </div>
+      <h3 class="skyed-card__title">Match instantáneo</h3>
+      <p class="skyed-card__desc">Conecta con ciclistas de tu nivel y disponibilidad al instante</p>
+    </div>
+
+    <!-- Tarjeta 3 -->
+    <div class="skyed-card skyed-card--teal">
+      <div class="skyed-card__glow"></div>
+      <div class="skyed-card__icon">
+        <svg viewBox="0 0 24 24"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+      </div>
+      <h3 class="skyed-card__title">Organización rápida</h3>
+      <p class="skyed-card__desc">Crea y gestiona eventos en segundos con chat integrado</p>
+    </div>
+
+    <!-- Tarjeta 4 -->
+    <div class="skyed-card skyed-card--pink">
+      <div class="skyed-card__glow"></div>
+      <div class="skyed-card__icon">
+        <svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+      </div>
+      <h3 class="skyed-card__title">Sistema de reputación</h3>
+      <p class="skyed-card__desc">Rankings, logros y valoraciones para la mejor experiencia</p>
+    </div>
+
+    <!-- Tarjeta 5 -->
+    <div class="skyed-card skyed-card--blue">
+      <div class="skyed-card__glow"></div>
+      <div class="skyed-card__icon">
+        <svg viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></svg>
+      </div>
+      <h3 class="skyed-card__title">Comunidad segura</h3>
+      <p class="skyed-card__desc">Perfiles verificados y sistema de reportes para tu tranquilidad</p>
+    </div>
+
+    <!-- Tarjeta 6 -->
+    <div class="skyed-card skyed-card--green">
+      <div class="skyed-card__glow"></div>
+      <div class="skyed-card__icon">
+        <svg viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
+      </div>
+      <h3 class="skyed-card__title">Reservas con créditos</h3>
+      <p class="skyed-card__desc">Sistema flexible de créditos para gestionar tus eventos</p>
+    </div>
+
+  </div>
+  </section>
+
+
+
+<section class="skyed-steps" aria-label="Cómo funciona SKYED">
+
+  <h2 class="skyed-steps__title">Así de fácil es participar</h2>
+  <p class="skyed-steps__sub">En solo 3 pasos estarás disfrutando de tu evento favorito</p>
+
+  <div class="skyed-steps__grid">
+
+    <!-- Paso 1 -->
+    <div class="skyed-step">
+      <div class="skyed-step__bubble">
+        <span class="skyed-step__num">1</span>
+        <!-- Ícono: usuario / perfil -->
+        <svg viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h3 class="skyed-step__title">Crea tu perfil</h3>
+      <p class="skyed-step__desc">Registra tu disciplina favorita, nivel y zonas donde entrenas</p>
+    </div>
+
+    <!-- Paso 2 -->
+    <div class="skyed-step">
+      <div class="skyed-step__bubble">
+        <span class="skyed-step__num">2</span>
+        <!-- Ícono: mapa / buscar -->
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </div>
+      <h3 class="skyed-step__title">Encuentra eventos</h3>
+      <p class="skyed-step__desc">Explora el mapa o recibe sugerencias personalizadas según tu perfil</p>
+    </div>
+
+    <!-- Paso 3 -->
+    <div class="skyed-step">
+      <div class="skyed-step__bubble">
+        <span class="skyed-step__num">3</span>
+        <!-- Ícono: bicicleta / jugar -->
+        <svg viewBox="0 0 24 24"><circle cx="18.5" cy="17.5" r="3.5"/><circle cx="5.5" cy="17.5" r="3.5"/><circle cx="15" cy="5" r="1"/><path d="M12 17.5V14l-3-3 4-3 2 3h2"/></svg>
+      </div>
+      <h3 class="skyed-step__title">¡A pedalear!</h3>
+      <p class="skyed-step__desc">Confirma tu inscripción y disfruta del evento con tu comunidad</p>
+    </div>
+
+  </div>
+
+</section>
+
+    <section class="section events-preview" aria-label="Eventos destacados">
+      <div class="container">
+        <h2 class="section-title">Próximos eventos</h2>
+        <p class="section-sub">Una selección de las competencias más esperadas de la temporada.</p>
+        <div class="events-grid">
+          <article class="event-card">
+            <div class="img" style="background-image:url('img/event1.jpg')" role="img" aria-label="Gran Fondo de Los Andes">
+              <span class="badge">Ruta</span>
+            </div>
+            <div class="body">
+              <h3>Gran Fondo de Los Andes</h3>
+              <div class="meta">📅 15 Jun · 📍 Bogotá</div>
+              <p class="desc">120 km de alta montaña con vistas espectaculares.</p>
+              <div class="footer">
+                <span class="price">$75.000</span>
+                <a href="eventos.html" class="btn btn-ghost">Ver más</a>
+              </div>
+            </div>
+          </article>
+          <article class="event-card">
+            <div class="img" style="background-image:url('img/event2.jpg')" role="img" aria-label="Copa Nacional MTB">
+              <span class="badge" style="background:#16a34a">MTB</span>
+            </div>
+            <div class="body">
+              <h3>Copa Nacional MTB</h3>
+              <div class="meta">📅 22 Jul · 📍 Manizales</div>
+              <p class="desc">Descenso técnico y rápido en pista cerrada.</p>
+              <div class="footer">
+                <span class="price">$90.000</span>
+                <a href="eventos.html" class="btn btn-ghost">Ver más</a>
+              </div>
+            </div>
+          </article>
+          <article class="event-card">
+            <div class="img" style="background-image:url('img/event4.jpg')" role="img" aria-label="Gravel Adventure Boyacá">
+              <span class="badge" style="background:#ca8a04">Gravel</span>
+            </div>
+            <div class="body">
+              <h3>Gravel Adventure Boyacá</h3>
+              <div class="meta">📅 02 Sep · 📍 Tunja</div>
+              <p class="desc">85 km en gravilla cruzando paisajes andinos.</p>
+              <div class="footer">
+                <span class="price">$65.000</span>
+                <a href="eventos.html" class="btn btn-ghost">Ver más</a>
+              </div>
+            </div>
+          </article>
+        </div>
+        <div style="text-align:center;margin-top:2rem">
+          <a href="eventos.html" class="btn btn-primary">Ver todos los eventos →</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+
+<section class="cta-section">
+  <!-- Blobs decorativos -->
+  <div class="cta-blob cta-blob--left"></div>
+  <div class="cta-blob cta-blob--right"></div>
+
+  <div class="cta-inner">
+
+    <!-- Badge -->
+    <span class="cta-badge">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+      Únete a la comunidad
+    </span>
+
+    <!-- Título -->
+    <h2 class="cta-title">
+      ¿Listo para tu <span class="cta-highlight">próximo evento</span>?
+    </h2>
+
+    <!-- Subtítulo -->
+    <p class="cta-subtitle">
+      Únete a miles de deportistas que ya están encontrando y disfrutando eventos con SKYED.
+    </p>
+
+    <!-- Botón -->
+    <a href="login.html" class="cta-btn">
+      Comenzar gratis
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+
+    <!-- Prueba social -->
+    <div class="cta-social-proof">
+      <div class="cta-avatars">
+        <div class="cta-avatar">A</div>
+        <div class="cta-avatar">B</div>
+        <div class="cta-avatar">C</div>
+        <div class="cta-avatar">D</div>
+        <div class="cta-avatar">E</div>
+      </div>
+      <p class="cta-count"><strong>+2,000</strong> deportistas activos</p>
+      <div class="cta-stars">
+        ★★★★★ <span>4.9</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<footer class="sky-footer" id="contacto">
+  <div class="sky-accent-bar"></div>
+  <div class="sky-footer-top">
+ 
+    <!-- Columna SKYED -->
+    <div class="sky-footer-col">
+      <div class="sky-logo-row">
+        <img src="img/logo.png" alt="SKYED" class="sky-logo-icon">
+        <div class="sky-logo-text">SKY<span>ED</span></div>
+      </div>
+      <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
+      <div class="sky-social-row">
+        <a class="sky-social-btn" href="https://www.facebook.com/?locale=es_LA" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon"onclick="return confirmarSalida(event)">F</a>
+        <a class="sky-social-btn" href="https://www.instagram.com/?hl=es" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon" onclick="return confirmarSalida(event)">IG</a>
+        <a class="sky-social-btn" href="https://twitter.com/?lang=es" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" class="social-icon" onclick="return confirmarSalida(event)">X</a>
+      </div>
+    </div>
+ 
+    <!-- Columna Contacto -->
+    <div class="sky-footer-col">
+      <p class="sky-col-title">Contacto</p>
+      <ul class="sky-contact-list">
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
+          <div class="sky-contact-text">
+            <strong>Email</strong>
+            skyed@gmail.com
+          </div>
+        </li>
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
+          <div class="sky-contact-text">
+            <strong>Teléfono</strong>
+            +57 313 201 3573
+          </div>
+        </li>
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-map-pin"></i></div>
+          <div class="sky-contact-text">
+            <strong>Ubicación</strong>
+            Sogamoso, Boyacá
+          </div>
+        </li>
+      </ul>
+    </div>
+ 
+  </div>
+ 
+  <div class="sky-footer-bottom">
+    <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
+    <div class="sky-bottom-links">
+      <a href="#">Términos de uso</a>
+      <a href="#">Privacidad</a>
+    </div>
+  </div>
+</footer>
+
+
+  <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+  </svg>
+</button>
+
+  <!-- Panel -->
+    <div class="acc-panel" id="accPanel">
+      <div class="acc-panel-title">Accesibilidad</div>
+
+      <!-- Tamaño de texto -->
+    <div class="acc-section">
+      <span class="acc-label">Tamaño de texto</span>
+      <div class="font-size-row">
+        <button class="size-btn" data-size="14px">A-</button>
+        <button class="size-btn active" data-size="16px">A</button>
+        <button class="size-btn" data-size="19px">A+</button>
+        <button class="size-btn" data-size="22px">A++</button>
+      </div>
+    </div>
+
+      <!-- Dislexia -->
+      <div class="acc-section">
+        <span class="acc-label">Dislexia</span>
+        <div class="mode-row">
+          <button class="mode-btn" id="dyslexiaOff">Normal</button>
+          <button class="mode-btn" id="dyslexiaOn">Activar</button>
+        </div>
+      </div>
+
+      <!-- Color de acento -->
+      <div class="acc-section">
+        <span class="acc-label">Color de acento</span>
+        <div class="color-grid">
+          <div
+            class="color-swatch active"
+            style="background: #c8432b"
+            data-color="#c8432b"
+            title="Rojo Lumara"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #c9a84c"
+            data-color="#c9a84c"
+            title="Dorado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e6da4"
+            data-color="#2e6da4"
+            title="Azul"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e7d32"
+            data-color="#2e7d32"
+            title="Verde"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #6a1b9a"
+            data-color="#6a1b9a"
+            title="Morado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #37474f"
+            data-color="#37474f"
+            title="Gris oscuro"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Modo claro / oscuro -->
+      <div class="acc-section">
+        <span class="acc-label">Modo</span>
+        <div class="mode-row">
+          <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+          <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+        </div>
+      </div>
+
+      <button class="acc-reset" id="accReset">Restablecer todo</button>
+    </div>
+  <script src="js/accesibilidad.js"></script>
+  <script src="js/global.js"></script>
+  <script src="js/index.js" defer></script>
+  <script src="js/scrollreveal.js" defer></script>
+<script>
+function confirmarSalida() {
+  return confirm("Estás a punto de salir de SKYED. ¿Deseas continuar?");
+}
+</script>
+</body>
+</html>

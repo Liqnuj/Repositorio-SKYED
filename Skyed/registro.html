@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Crea tu cuenta gratis en SKYED y empieza a inscribirte en eventos de ciclismo." />
+  <title>Crear cuenta — SKYED</title>
+  <link rel="icon" href="img/logo.png" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+  <link rel="stylesheet" href="css/accesibilidad.css" />
+</head>
+<body>
+
+  <header class="site-header" role="banner">
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="index.html" class="brand"><img src="img/logo.png" alt="" /><span>SKY<em>ED</em></span></a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list" aria-label="Abrir menú">☰</button>
+    </nav>
+  </header>
+
+  <main id="main" class="auth-wrapper">
+    <aside class="auth-side" aria-hidden="true">
+      <h2>Únete a la <em>comunidad</em> SKYED</h2>
+      <p>Crea tu cuenta gratis y obtén acceso a todos los beneficios de la plataforma.</p>
+      <ul>
+        <li>Inscripción rápida en eventos</li>
+        <li>Descuentos exclusivos para miembros</li>
+        <li>Historial completo de tus carreras</li>
+        <li>Notificaciones de nuevos eventos</li>
+      </ul>
+    </aside>
+
+    <section class="auth-form-box">
+    <div class="auth-form-inner">
+
+    <a href="login.html" class="back-btn" aria-label="Volver al inicio">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 12H5M12 5l-7 7 7 7"/>
+  </svg>
+  </a>
+
+      <form class="auth-form" id="register-form" novalidate>
+        <h1>Crear cuenta</h1>
+        <p class="lead">Solo te tomará un minuto.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tipoDocumento">Tipo de Documento <span class="req">*</span></label>
+            <select id="tipoDocumento" name="tipoDocumento" required data-validate="select">
+              <option value=""> Selecciona </option>
+              <option value="cedula_ciudadania">Cédula de Ciudadanía</option>
+              <option value="tarjeta_identidad">Tarjeta de Identidad</option>
+              <option value="cedula_extranjeria">Cédula de Extranjería</option>
+              <option value="pasaporte">Pasaporte</option>
+            </select>
+            <span class="error"></span>
+          </div>
+          <div class="form-group">
+            <label for="documento">Número de Documento <span class="req">*</span></label>
+            <input id="documento" name="documento" type="text" required maxlength="20"
+                   data-validate="documento" placeholder="123456789" autocomplete="off" />
+            <span class="error"></span>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="nombre">Nombre <span class="req">*</span></label>
+            <input id="nombre" name="nombre" type="text" required maxlength="50"
+                   data-validate="nombre" placeholder="Juan" autocomplete="given-name" />
+            <span class="help">Solo letras</span>
+            <span class="error"></span>
+          </div>
+          <div class="form-group">
+            <label for="apellido">Apellido <span class="req">*</span></label>
+            <input id="apellido" name="apellido" type="text" required maxlength="50"
+                   data-validate="apellido" placeholder="Pérez" autocomplete="family-name" />
+            <span class="error"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Correo Electrónico <span class="req">*</span></label>
+          <input id="email" name="email" type="email" required maxlength="80"
+                 data-validate="email" placeholder="tucorreo@ejemplo.com" autocomplete="email" />
+          <span class="error"></span>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="telefono">Teléfono <span class="req">*</span></label>
+            <input id="telefono" name="telefono" type="tel" required maxlength="15"
+                   data-validate="telefono" placeholder="3001234567" autocomplete="tel"
+                   inputmode="numeric" />
+            <span class="help">Solo números (7-15)</span>
+            <span class="error"></span>
+          </div>
+          <div class="form-group">
+            <label for="fechaNac">Fecha de Nacimiento <span class="req">*</span></label>
+            <input id="fechaNac" name="fechaNac" type="date" required
+                   data-validate="fecha-nacimiento" />
+            <span class="error"></span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="rh">RH <span class="req">*</span></label>
+          <select id="rh" name="rh" required data-validate="select">
+            <option value="">— Selecciona —</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+          </select>
+          <span class="error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña <span class="req">*</span></label>
+          <div class="input-wrap">
+            <input id="password" name="password" type="password" required maxlength="50"
+                   data-validate="password" placeholder="••••••••" autocomplete="new-password" />
+            <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
+          </div>
+          <div class="password-strength"><div class="bar"></div></div>
+          <span class="help">Mínimo 8, una mayúscula, una minúscula y un número</span>
+          <span class="error"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="password-confirm">Confirmar Contraseña <span class="req">*</span></label>
+          <div class="input-wrap">
+            <input id="password-confirm" name="password-confirm" type="password" required maxlength="50"
+                   data-validate="password-confirm" placeholder="••••••••" autocomplete="new-password" />
+            <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
+          </div>
+          <span class="error"></span>
+        </div>
+
+        <div class="checkbox-row">
+          <input id="terms" type="checkbox" required data-validate="checkbox" />
+          <label for="terms">Acepto los <a href="#" class="link-terminos" data-modal="terminos">términos y condiciones</a> y la <a href="#" class="link-terminos" data-modal="privacidad">política de privacidad</a> <span class="req">*</span></label>
+        </div>
+        <span class="error error-terms"></span>
+
+        <button type="submit" class="btn btn-primary btn-block">Crear cuenta</button>
+
+        <div class="auth-footer">
+          ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
+        </div>
+      </form>
+    </section>
+  </main>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<footer class="sky-footer">
+  <div class="sky-accent-bar"></div>
+  <div class="sky-footer-top">
+ 
+    <!-- Columna SKYED -->
+    <div class="sky-footer-col">
+      <div class="sky-logo-row">
+        <img src="img/logo.png" alt="SKYED" class="sky-logo-icon">
+        <div class="sky-logo-text">SKY<span>ED</span></div>
+      </div>
+      <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
+      <div class="sky-social-row">
+        <a class="sky-social-btn" href="https://www.facebook.com/?locale=es_LA" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon"onclick="return confirmarSalida(event)">F</a>
+        <a class="sky-social-btn" href="https://www.instagram.com/?hl=es" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon" onclick="return confirmarSalida(event)">IG</a>
+        <a class="sky-social-btn" href="https://twitter.com/?lang=es" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" class="social-icon" onclick="return confirmarSalida(event)">X</a>
+      </div>
+    </div>
+ 
+    <!-- Columna Contacto -->
+    <div class="sky-footer-col">
+      <p class="sky-col-title">Contacto</p>
+      <ul class="sky-contact-list">
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
+          <div class="sky-contact-text">
+            <strong>Email</strong>
+            skyed@gmail.com
+          </div>
+        </li>
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
+          <div class="sky-contact-text">
+            <strong>Teléfono</strong>
+            +57 313 201 3573
+          </div>
+        </li>
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-map-pin"></i></div>
+          <div class="sky-contact-text">
+            <strong>Ubicación</strong>
+            Sogamoso, Boyacá
+          </div>
+        </li>
+      </ul>
+    </div>
+ 
+  </div>
+ 
+  <div class="sky-footer-bottom">
+    <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
+    <div class="sky-bottom-links">
+      <a href="#">Términos de uso</a>
+      <a href="#">Privacidad</a>
+    </div>
+  </div>
+</footer>
+
+
+  <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+  </svg>
+</button>
+
+   <!-- Panel -->
+    <div class="acc-panel" id="accPanel">
+      <div class="acc-panel-title">Accesibilidad</div>
+
+       <div class="acc-section">
+        <span class="acc-label">Tamaño de texto</span>
+        <div class="font-size-row">
+          <button class="size-btn" data-size="14px">A-</button>
+          <button class="size-btn active" data-size="16px">A</button>
+          <button class="size-btn" data-size="19px">A+</button>
+          <button class="size-btn" data-size="22px">A++</button>
+        </div>
+      </div>
+
+      <div class="acc-section">
+        <span class="acc-label">Dislexia</span>
+        <div class="mode-row">
+          <button class="mode-btn" id="dyslexiaOff">Normal</button>
+          <button class="mode-btn" id="dyslexiaOn">Activar</button>
+        </div>
+      </div>
+
+      <!-- Color de acento -->
+      <div class="acc-section">
+        <span class="acc-label">Color de acento</span>
+        <div class="color-grid">
+          <div
+            class="color-swatch active"
+            style="background: #c8432b"
+            data-color="#c8432b"
+            title="Rojo Lumara"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #c9a84c"
+            data-color="#c9a84c"
+            title="Dorado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e6da4"
+            data-color="#2e6da4"
+            title="Azul"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e7d32"
+            data-color="#2e7d32"
+            title="Verde"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #6a1b9a"
+            data-color="#6a1b9a"
+            title="Morado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #37474f"
+            data-color="#37474f"
+            title="Gris oscuro"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Modo claro / oscuro -->
+      <div class="acc-section">
+        <span class="acc-label">Modo</span>
+        <div class="mode-row">
+          <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+          <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+        </div>
+      </div>
+
+      <button class="acc-reset" id="accReset">Restablecer todo</button>
+    </div>
+  <script src="js/accesibilidad.js"></script> 
+  <script src="js/global.js"></script>
+  <script src="js/index.js"></script>
+  <script src="js/auth.js"></script>
+
+    <!-- ═══════════════════════════════════════════════════════════
+       MODAL TÉRMINOS Y CONDICIONES / POLÍTICA DE PRIVACIDAD
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="skyed-modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
+    <div class="skyed-modal">
+
+      <!-- Cabecera del modal -->
+      <div class="skyed-modal__header">
+        <div class="skyed-modal__header-deco" aria-hidden="true">
+          <span class="deco-line"></span>
+          <svg class="deco-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+          <span class="deco-line"></span>
+        </div>
+        <p class="skyed-modal__brand">SKYED · Plataforma de Eventos de Ciclismo de Ruta</p>
+        <h2 class="skyed-modal__title" id="modal-title">Términos y Condiciones</h2>
+        <p class="skyed-modal__subtitle" id="modal-subtitle">Última actualización: enero 2026</p>
+        <button class="skyed-modal__close" id="modal-close" aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Navegación entre secciones -->
+      <div class="skyed-modal__tabs" role="tablist">
+        <button class="skyed-tab active" data-tab="terminos" role="tab" aria-selected="true">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/></svg>
+          Términos y Condiciones
+        </button>
+        <button class="skyed-tab" data-tab="privacidad" role="tab" aria-selected="false">
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          Política de Privacidad
+        </button>
+      </div>
+
+      <!-- Cuerpo scrollable -->
+      <div class="skyed-modal__body" id="modal-body" tabindex="0">
+
+        <!-- ══ TÉRMINOS Y CONDICIONES ══ -->
+        <div class="skyed-modal__content" id="tab-terminos">
+
+          <div class="modal-intro">
+            <p>Al registrarte en <strong>SKYED</strong> y participar en los eventos deportivos de ciclismo de ruta organizados o gestionados a través de esta plataforma, aceptas plenamente los siguientes términos. Léelos con atención antes de continuar.</p>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">01</div>
+            <div class="modal-section__content">
+              <h3>Registro y cuenta de usuario</h3>
+              <p>Para acceder a los servicios de SKYED debes proporcionar información veraz, completa y actualizada. Eres responsable de mantener la confidencialidad de tu contraseña y de todas las actividades que se realicen desde tu cuenta. SKYED se reserva el derecho de suspender o cancelar cuentas con información falsa o que incumplan estos términos.</p>
+              <ul>
+                <li>Debes ser mayor de 10 años para crear una cuenta.</li>
+                <li>Cada persona puede tener únicamente una cuenta activa.</li>
+                <li>Notifica de inmediato cualquier acceso no autorizado a <strong>skyed@gmail.com</strong>.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">02</div>
+            <div class="modal-section__content">
+              <h3>Inscripción a eventos de ciclismo de ruta</h3>
+              <p>La inscripción a un evento a través de SKYED implica la aceptación de las condiciones específicas de cada prueba, incluyendo el reglamento técnico, los requisitos médicos y las normas de la <strong>Federación Colombiana de Ciclismo (FCC)</strong> o la entidad reguladora aplicable.</p>
+              <ul>
+                <li>La inscripción queda confirmada únicamente tras el pago completo de la tarifa de participación.</li>
+                <li>Las cancelaciones realizadas con menos de 72 horas antes del evento no son reembolsables.</li>
+                <li>El organizador puede cancelar o reprogramar un evento por razones de fuerza mayor, orden público o condiciones climáticas extremas.</li>
+                <li>SKYED actúa como intermediario tecnológico; la responsabilidad operativa del evento recae en el organizador registrado.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">03</div>
+            <div class="modal-section__content">
+              <h3>Condiciones físicas y responsabilidad deportiva</h3>
+              <p>El ciclismo de ruta es una actividad deportiva que implica riesgos inherentes. Al inscribirte en cualquier evento a través de SKYED, declaras y garantizas que:</p>
+              <ul>
+                <li>Tienes las condiciones físicas adecuadas para participar en la modalidad seleccionada.</li>
+                <li>Cuentas con revisión médica reciente que avala tu aptitud deportiva.</li>
+                <li>Usarás el equipo de protección obligatorio (casco homologado, ropa adecuada) durante todo el recorrido.</li>
+                <li>Conoces y respetarás el reglamento de tránsito y las señalizaciones del evento.</li>
+                <li>Liberas a SKYED de responsabilidad por lesiones, accidentes o daños derivados de tu participación.</li>
+              </ul>
+              <div class="modal-alert">
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+                <p>Los menores de 18 años deben presentar autorización escrita firmada por su padre, madre o tutor legal el día del evento.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">04</div>
+            <div class="modal-section__content">
+              <h3>Pagos, facturas y reembolsos</h3>
+              <p>SKYED utiliza pasarelas de pago seguras y certificadas. Las tarifas de inscripción incluyen el acceso al evento, cronometraje oficial, avituallamiento según cada evento y certificado digital de participación.</p>
+              <ul>
+                <li>Los precios están expresados en pesos colombianos (COP) e incluyen IVA cuando aplique.</li>
+                <li>La factura electrónica se genera automáticamente y se envía al correo registrado.</li>
+                <li>Los reembolsos por cancelación del evento por parte del organizador se procesarán en un plazo máximo de 15 días hábiles.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">05</div>
+            <div class="modal-section__content">
+              <h3>Propiedad intelectual y contenido</h3>
+              <p>Todos los elementos de SKYED (marca, diseño, código, contenidos) son propiedad exclusiva de SKYED S.A.S. o están licenciados a favor de la compañía. Queda prohibida su reproducción total o parcial sin autorización escrita.</p>
+              <p>Al subir fotos, resultados o contenido a la plataforma, otorgas a SKYED una licencia no exclusiva para usarlo con fines promocionales de la comunidad ciclista.</p>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">06</div>
+            <div class="modal-section__content">
+              <h3>Modificaciones y legislación aplicable</h3>
+              <p>SKYED puede actualizar estos términos en cualquier momento. Los cambios sustanciales serán notificados con al menos 15 días de antelación por correo electrónico. El uso continuado de la plataforma tras la notificación implica la aceptación de los nuevos términos.</p>
+              <p>Estos términos se rigen por las leyes de la República de Colombia. Cualquier controversia se someterá a la jurisdicción de los tribunales de la ciudad de Bogotá D.C.</p>
+            </div>
+          </div>
+
+        </div><!-- /tab-terminos -->
+
+        <!-- ══ POLÍTICA DE PRIVACIDAD ══ -->
+        <div class="skyed-modal__content" id="tab-privacidad" hidden>
+
+          <div class="modal-intro">
+            <p>En <strong>SKYED</strong> la protección de tus datos personales es una prioridad. Esta política describe cómo recopilamos, usamos, almacenamos y protegemos tu información, en cumplimiento de la <strong>Ley 1581 de 2012</strong> (Ley de Protección de Datos Personales de Colombia) y sus decretos reglamentarios.</p>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">01</div>
+            <div class="modal-section__content">
+              <h3>Responsable del tratamiento</h3>
+              <p><strong>SKYED S.A.S.</strong>, identificada con NIT 901.XXX.XXX-X, con domicilio en Colombia, es la responsable del tratamiento de los datos personales recopilados a través de esta plataforma. Contacto del oficial de privacidad: <strong>privacidad@skyed.com</strong>.</p>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">02</div>
+            <div class="modal-section__content">
+              <h3>Datos que recopilamos</h3>
+              <p>Para brindarte nuestros servicios recopilamos los siguientes datos personales:</p>
+              <ul>
+                <li><strong>Identificación:</strong> nombre, apellido, tipo y número de documento.</li>
+                <li><strong>Contacto:</strong> correo electrónico y número de teléfono.</li>
+                <li><strong>Datos sensibles:</strong> fecha de nacimiento y grupo sanguíneo (RH), usados exclusivamente para garantizar tu seguridad en los eventos.</li>
+                <li><strong>Datos de pago:</strong> procesados por pasarelas externas certificadas; SKYED no almacena datos de tarjetas.</li>
+                <li><strong>Datos de uso:</strong> actividad en la plataforma, inscripciones e historial de resultados deportivos.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">03</div>
+            <div class="modal-section__content">
+              <h3>Finalidad del tratamiento</h3>
+              <p>Tus datos son utilizados exclusivamente para:</p>
+              <ul>
+                <li>Gestionar tu cuenta y autenticar tu identidad.</li>
+                <li>Procesar inscripciones, pagos y emisión de facturas.</li>
+                <li>Garantizar tu seguridad médica durante los eventos (el RH se comparte con los equipos de primeros auxilios).</li>
+                <li>Publicar resultados deportivos oficiales y ranking de competidores.</li>
+                <li>Enviarte comunicaciones sobre eventos, resultados y novedades de la plataforma (puedes desuscribirte en cualquier momento).</li>
+                <li>Cumplir obligaciones legales y requerimientos de autoridades competentes.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">04</div>
+            <div class="modal-section__content">
+              <h3>Compartición de datos</h3>
+              <p>SKYED no vende ni cede tus datos a terceros con fines comerciales. Únicamente comparte información con:</p>
+              <ul>
+                <li><strong>Organizadores de eventos:</strong> nombre, documento y datos deportivos necesarios para la participación.</li>
+                <li><strong>Federaciones y ligas deportivas:</strong> para validación de licencias y registro de resultados oficiales.</li>
+                <li><strong>Proveedores tecnológicos:</strong> bajo contratos de confidencialidad estrictos (cronometraje, pasarelas de pago, servidor de correo).</li>
+                <li><strong>Autoridades:</strong> cuando sea exigido por ley o mandato judicial.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">05</div>
+            <div class="modal-section__content">
+              <h3>Tus derechos (Ley 1581/2012)</h3>
+              <p>Como titular de los datos tienes derecho a:</p>
+              <ul>
+                <li><strong>Acceder</strong> gratuitamente a tus datos personales almacenados.</li>
+                <li><strong>Actualizar o corregir</strong> información inexacta o incompleta.</li>
+                <li><strong>Suprimir</strong> tus datos cuando no exista obligación legal de conservarlos.</li>
+                <li><strong>Revocar</strong> la autorización de tratamiento para finalidades no obligatorias.</li>
+                <li><strong>Presentar quejas</strong> ante la Superintendencia de Industria y Comercio (SIC).</li>
+              </ul>
+              <p>Para ejercer estos derechos escríbenos a <strong>privacidad@skyed.com</strong> con asunto "Derechos ARCO".</p>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-section__num">06</div>
+            <div class="modal-section__content">
+              <h3>Seguridad y retención de datos</h3>
+              <p>Implementamos medidas técnicas y organizativas para proteger tus datos: cifrado TLS en tránsito, almacenamiento cifrado en reposo, acceso restringido por roles y auditorías periódicas de seguridad.</p>
+              <p>Tus datos se conservan mientras tu cuenta esté activa y hasta 5 años después de su eliminación para cumplir obligaciones legales contables y deportivas.</p>
+              <div class="modal-alert modal-alert--info">
+                <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/></svg>
+                <p>Puedes solicitar la eliminación de tu cuenta y datos en cualquier momento desde la configuración de tu perfil o contactándonos directamente.</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /tab-privacidad -->
+
+      </div><!-- /modal-body -->
+
+      <!-- Pie del modal -->
+      <div class="skyed-modal__footer">
+        <div class="skyed-modal__progress">
+          <div class="progress-track"><div class="progress-fill" id="modal-progress"></div></div>
+          <span class="progress-label" id="progress-label">Desplázate para leer</span>
+        </div>
+        <button class="btn-modal-accept" id="btn-accept-terms" disabled>
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+          He leído y acepto
+        </button>
+      </div>
+
+    </div><!-- /skyed-modal -->
+  </div><!-- /modal-overlay -->
+  <script>
+    (function () {
+
+      const overlay    = document.getElementById('modal-overlay');
+      const closeBtn   = document.getElementById('modal-close');
+      const body       = document.getElementById('modal-body');
+      const tabs       = document.querySelectorAll('.skyed-tab');
+      const acceptBtn  = document.getElementById('btn-accept-terms');
+      const progressEl = document.getElementById('modal-progress');
+      const labelEl    = document.getElementById('progress-label');
+      const modalTitle = document.getElementById('modal-title');
+      const modalSub   = document.getElementById('modal-subtitle');
+      const checkbox   = document.getElementById('terms');
+
+      const TITLES = {
+        terminos   : 'Términos y Condiciones',
+        privacidad : 'Política de Privacidad',
+      };
+
+      let hasReadTerminos   = false;
+      let hasReadPrivacidad = false;
+      let currentTab        = 'terminos';
+
+      /* ── Abrir modal ── */
+      function openModal(tab) {
+        overlay.removeAttribute('hidden');
+        document.body.style.overflow = 'hidden';
+        switchTab(tab || 'terminos');
+        body.scrollTop = 0;
+        updateProgress();
+        /* Focus accesible */
+        setTimeout(() => closeBtn.focus(), 350);
+      }
+
+      /* ── Cerrar modal ── */
+      function closeModal() {
+        overlay.setAttribute('hidden', '');
+        document.body.style.overflow = '';
+      }
+
+      /* ── Cambio de pestaña ── */
+      function switchTab(tab) {
+        currentTab = tab;
+
+        /* Actualizar tabs visuales */
+        tabs.forEach(t => {
+          const isActive = t.dataset.tab === tab;
+          t.classList.toggle('active', isActive);
+          t.setAttribute('aria-selected', isActive);
+        });
+
+        /* Mostrar contenido */
+        document.getElementById('tab-terminos').hidden   = (tab !== 'terminos');
+        document.getElementById('tab-privacidad').hidden = (tab !== 'privacidad');
+
+        /* Actualizar título */
+        modalTitle.textContent = TITLES[tab];
+
+        /* Resetear scroll y progreso */
+        body.scrollTop = 0;
+        updateProgress();
+      }
+
+      /* ── Progreso de lectura ── */
+      function updateProgress() {
+        const { scrollTop, scrollHeight, clientHeight } = body;
+        const max = scrollHeight - clientHeight;
+        const pct = max <= 0 ? 100 : Math.round((scrollTop / max) * 100);
+
+        progressEl.style.width = pct + '%';
+
+        if (pct >= 95) {
+          /* Marcar tab actual como leído */
+          if (currentTab === 'terminos')   hasReadTerminos   = true;
+          if (currentTab === 'privacidad') hasReadPrivacidad = true;
+
+          labelEl.textContent = '¡Has llegado al final!';
+          labelEl.style.color = '#16a34a';
+        } else {
+          labelEl.textContent = pct + '% leído';
+          labelEl.style.color = '';
+        }
+
+        /* Habilitar botón solo si se leyó el tab actual */
+        const currentRead = currentTab === 'terminos' ? hasReadTerminos : hasReadPrivacidad;
+        acceptBtn.disabled = !currentRead;
+      }
+
+      /* ── Aceptar y marcar checkbox ── */
+      acceptBtn.addEventListener('click', () => {
+        if (checkbox) {
+          checkbox.checked = true;
+          /* Disparar change para que la validación lo detecte */
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        closeModal();
+      });
+
+      /* ── Scroll del body del modal ── */
+      body.addEventListener('scroll', updateProgress);
+
+      /* ── Tabs ── */
+      tabs.forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+      });
+
+      /* ── Cerrar con botón X ── */
+      closeBtn.addEventListener('click', closeModal);
+
+      /* ── Cerrar al hacer clic en el overlay (fuera del modal) ── */
+      overlay.addEventListener('click', e => {
+        if (e.target === overlay) closeModal();
+      });
+
+      /* ── Cerrar con Escape ── */
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && !overlay.hasAttribute('hidden')) closeModal();
+      });
+
+      /* ── Abrir desde los enlaces del formulario ── */
+      document.querySelectorAll('.link-terminos').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          openModal(link.dataset.modal);
+        });
+      });
+
+      window.skyedOpenModal = openModal;
+    })();
+  </script>
+
+  <script>
+function confirmarSalida() {
+  return confirm("Estás a punto de salir de SKYED. ¿Deseas continuar?");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+/* ===== Página de eventos ===== */
+.page-header{
+  background:linear-gradient(135deg,var(--primary),var(--primary-2));
+  color:#fff;padding:4rem 1.25rem 3rem;text-align:center;
+}
+.page-header h1{font-size:clamp(2rem,4vw,3rem);margin-bottom:.5rem;font-weight:900}
+.page-header p{color:#cdd7e4;max-width:600px;margin:0 auto}
+
+.filters{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:1.25rem;position:sticky;top:64px;z-index:50;
+}
+.filters-inner{
+  max-width:var(--max);margin:0 auto;
+  display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;
+}
+.filter-btn{
+  padding:.55rem 1.2rem;border-radius:999px;background:var(--bg);
+  color:var(--primary);font-weight:600;border:2px solid transparent;transition:var(--transition);
+}
+.filter-btn:hover{border-color:var(--accent)}
+.filter-btn.active{background:var(--accent);color:#fff}
+
+.events-section{padding:3rem 0}
+.events-list{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.5rem;
+  max-width:var(--max);margin:0 auto;padding:0 1.25rem;
+}
+.event-item{
+  background:#fff;border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--accent);transition:var(--transition);
+  display:flex;flex-direction:column;
+}
+
+.event-item:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.event-item .img{
+  height:220px;background-size:cover;background-position:center;position:relative;
+}
+.event-item .badge{
+  position:absolute;top:12px;left:12px;background:var(--accent);color:#fff;
+  padding:.3rem .7rem;border-radius:999px;font-size:.75rem;font-weight:700;text-transform:uppercase;
+}
+.event-item .badge.cat-mtb{background:#16a34a}
+.event-item .badge.cat-ruta{background:#0284c7}
+.event-item .badge.cat-pista{background:#9333ea}
+.event-item .badge.cat-bmx{background:#dc2626}
+.event-item .badge.cat-gravel{background:#ca8a04}
+
+.event-item .body{padding:1.5rem;display:flex;flex-direction:column;flex:1}
+.event-item h2{color:var(--primary);font-size:1.3rem;margin-bottom:.5rem}
+.event-meta{display:flex;flex-wrap:wrap;gap:1rem;color:var(--muted);font-size:.9rem;margin-bottom:1rem}
+.event-meta span{display:inline-flex;align-items:center;gap:.3rem}
+.event-item .desc{color:var(--text);margin-bottom:1.25rem;flex:1}
+.event-stats{
+  display:flex;gap:1rem;padding:.75rem 0;border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);margin-bottom:1.25rem;
+}
+.event-stats div{flex:1;text-align:center}
+.event-stats strong{display:block;color:var(--primary);font-size:1.1rem}
+.event-stats small{color:var(--muted);font-size:.78rem;text-transform:uppercase}
+.event-item .actions{display:flex;justify-content:space-between;align-items:center}
+.price-tag{color:var(--accent);font-weight:800;font-size:1.3rem}
+.price-tag small{color:var(--muted);font-weight:400;font-size:.8rem}
+
+.empty-state{
+  text-align:center;padding:4rem 1rem;color:var(--muted);
+  grid-column:1/-1;
+}
+
+@media (max-width:860px){
+  .filters{top:60px}
+}

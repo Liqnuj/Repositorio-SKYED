@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gran Fondo Los Andes — SKYED</title>
+  <link rel="icon" href="img/logo.png" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/accesibilidad.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    /* ── HERO ── */
+    .event-hero {
+      position: relative;
+      height: clamp(340px, 52vh, 560px);
+      background: linear-gradient(160deg,#071526 0%,#0b2342 60%,#0d3060 100%),
+                  url('img/hero1.jpg') center/cover;
+      background-blend-mode: multiply;
+      display: flex; align-items: flex-end;
+      overflow: hidden;
+    }
+    .event-hero::after {
+      content:''; position:absolute; inset:0;
+      background: linear-gradient(to top, rgba(7,21,38,.95) 0%, transparent 55%);
+    }
+    .hero-particles { position:absolute;inset:0;overflow:hidden;pointer-events:none; }
+    .hero-particles span {
+      position:absolute; border-radius:50%; opacity:.12;
+      background:var(--accent);
+      animation: float 8s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100%{transform:translateY(0) scale(1);}
+      50%{transform:translateY(-30px) scale(1.1);}
+    }
+    .hero-badge {
+      position:absolute; top:2rem; right:2rem;
+      background:var(--accent); color:#fff;
+      font-weight:800; font-size:.8rem; letter-spacing:.1em;
+      text-transform:uppercase; padding:.4rem 1rem; border-radius:999px;
+      z-index:2;
+    }
+    .hero-content {
+      position:relative; z-index:1;
+      max-width:var(--max); margin:0 auto; width:100%;
+      padding:2.5rem 1.5rem; display:flex; align-items:flex-end;
+      gap:2rem; flex-wrap:wrap;
+    }
+    .hero-info { flex:1; min-width:260px; }
+    .hero-cat {
+      display:inline-flex; align-items:center; gap:.4rem;
+      background:rgba(44,156,175,.25); border:1px solid rgba(44,156,175,.5);
+      color:#7ee8f8; font-size:.78rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:.1em;
+      padding:.3rem .8rem; border-radius:999px; margin-bottom:.9rem;
+    }
+    .hero-info h1 {
+      font-size:clamp(1.8rem,4vw,3rem); font-weight:900;
+      color:#fff; line-height:1.1; margin-bottom:.9rem;
+    }
+    .hero-meta { display:flex; flex-wrap:wrap; gap:1rem; }
+    .hero-meta span {
+      display:flex; align-items:center; gap:.4rem;
+      color:#a0bcd8; font-size:.95rem;
+    }
+    .hero-meta i { color:var(--accent); font-size:1.1rem; }
+    .hero-cta { display:flex; flex-direction:column; gap:.75rem; align-items:flex-end; }
+    .price-tag {
+      text-align:right;
+    }
+    .price-tag .from { color:#7a96b2; font-size:.82rem; }
+    .price-tag .amount { color:#fff; font-size:2rem; font-weight:900; line-height:1; }
+    .price-tag .cupos { color:#4ec3d4; font-size:.82rem; margin-top:.2rem; }
+    .btn-inscribir {
+      background:var(--accent); color:#fff; padding:1rem 2rem;
+      border-radius:12px; font-weight:800; font-size:1.05rem;
+      display:flex; align-items:center; gap:.5rem;
+      transition:all .25s; white-space:nowrap;
+    }
+    .btn-inscribir:hover { background:#1b7a8e; transform:translateY(-2px); box-shadow:0 8px 24px rgba(44,156,175,.4); color:#fff; }
+
+    /* ── BODY LAYOUT ── */
+    .event-body {
+      max-width:var(--max); margin:0 auto; padding:2.5rem 1.25rem;
+      display:grid; grid-template-columns:1fr 360px; gap:2rem;
+    }
+    @media(max-width:900px){ .event-body{ grid-template-columns:1fr; } }
+
+    /* ── TABS ── */
+    .tab-nav {
+      display:flex; gap:.25rem; border-bottom:2px solid var(--border);
+      margin-bottom:2rem; overflow-x:auto;
+    }
+    .tab-nav button {
+      padding:.65rem 1.1rem; font-weight:700; color:var(--muted);
+      border-bottom:3px solid transparent; margin-bottom:-2px;
+      font-size:.95rem; white-space:nowrap; transition:all .2s;
+    }
+    .tab-nav button.active { color:var(--accent); border-bottom-color:var(--accent); }
+    .tab-nav button:hover:not(.active) { color:var(--primary); }
+    .tab-panel { display:none; animation: fadeUp .3s ease; }
+    .tab-panel.active { display:block; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── INFO CARD ── */
+    .info-card {
+      background:var(--surface); border-radius:var(--radius);
+      border:1px solid var(--border); padding:1.75rem;
+      box-shadow:var(--shadow); margin-bottom:1.5rem;
+    }
+    .info-card h3 {
+      font-size:1.05rem; font-weight:800; color:var(--primary);
+      margin-bottom:1.25rem; display:flex; align-items:center; gap:.5rem;
+    }
+    .info-card h3 i { color:var(--accent); }
+
+    /* ── RUTAS ── */
+    .ruta-card {
+      border:1px solid var(--border); border-radius:12px;
+      overflow:hidden; margin-bottom:1.25rem; transition:box-shadow .2s;
+    }
+    .ruta-card:hover { box-shadow:var(--shadow); }
+    .ruta-header {
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      padding:1rem 1.25rem; display:flex; justify-content:space-between; align-items:center;
+    }
+    .ruta-header h4 { color:#fff; font-weight:800; font-size:1rem; }
+    .ruta-price { color:var(--accent); font-weight:900; font-size:1.2rem; }
+    .ruta-body { padding:1.25rem; display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+    .ruta-stat { text-align:center; }
+    .ruta-stat .val { font-size:1.4rem; font-weight:900; color:var(--primary); display:block; }
+    .ruta-stat .lbl { font-size:.78rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; }
+    .ruta-footer { padding:.75rem 1.25rem; background:var(--bg); border-top:1px solid var(--border); display:flex; gap:.75rem; align-items:center; }
+    .ruta-footer p { color:var(--muted); font-size:.88rem; flex:1; }
+    .btn-gpx { display:flex; align-items:center; gap:.4rem; background:var(--primary); color:#fff; padding:.5rem 1rem; border-radius:8px; font-size:.85rem; font-weight:700; transition:background .2s; }
+    .btn-gpx:hover { background:var(--accent); color:#fff; }
+
+    /* ── CATEGORÍAS ── */
+    .cat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:1rem; }
+    .cat-item {
+      border:2px solid var(--border); border-radius:12px;
+      padding:1.25rem; transition:border-color .2s,transform .2s;
+    }
+    .cat-item:hover { border-color:var(--accent); transform:translateY(-2px); }
+    .cat-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:.75rem; }
+    .cat-name { font-weight:800; color:var(--primary); font-size:1rem; }
+    .cat-badge {
+      font-size:.73rem; font-weight:700; text-transform:uppercase;
+      padding:.25rem .65rem; border-radius:999px; letter-spacing:.06em;
+    }
+    .badge-m { background:#dbeafe; color:#1d4ed8; }
+    .badge-f { background:#fce7f3; color:#be185d; }
+    .badge-x { background:#d1fae5; color:#065f46; }
+    .cat-details { display:flex; flex-wrap:wrap; gap:.5rem; }
+    .cat-pill {
+      background:var(--bg); border:1px solid var(--border);
+      border-radius:999px; padding:.2rem .65rem; font-size:.8rem; color:var(--muted);
+      display:flex; align-items:center; gap:.3rem;
+    }
+
+    /* ── PUNTOS HIDRATACIÓN ── */
+    .ph-list { display:flex; flex-direction:column; gap:.75rem; }
+    .ph-item {
+      display:flex; align-items:center; gap:1rem;
+      background:var(--bg); border-radius:10px; padding:.9rem 1.1rem;
+      border:1px solid var(--border);
+    }
+    .ph-km {
+      min-width:54px; text-align:center;
+      background:var(--primary); color:#fff;
+      border-radius:8px; padding:.4rem .5rem;
+      font-weight:900; font-size:.85rem; line-height:1.2;
+    }
+    .ph-km span { display:block; font-size:.65rem; font-weight:400; opacity:.7; }
+    .ph-info { flex:1; }
+    .ph-name { font-weight:700; color:var(--primary); font-size:.9rem; }
+    .ph-desc { color:var(--muted); font-size:.82rem; }
+    .ph-type {
+      width:32px; height:32px; border-radius:50%;
+      display:grid; place-items:center; font-size:1rem;
+      flex-shrink:0;
+    }
+    .ph-agua { background:#dbeafe; }
+    .ph-energia { background:#fef3c7; }
+    .ph-medico { background:#fee2e2; }
+
+    /* ── SIDEBAR ── */
+    .sidebar-sticky { position:sticky; top:90px; }
+    .sidebar-card {
+      background:var(--surface); border-radius:var(--radius);
+      border:1px solid var(--border); box-shadow:var(--shadow);
+      overflow:hidden; margin-bottom:1.5rem;
+    }
+    .sidebar-head {
+      background:linear-gradient(135deg,var(--primary),var(--primary-2));
+      padding:1.25rem 1.5rem; color:#fff;
+    }
+    .sidebar-head h3 { font-weight:800; margin-bottom:.25rem; }
+    .sidebar-head p { color:#a0bcd8; font-size:.88rem; }
+    .sidebar-body { padding:1.5rem; }
+    .detail-list { display:flex; flex-direction:column; gap:.9rem; }
+    .detail-item { display:flex; gap:.85rem; align-items:flex-start; }
+    .detail-icon {
+      width:36px; height:36px; min-width:36px;
+      border-radius:9px; background:rgba(44,156,175,.1);
+      border:1px solid rgba(44,156,175,.2);
+      display:grid; place-items:center;
+    }
+    .detail-icon i { color:var(--accent); font-size:1.1rem; }
+    .detail-text .lbl { font-size:.75rem; color:var(--muted); text-transform:uppercase; letter-spacing:.06em; font-weight:600; }
+    .detail-text .val { font-weight:700; color:var(--primary); font-size:.95rem; }
+    .progress-cupos { margin-top:1rem; }
+    .progress-cupos .bar-wrap { height:8px; background:var(--bg); border-radius:4px; overflow:hidden; margin:.4rem 0; }
+    .progress-cupos .bar-fill { height:100%; width:62%; background:linear-gradient(90deg,var(--accent),#1b9ab0); border-radius:4px; transition:width 1s ease; }
+    .progress-cupos .meta { display:flex; justify-content:space-between; font-size:.8rem; color:var(--muted); }
+
+    /* Sponsors */
+    .sponsor-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:.75rem; }
+    .sponsor-item {
+      aspect-ratio:16/9; background:var(--bg);
+      border:1px solid var(--border); border-radius:10px;
+      display:grid; place-items:center;
+      font-size:.7rem; font-weight:700; color:var(--muted);
+      text-transform:uppercase; letter-spacing:.05em;
+      transition:border-color .2s;
+    }
+    .sponsor-item:hover { border-color:var(--accent); }
+
+    /* Requisitos */
+    .req-list { list-style:none; display:flex; flex-direction:column; gap:.5rem; }
+    .req-list li { display:flex; gap:.6rem; align-items:flex-start; color:var(--muted); font-size:.9rem; }
+    .req-list li::before { content:"✓"; color:var(--success); font-weight:900; flex-shrink:0; margin-top:.05em; }
+
+    /* descripción */
+    .desc-text { color:var(--muted); line-height:1.75; font-size:.97rem; }
+    .desc-text p { margin-bottom:1rem; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:600px){
+      .ruta-body{ grid-template-columns:repeat(2,1fr); }
+      .hero-cta{ align-items:flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="site-header" role="banner">
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="index.html" class="brand"><img src="img/logo.png" alt="" /><span>SKY<em>ED</em></span></a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list" aria-label="Abrir menú">☰</button>
+      <ul class="nav-links" id="nav-list">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="eventos.html" class="active">Eventos</a></li>
+        <li><a href="index.html#features">Beneficios</a></li>
+        <li><a href="index.html#contacto">Contacto</a></li>
+      </ul>
+      <div class="nav-cta">
+        <span data-auth-user style="display:none;color:var(--primary);font-weight:600"></span>
+        <a href="login.html" class="btn btn-ghost" data-auth-login>Iniciar sesión</a>
+        <a href="perfil2.html" class="btn btn-ghost" data-auth-profile style="display:none">Mi perfil</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="event-hero" aria-label="Gran Fondo de Los Andes">
+    <div class="hero-particles">
+      <span style="width:180px;height:180px;top:10%;left:5%;animation-delay:0s;animation-duration:9s;"></span>
+      <span style="width:80px;height:80px;top:60%;left:70%;animation-delay:3s;animation-duration:7s;background:var(--accent-2)"></span>
+      <span style="width:120px;height:120px;top:20%;right:10%;animation-delay:1.5s;"></span>
+    </div>
+    <span class="hero-badge">🚴 Ruta</span>
+    <div class="hero-content">
+      <div class="hero-info">
+        <div class="hero-cat"><i class="ti ti-medal"></i> Competencia oficial · Temporada 2026</div>
+        <h1>Gran Fondo de Los Andes</h1>
+        <div class="hero-meta">
+          <span><i class="ti ti-calendar"></i> Sábado 15 Jun 2026</span>
+          <span><i class="ti ti-clock"></i> 06:00 AM</span>
+          <span><i class="ti ti-map-pin"></i> Bogotá, Colombia</span>
+          <span><i class="ti ti-users"></i> 450 ciclistas</span>
+        </div>
+      </div>
+      <div class="hero-cta">
+        <div class="price-tag">
+          <div class="from">Desde</div>
+          <div class="amount">$65.000</div>
+          <div class="cupos"><i class="ti ti-trending-up"></i> 174 cupos disponibles</div>
+        </div>
+        <a href="inscripcion.html" class="btn-inscribir">
+          <i class="ti ti-bolt"></i> Inscribirme ahora
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- BODY -->
+  <main id="main">
+    <div class="event-body">
+
+      <!-- COLUMNA PRINCIPAL -->
+      <div>
+        <nav class="tab-nav" role="tablist">
+          <button class="tab-btn active" data-tab="descripcion" role="tab">Descripción</button>
+          <button class="tab-btn" data-tab="rutas" role="tab">Rutas</button>
+          <button class="tab-btn" data-tab="categorias" role="tab">Categorías</button>
+          <button class="tab-btn" data-tab="hidratacion" role="tab">Hidratación</button>
+          <button class="tab-btn" data-tab="patrocinadores" role="tab">Patrocinadores</button>
+        </nav>
+
+        <!-- TAB: DESCRIPCIÓN -->
+        <div class="tab-panel active" id="panel-descripcion">
+          <div class="info-card">
+            <h3><i class="ti ti-file-description"></i> Sobre el evento</h3>
+            <div class="desc-text">
+              <p>El Gran Fondo de Los Andes es el evento ciclístico más esperado de la temporada en Colombia. 120 km de alta montaña atravesando los paisajes más espectaculares de la cordillera de los Andes, con salida desde la Plaza de Bolívar de Bogotá.</p>
+              <p>El recorrido desafía a ciclistas de todos los niveles con ascensos técnicos y bajadas vertiginosas, garantizando una experiencia única e inolvidable rodeada de naturaleza y compañerismo.</p>
+            </div>
+          </div>
+          <div class="info-card">
+            <h3><i class="ti ti-checklist"></i> Requisitos de participación</h3>
+            <ul class="req-list">
+              <li>Bicicleta de ruta en buen estado mecánico</li>
+              <li>Casco homologado obligatorio</li>
+              <li>Número de dorsal visible en todo momento</li>
+              <li>Edad mínima 16 años para categorías juveniles</li>
+              <li>Documento de identidad el día del evento</li>
+              <li>Seguro médico deportivo recomendado</li>
+            </ul>
+          </div>
+          <div class="info-card">
+            <h3><i class="ti ti-package"></i> Kit del evento</h3>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1rem;">
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;">
+                <div style="font-size:2rem;margin-bottom:.5rem;">👕</div>
+                <div style="font-weight:700;color:var(--primary);font-size:.9rem;">Camiseta técnica</div>
+                <div style="color:var(--muted);font-size:.8rem;">Talla personalizada</div>
+              </div>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;">
+                <div style="font-size:2rem;margin-bottom:.5rem;">🔢</div>
+                <div style="font-weight:700;color:var(--primary);font-size:.9rem;">Dorsal personalizado</div>
+                <div style="color:var(--muted);font-size:.8rem;">Con chip de cronometraje</div>
+              </div>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;">
+                <div style="font-size:2rem;margin-bottom:.5rem;">🏅</div>
+                <div style="font-weight:700;color:var(--primary);font-size:.9rem;">Medalla finisher</div>
+                <div style="color:var(--muted);font-size:.8rem;">Para todos los que terminen</div>
+              </div>
+              <div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;text-align:center;">
+                <div style="font-size:2rem;margin-bottom:.5rem;">📦</div>
+                <div style="font-weight:700;color:var(--primary);font-size:.9rem;">Bolsa goodie</div>
+                <div style="color:var(--muted);font-size:.8rem;">Nutrición y sorpresas</div>
+              </div>
+            </div>
+            <div style="margin-top:1.25rem;background:rgba(44,156,175,.08);border:1px solid rgba(44,156,175,.2);border-radius:10px;padding:1rem;display:flex;gap:.75rem;align-items:center;">
+              <i class="ti ti-info-circle" style="color:var(--accent);font-size:1.3rem;flex-shrink:0;"></i>
+              <div style="font-size:.88rem;color:var(--muted);">
+                <strong style="color:var(--primary);">Entrega del kit:</strong> Viernes 14 Jun, 10am–7pm · Centro Deportivo Los Andes, Bogotá
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: RUTAS -->
+        <div class="tab-panel" id="panel-rutas">
+          <div class="ruta-card">
+            <div class="ruta-header">
+              <h4>🏔 Ruta Élite — Gran Fondo</h4>
+              <span class="ruta-price">$90.000</span>
+            </div>
+            <div class="ruta-body">
+              <div class="ruta-stat"><span class="val">120</span><span class="lbl">Km</span></div>
+              <div class="ruta-stat"><span class="val">3.200m</span><span class="lbl">Desnivel +</span></div>
+              <div class="ruta-stat"><span class="val">Alta</span><span class="lbl">Dificultad</span></div>
+            </div>
+            <div class="ruta-footer">
+              <p>Recorrido completo desde Bogotá hasta Alto de La Línea. Para ciclistas con experiencia en montaña.</p>
+              <a href="#" class="btn-gpx"><i class="ti ti-download"></i> GPX</a>
+            </div>
+          </div>
+          <div class="ruta-card">
+            <div class="ruta-header">
+              <h4>🚵 Ruta Media — Sportivo</h4>
+              <span class="ruta-price">$75.000</span>
+            </div>
+            <div class="ruta-body">
+              <div class="ruta-stat"><span class="val">75</span><span class="lbl">Km</span></div>
+              <div class="ruta-stat"><span class="val">1.800m</span><span class="lbl">Desnivel +</span></div>
+              <div class="ruta-stat"><span class="val">Media</span><span class="lbl">Dificultad</span></div>
+            </div>
+            <div class="ruta-footer">
+              <p>Ideal para ciclistas con preparación regular. Mismo inicio, desvío a los 50km hacia Meta Sur.</p>
+              <a href="#" class="btn-gpx"><i class="ti ti-download"></i> GPX</a>
+            </div>
+          </div>
+          <div class="ruta-card">
+            <div class="ruta-header">
+              <h4>🌿 Ruta Recreativa — Fun Ride</h4>
+              <span class="ruta-price">$65.000</span>
+            </div>
+            <div class="ruta-body">
+              <div class="ruta-stat"><span class="val">40</span><span class="lbl">Km</span></div>
+              <div class="ruta-stat"><span class="val">650m</span><span class="lbl">Desnivel +</span></div>
+              <div class="ruta-stat"><span class="val">Baja</span><span class="lbl">Dificultad</span></div>
+            </div>
+            <div class="ruta-footer">
+              <p>Perfecta para familias y aficionados. Terreno suave con zonas de descanso y avituallamiento.</p>
+              <a href="#" class="btn-gpx"><i class="ti ti-download"></i> GPX</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: CATEGORÍAS -->
+        <div class="tab-panel" id="panel-categorias">
+          <div class="cat-grid">
+            <div class="cat-item">
+              <div class="cat-top">
+                <span class="cat-name">Sub-23 Masculino</span>
+                <span class="cat-badge badge-m">Masculino</span>
+              </div>
+              <div class="cat-details">
+                <span class="cat-pill"><i class="ti ti-calendar-event"></i> 18–22 años</span>
+                <span class="cat-pill"><i class="ti ti-road"></i> 120 km</span>
+              </div>
+            </div>
+            <div class="cat-item">
+              <div class="cat-top">
+                <span class="cat-name">Élite Femenino</span>
+                <span class="cat-badge badge-f">Femenino</span>
+              </div>
+              <div class="cat-details">
+                <span class="cat-pill"><i class="ti ti-calendar-event"></i> 18+ años</span>
+                <span class="cat-pill"><i class="ti ti-road"></i> 120 km</span>
+              </div>
+            </div>
+            <div class="cat-item">
+              <div class="cat-top">
+                <span class="cat-name">Élite Masculino</span>
+                <span class="cat-badge badge-m">Masculino</span>
+              </div>
+              <div class="cat-details">
+                <span class="cat-pill"><i class="ti ti-calendar-event"></i> 23–39 años</span>
+                <span class="cat-pill"><i class="ti ti-road"></i> 120 km</span>
+              </div>
+            </div>
+            <div class="cat-item">
+              <div class="cat-top">
+                <span class="cat-name">Máster A</span>
+                <span class="cat-badge badge-x">Mixto</span>
+              </div>
+              <div class="cat-details">
+                <span class="cat-pill"><i class="ti ti-calendar-event"></i> 40–49 años</span>
+                <span class="cat-pill"><i class="ti ti-road"></i> 75 km</span>
+              </div>
+            </div>
+            <div class="cat-item">
+              <div class="cat-top">
+                <span class="cat-name">Máster B</span>
+                <span class="cat-badge badge-x">Mixto</span>
+              </div>
+              <div class="cat-details">
+                <span class="cat-pill"><i class="ti ti-calendar-event"></i> 50+ años</span>
+                <span class="cat-pill"><i class="ti ti-road"></i> 75 km</span>
+              </div>
+            </div>
+            <div class="cat-item">
+              <div class="cat-top">
+                <span class="cat-name">Recreativo</span>
+                <span class="cat-badge badge-x">Mixto</span>
+              </div>
+              <div class="cat-details">
+                <span class="cat-pill"><i class="ti ti-calendar-event"></i> 16+ años</span>
+                <span class="cat-pill"><i class="ti ti-road"></i> 40 km</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: HIDRATACIÓN -->
+        <div class="tab-panel" id="panel-hidratacion">
+          <div class="info-card">
+            <h3><i class="ti ti-droplet"></i> Puntos de hidratación y soporte</h3>
+            <div class="ph-list">
+              <div class="ph-item">
+                <div class="ph-km">Km 0<span>Salida</span></div>
+                <div class="ph-info">
+                  <div class="ph-name">Control de salida — Plaza de Bolívar</div>
+                  <div class="ph-desc">Agua, energéticos, verificación de dorsales</div>
+                </div>
+                <div class="ph-type ph-agua">💧</div>
+              </div>
+              <div class="ph-item">
+                <div class="ph-km">Km 25</div>
+                <div class="ph-info">
+                  <div class="ph-name">Punto Los Cerros</div>
+                  <div class="ph-desc">Agua, geles, frutas frescas</div>
+                </div>
+                <div class="ph-type ph-energia">⚡</div>
+              </div>
+              <div class="ph-item">
+                <div class="ph-km">Km 45</div>
+                <div class="ph-info">
+                  <div class="ph-name">Soporte médico — Km 45</div>
+                  <div class="ph-desc">Médico de campo, botiquín, masajes</div>
+                </div>
+                <div class="ph-type ph-medico">🏥</div>
+              </div>
+              <div class="ph-item">
+                <div class="ph-km">Km 60</div>
+                <div class="ph-info">
+                  <div class="ph-name">Avituallamiento Choachí</div>
+                  <div class="ph-desc">Agua, bebida isotónica, banano, barritas</div>
+                </div>
+                <div class="ph-type ph-agua">💧</div>
+              </div>
+              <div class="ph-item">
+                <div class="ph-km">Km 85</div>
+                <div class="ph-info">
+                  <div class="ph-name">Punto La Calera Alta</div>
+                  <div class="ph-desc">Agua, café, energéticos concentrados</div>
+                </div>
+                <div class="ph-type ph-energia">⚡</div>
+              </div>
+              <div class="ph-item">
+                <div class="ph-km">Km 120<span>Meta</span></div>
+                <div class="ph-info">
+                  <div class="ph-name">Meta y zona de recuperación</div>
+                  <div class="ph-desc">Bebida de recuperación, masajes, premiación</div>
+                </div>
+                <div class="ph-type ph-medico">🏅</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: PATROCINADORES -->
+        <div class="tab-panel" id="panel-patrocinadores">
+          <div class="info-card">
+            <h3><i class="ti ti-building-store"></i> Patrocinadores oficiales</h3>
+            <p style="color:var(--muted);font-size:.9rem;margin-bottom:1.5rem;">Gracias al apoyo de nuestros patrocinadores este evento es posible.</p>
+            <div class="sponsor-grid">
+              <div class="sponsor-item">🥇 Sponsor Oro</div>
+              <div class="sponsor-item">🥇 Sponsor Oro</div>
+              <div class="sponsor-item">🥈 Sponsor Plata</div>
+              <div class="sponsor-item">🥈 Sponsor Plata</div>
+              <div class="sponsor-item">🥉 Sponsor Bronce</div>
+              <div class="sponsor-item">🥉 Sponsor Bronce</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside>
+        <div class="sidebar-sticky">
+          <div class="sidebar-card">
+            <div class="sidebar-head">
+              <h3>Detalles del evento</h3>
+              <p>Información clave</p>
+            </div>
+            <div class="sidebar-body">
+              <div class="detail-list">
+                <div class="detail-item">
+                  <div class="detail-icon"><i class="ti ti-calendar"></i></div>
+                  <div class="detail-text">
+                    <div class="lbl">Fecha</div>
+                    <div class="val">Sábado 15 Jun 2026</div>
+                  </div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-icon"><i class="ti ti-clock"></i></div>
+                  <div class="detail-text">
+                    <div class="lbl">Hora de salida</div>
+                    <div class="val">06:00 AM</div>
+                  </div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-icon"><i class="ti ti-map-pin"></i></div>
+                  <div class="detail-text">
+                    <div class="lbl">Ubicación</div>
+                    <div class="val">Plaza de Bolívar, Bogotá</div>
+                  </div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-icon"><i class="ti ti-tag"></i></div>
+                  <div class="detail-text">
+                    <div class="lbl">Categoría</div>
+                    <div class="val">Ciclismo de Ruta</div>
+                  </div>
+                </div>
+                <div class="detail-item">
+                  <div class="detail-icon"><i class="ti ti-certificate"></i></div>
+                  <div class="detail-text">
+                    <div class="lbl">Estado</div>
+                    <div class="val" style="color:var(--success);">✓ Abierto</div>
+                  </div>
+                </div>
+              </div>
+              <div class="progress-cupos">
+                <div class="bar-wrap"><div class="bar-fill"></div></div>
+                <div class="meta"><span>276 inscritos</span><span>174 disponibles</span></div>
+              </div>
+              <a href="inscripcion.html" class="btn btn-primary btn-block" style="margin-top:1.5rem;padding:1rem;font-size:1rem;">
+                <i class="ti ti-bolt"></i> Inscribirme
+              </a>
+              <a href="resultados.html" class="btn btn-ghost btn-block" style="margin-top:.5rem;color:var(--accent);">
+                <i class="ti ti-trophy"></i> Ver resultados anteriores
+              </a>
+            </div>
+          </div>
+
+          <div class="sidebar-card">
+            <div class="sidebar-body" style="padding:1.25rem">
+              <p style="font-size:.82rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:.75rem;">Compartir evento</p>
+              <div style="display:flex;gap:.5rem;">
+                <button style="flex:1;padding:.6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--primary);font-weight:700;font-size:.85rem;transition:all .2s;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">📋 Copiar link</button>
+                <button style="flex:1;padding:.6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--primary);font-weight:700;font-size:.85rem;transition:all .2s;cursor:pointer;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">📱 WhatsApp</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+  <footer class="sky-footer" id="contacto">
+    <div class="sky-accent-bar"></div>
+    <div class="sky-footer-top">
+      <div class="sky-footer-col">
+        <div class="sky-logo-row">
+          <img src="img/logo.png" alt="SKYED" class="sky-logo-icon">
+          <div class="sky-logo-text">SKY<span>ED</span></div>
+        </div>
+          <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
+          <div class="sky-social-row">
+          <a class="sky-social-btn" href="https://www.facebook.com/?locale=es_LA" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon"onclick="return confirmarSalida(event)">F</a>
+          <a class="sky-social-btn" href="https://www.instagram.com/?hl=es" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon" onclick="return confirmarSalida(event)">IG</a>
+          <a class="sky-social-btn" href="https://twitter.com/?lang=es" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" class="social-icon" onclick="return confirmarSalida(event)">X</a>
+      </div>
+      </div>
+      <div class="sky-footer-col">
+        <p class="sky-col-title">Contacto</p>
+        <ul class="sky-contact-list">
+          <li class="sky-contact-item">
+            <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
+            <div class="sky-contact-text"><strong>Email</strong>skyed@gmail.com</div>
+          </li>
+          <li class="sky-contact-item">
+            <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
+            <div class="sky-contact-text"><strong>Teléfono</strong>+57 313 201 3573</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="sky-footer-bottom">
+      <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Accesibilidad -->
+  <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+    </svg>
+  </button>
+  <div class="acc-panel" id="accPanel">
+    <div class="acc-panel-title">Accesibilidad</div>
+    <div class="acc-section">
+      <span class="acc-label">Tamaño de texto</span>
+      <div class="font-size-row">
+        <button class="size-btn" data-size="14px">A-</button>
+        <button class="size-btn active" data-size="16px">A</button>
+        <button class="size-btn" data-size="19px">A+</button>
+        <button class="size-btn" data-size="22px">A++</button>
+      </div>
+    </div>
+    <div class="acc-section">
+      <span class="acc-label">Modo</span>
+      <div class="mode-row">
+        <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+        <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+      </div>
+    </div>
+    <button class="acc-reset" id="accReset">Restablecer todo</button>
+  </div>
+
+  <script src="js/global.js"></script>
+  <script src="js/accesibilidad.js"></script>
+  <script>
+    // Tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    function confirmarSalida() {
+    return confirm("Estás a punto de salir de SKYED. ¿Deseas continuar?");
+  }
+  </script>
+</body>
+</html>

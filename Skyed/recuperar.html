@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Recupera tu contraseña en SKYED mediante un código de verificación." />
+  <title>Recuperar contraseña — SKYED</title>
+  <link rel="icon" href="img/logo.png" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/auth.css" />
+  <link rel="stylesheet" href="css/accesibilidad.css" />
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <nav class="nav" aria-label="Navegación principal">
+      <a href="index.html" class="brand"><img src="img/logo.png" alt="" /><span>SKY<em>ED</em></span></a>
+      <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list" aria-label="Abrir menú">☰</button>
+      <ul class="nav-links" id="nav-list">
+        <li><a href="index.html">Inicio</a></li>
+        <li><a href="eventos.html">Eventos</a></li>
+      </ul>
+      <div class="nav-cta">
+        <a href="login.html" class="btn btn-ghost">Iniciar sesión</a>
+        <a href="registro.html" class="btn btn-primary">Crear cuenta</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="auth-wrapper">
+    <aside class="auth-side" aria-hidden="true">
+      <h2>Recupera tu <em>acceso</em></h2>
+      <p>Te enviaremos un código de 6 dígitos a tu correo para restablecer tu contraseña de forma segura.</p>
+      <ul>
+        <li>Verificación por código</li>
+        <li>Cambio de contraseña inmediato</li>
+        <li>Tu cuenta siempre protegida</li>
+      </ul>
+    </aside>
+
+    <section class="auth-form-box">
+      <!-- Paso 1 -->
+      <form class="auth-form" id="recover-form" novalidate>
+        <div id="step1">
+          <h1>Olvidé mi contraseña</h1>
+          <p class="lead">Ingresa el correo asociado a tu cuenta y te enviaremos un código.</p>
+
+          <div class="form-group">
+            <label for="email">Correo electrónico <span class="req">*</span></label>
+            <input id="email" name="email" type="email" required maxlength="80"
+                   data-validate="email" placeholder="tucorreo@ejemplo.com" autocomplete="email" />
+            <span class="error"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Enviar código</button>
+
+          <div class="auth-footer">
+            <a href="login.html">← Volver a iniciar sesión</a>
+          </div>
+        </div>
+      </form>
+
+      <!-- Paso 2 -->
+      <form class="auth-form" id="reset-form" novalidate style="display:none">
+        <div id="step2" style="display:none">
+          <h1>Verifica el código</h1>
+          <p class="lead">Enviamos un código a <strong id="email-target"></strong>.</p>
+
+          <div class="code-display">
+            <small>Código de demostración (en producción se enviará por email):</small>
+            <strong id="codigo-display"></strong>
+          </div>
+
+          <div class="form-group">
+            <label>Ingresa el código de 6 dígitos <span class="req">*</span></label>
+            <div class="otp-inputs" role="group" aria-label="Código de 6 dígitos">
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 1" />
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 2" />
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 3" />
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 4" />
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 5" />
+              <input type="text" inputmode="numeric" maxlength="1" aria-label="Dígito 6" />
+            </div>
+            <input type="hidden" name="codigo" data-validate="codigo" required />
+            <span class="error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="newpass">Nueva contraseña <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input id="newpass" name="password" type="password" required maxlength="50"
+                     data-validate="password" placeholder="••••••••" autocomplete="new-password" />
+              <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
+            </div>
+            <div class="password-strength"><div class="bar"></div></div>
+            <span class="help">Mínimo 8, mayúscula, minúscula y número</span>
+            <span class="error"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="newpass2">Confirmar nueva contraseña <span class="req">*</span></label>
+            <div class="input-wrap">
+              <input id="newpass2" name="password2" type="password" required maxlength="50"
+                     data-validate="password-confirm" placeholder="••••••••" autocomplete="new-password" />
+              <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
+            </div>
+            <span class="error"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">Cambiar contraseña</button>
+
+          <div class="auth-footer">
+            <a href="login.html">Cancelar</a>
+          </div>
+        </div>
+      </form>
+
+      <script>
+        // Mostrar el form de reset cuando aparezca step2
+        const obs = new MutationObserver(() => {
+          const s2 = document.getElementById('step2');
+          if (s2 && s2.style.display === 'block') {
+            document.getElementById('reset-form').style.display = 'block';
+            document.getElementById('recover-form').style.display = 'none';
+          }
+        });
+        obs.observe(document.getElementById('step2'), { attributes: true, attributeFilter: ['style'] });
+      </script>
+    </section>
+  </main>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<footer class="sky-footer">
+  <div class="sky-accent-bar"></div>
+  <div class="sky-footer-top">
+ 
+    <!-- Columna SKYED -->
+    <div class="sky-footer-col">
+      <div class="sky-logo-row">
+        <img src="img/logo.png" alt="SKYED" class="sky-logo-icon">
+        <div class="sky-logo-text">SKY<span>ED</span></div>
+      </div>
+      <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
+      <div class="sky-social-row">
+        <a class="sky-social-btn" href="https://www.facebook.com/?locale=es_LA" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon"onclick="return confirmarSalida(event)">F</a>
+        <a class="sky-social-btn" href="https://www.instagram.com/?hl=es" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon" onclick="return confirmarSalida(event)">IG</a>
+        <a class="sky-social-btn" href="https://twitter.com/?lang=es" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" class="social-icon" onclick="return confirmarSalida(event)">X</a>
+      </div>
+    </div>
+ 
+    <!-- Columna Contacto -->
+    <div class="sky-footer-col">
+      <p class="sky-col-title">Contacto</p>
+      <ul class="sky-contact-list">
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
+          <div class="sky-contact-text">
+            <strong>Email</strong>
+            skyed@gmail.com
+          </div>
+        </li>
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
+          <div class="sky-contact-text">
+            <strong>Teléfono</strong>
+            +57 313 201 3573
+          </div>
+        </li>
+        <li class="sky-contact-item">
+          <div class="sky-contact-icon"><i class="ti ti-map-pin"></i></div>
+          <div class="sky-contact-text">
+            <strong>Ubicación</strong>
+            Sogamoso, Boyacá
+          </div>
+        </li>
+      </ul>
+    </div>
+ 
+  </div>
+ 
+  <div class="sky-footer-bottom">
+    <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
+    <div class="sky-bottom-links">
+      <a href="#">Términos de uso</a>
+      <a href="#">Privacidad</a>
+    </div>
+  </div>
+</footer>
+
+  <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+  </svg>
+</button>
+
+  <!-- Panel -->
+    <div class="acc-panel" id="accPanel">
+      <div class="acc-panel-title">Accesibilidad</div>
+
+       <div class="acc-section">
+        <span class="acc-label">Tamaño de texto</span>
+        <div class="font-size-row">
+          <button class="size-btn" data-size="14px">A-</button>
+          <button class="size-btn active" data-size="16px">A</button>
+          <button class="size-btn" data-size="19px">A+</button>
+          <button class="size-btn" data-size="22px">A++</button>
+        </div>
+      </div>
+
+      <div class="acc-section">
+        <span class="acc-label">Dislexia</span>
+        <div class="mode-row">
+          <button class="mode-btn" id="dyslexiaOff">Normal</button>
+          <button class="mode-btn" id="dyslexiaOn">Activar</button>
+        </div>
+      </div>
+
+      <!-- Color de acento -->
+      <div class="acc-section">
+        <span class="acc-label">Color de acento</span>
+        <div class="color-grid">
+          <div
+            class="color-swatch active"
+            style="background: #c8432b"
+            data-color="#c8432b"
+            title="Rojo Lumara"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #c9a84c"
+            data-color="#c9a84c"
+            title="Dorado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e6da4"
+            data-color="#2e6da4"
+            title="Azul"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e7d32"
+            data-color="#2e7d32"
+            title="Verde"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #6a1b9a"
+            data-color="#6a1b9a"
+            title="Morado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #37474f"
+            data-color="#37474f"
+            title="Gris oscuro"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Modo claro / oscuro -->
+      <div class="acc-section">
+        <span class="acc-label">Modo</span>
+        <div class="mode-row">
+          <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+          <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+        </div>
+      </div>
+
+      <button class="acc-reset" id="accReset">Restablecer todo</button>
+    </div>
+  <script>
+function confirmarSalida() {
+  return confirm("Estás a punto de salir de SKYED. ¿Deseas continuar?");
+}
+</script>
+  <script src="js/accesibilidad.js"></script>
+  <script src="js/global.js"></script>
+  <script src="js/index.js"></script>
+</body>
+</html>
+
+

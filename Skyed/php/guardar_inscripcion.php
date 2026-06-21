@@ -1,0 +1,146 @@
+<?php
+header('Content-Type: application/json');
+session_start();
+require __DIR__ . '/conexion.php';
+
+// Verificar sesión
+if (empty($_SESSION['user_id'])) {
+    http_response_code(401);
+    echo json_encode(['ok' => false, 'error' => 'No autenticado']);
+    exit;
+}
+
+$d = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+
+// Campos requeridos
+$usuario_id  = (int)$_SESSION['user_id'];
+$evento_id   = (int)($d['evento_id'] ?? 0);
+
+if ($evento_id <= 0) {
+    echo json_encode(['ok' => false, 'error' => 'Evento inválido']);
+    exit;
+}
+
+// Verificar que el evento existe
+try {
+    $stmt = $pdo->prepare("SELECT * FROM eventos WHERE id = ?");
+    $stmt->execute([$evento_id]);
+    $evento = $stmt->fetch();
+
+    if (!$evento) {
+        // El evento viene como datos del JS (mock), los aceptamos del payload
+        // para compatibilidad con la inscripcion.js que usa datos mock
+        $evento = [
+            'id'              => $evento_id,
+            'nombre'          => $d['eventoNombre'] ?? 'Evento',
+            'fecha'           => $d['eventoFecha']  ?? date('Y-m-d'),
+            'lugar'           => $d['eventoLugar']  ?? '',
+            'categoria'       => $d['eventoCategoria'] ?? '',
+            'distancia'       => $d['eventoKm']     ?? '',
+            'imagen'          => $d['eventoImg']    ?? '',
+            'precio'          => (float)($d['precio'] ?? 0),
+        ];
+    }
+
+    // Verificar inscripción duplicada
+    $chk = $pdo->prepare("SELECT id FROM inscripciones WHERE usuario_id = ? AND evento_id = ? AND estado != 'cancelado'");
+    $chk->execute([$usuario_id, $evento_id]);
+    if ($chk->fetch()) {
+        echo json_encode(['ok' => false, 'error' => 'Ya estás inscrito en este evento']);
+        exit;
+    }
+
+    // Preparar datos
+    $metodo_pago       = $d['metodo_pago']       ?? 'transferencia';
+    $estado            = ($metodo_pago === 'efectivo') ? 'pendiente_pago' : 'pendiente_validacion';
+    $precio_pagado     = (float)($d['precio']    ?? ($evento['precio'] ?? 0));
+    $doc_u             = $d['doc_u']              ?? ($_SESSION['documento'] ?? '');
+    $rh_u              = $d['rh_u']               ?? '';
+    $telefono_u        = $d['telefono_u']          ?? ($_SESSION['telefono'] ?? '');
+    $contacto_nombre   = $d['contacto_nombre']    ?? '';
+    $contacto_telefono = $d['contacto_telefono']  ?? '';
+    $fecha_nacimiento  = $d['fecha_nacimiento']   ?? ($_SESSION['fecha_nacimiento'] ?? null);
+    $dorsal            = $d['dorsal']             ?? '';
+    $cond_medicas      = $d['condiciones_medicas'] ?? '';
+    $quiere_jersey     = !empty($d['quiere_jersey']) ? 1 : 0;
+    $talla_camiseta    = $d['talla_camiseta']     ?? '';
+    $id_cc             = !empty($d['id_cc']) ? (int)$d['id_cc'] : null;
+    $categoria_nombre  = $d['categoriaNombre']    ?? ($d['eventoCategoria'] ?? '');
+    $qr_code           = 'SKYED-' . $evento_id . '-' . $doc_u . '-' . time();
+    $ref_id            = 'INS-' . strtoupper(uniqid());
+
+    // Datos extra del evento para mostrar en el panel (guardados en JSON)
+    $evento_data = json_encode([
+        'nombre'    => $d['eventoNombre']    ?? ($evento['nombre'] ?? ''),
+        'fecha'     => $d['eventoFecha']     ?? ($evento['fecha']  ?? ''),
+        'lugar'     => $d['eventoLugar']     ?? ($evento['lugar']  ?? ''),
+        'categoria' => $d['eventoCategoria'] ?? ($evento['categoria'] ?? ''),
+        'km'        => $d['eventoKm']        ?? ($evento['distancia'] ?? ''),
+        'imagen'    => $d['eventoImg']       ?? ($evento['imagen'] ?? ''),
+        'categoria_nombre' => $categoria_nombre,
+    ]);
+
+    // Crear tabla si no existe (para robustez)
+    $pdo->exec("CREATE TABLE IF NOT EXISTS inscripciones (
+        id                 INT AUTO_INCREMENT PRIMARY KEY,
+        ref_id             VARCHAR(40)  NOT NULL,
+        usuario_id         INT          NOT NULL,
+        evento_id          INT          NOT NULL,
+        estado             VARCHAR(40)  NOT NULL DEFAULT 'pendiente_validacion',
+        metodo_pago        VARCHAR(40)  NOT NULL DEFAULT 'transferencia',
+        precio_pagado      DECIMAL(12,2) NOT NULL DEFAULT 0,
+        doc_u              VARCHAR(20)  DEFAULT NULL,
+        rh_u               VARCHAR(5)   DEFAULT NULL,
+        telefono_u         VARCHAR(20)  DEFAULT NULL,
+        contacto_nombre    VARCHAR(100) DEFAULT NULL,
+        contacto_telefono  VARCHAR(20)  DEFAULT NULL,
+        fecha_nacimiento   DATE         DEFAULT NULL,
+        dorsal             VARCHAR(10)  DEFAULT NULL,
+        condiciones_medicas TEXT        DEFAULT NULL,
+        quiere_jersey      TINYINT(1)   DEFAULT 0,
+        talla_camiseta     VARCHAR(5)   DEFAULT NULL,
+        id_cc              INT          DEFAULT NULL,
+        qr_code            VARCHAR(100) DEFAULT NULL,
+        evento_data        JSON         DEFAULT NULL,
+        fecha_inscripcion  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        INDEX idx_usuario  (usuario_id),
+        INDEX idx_evento   (evento_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    // Insertar inscripción
+    $sql = "INSERT INTO inscripciones (
+                ref_id, usuario_id, evento_id, estado, metodo_pago,
+                precio_pagado, doc_u, rh_u, telefono_u,
+                contacto_nombre, contacto_telefono, fecha_nacimiento,
+                dorsal, condiciones_medicas, quiere_jersey, talla_camiseta,
+                id_cc, qr_code, evento_data
+            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        $ref_id, $usuario_id, $evento_id, $estado, $metodo_pago,
+        $precio_pagado, $doc_u, $rh_u, $telefono_u,
+        $contacto_nombre, $contacto_telefono,
+        $fecha_nacimiento ?: null,
+        $dorsal, $cond_medicas, $quiere_jersey, $talla_camiseta,
+        $id_cc, $qr_code, $evento_data
+    ]);
+
+    $nuevo_id = $pdo->lastInsertId();
+
+    echo json_encode([
+        'ok'          => true,
+        'id'          => $nuevo_id,
+        'ref_id'      => $ref_id,
+        'estado'      => $estado,
+        'qr_code'     => $qr_code,
+        'precio'      => $precio_pagado,
+        'eventoNombre'=> $d['eventoNombre'] ?? '',
+        'eventoFecha' => $d['eventoFecha']  ?? '',
+    ]);
+
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['ok' => false, 'error' => 'Error BD: ' . $e->getMessage()]);
+}
+?>
