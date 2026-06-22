@@ -102,7 +102,7 @@ try {
     </button>
     <button class="nav-item" data-page="eventos">
       <span class="icon">🏁</span> Eventos
-      <span class="badge-count"></span>
+      <span class="badge-count"><?= count($eventosRegistrados); ?></span>
     </button>
     <button class="nav-item" data-page="usuarios">
       <span class="icon">👥</span> Usuarios
@@ -2147,16 +2147,16 @@ window.mevGoStep = function(dir) {
 window.getFormData = function() {
   const catCard = document.querySelector('.mev-cat-card.sel');
   return {
-    nombre_e:             document.getElementById('ev-nombre').value.trim(),
-    categoria_e:          catCard ? catCard.dataset.cat : '',
-    cupos_disponibles_e:  parseInt(document.getElementById('ev-cupos').value) || 0,
-    estado_e:             document.querySelector('.mev-stbtn.sel-act') ? 'activo' : 'inactivo',
-    ubicacion_e:          document.getElementById('ev-ubicacion').value.trim(),
-    fecha_e:              document.getElementById('ev-fecha-iso')?.value || '',
-    hora_e:               document.getElementById('t-inicio').value || '07:00',
-    descripcion_e:        document.getElementById('ev-desc').value.trim(),
-    requisitos_e:         document.getElementById('ev-req').value.trim(),
-    imagen_e:             'default.jpg',
+    nombre_e:            document.getElementById('ev-nombre').value.trim(),
+    categoria_e:         catCard ? catCard.dataset.cat : '',
+    cupos_disponibles_e: parseInt(document.getElementById('ev-cupos').value) || 0,
+    estado_e:            document.querySelector('.mev-stbtn.sel-act') ? 'activo' : 'inactivo',
+    ubicacion_e:         document.getElementById('ev-ubicacion').value.trim(),
+    fecha_e:             document.getElementById('ev-fecha-iso')?.value || '',
+    hora_e:              document.getElementById('t-inicio').value || '07:00',
+    descripcion_e:       document.getElementById('ev-desc').value.trim(),
+    requisitos_e:        document.getElementById('ev-req').value.trim(),
+    imagen_e:            window.skyedImagenBase64 || 'default.jpg',
   };
 };
 
@@ -2181,7 +2181,13 @@ window.guardarEvento = async function() {
     if (data.ok) {
       closeModal('modal-evento');
       showToast('Evento guardado ✅', 'success');
-      setTimeout(() => location.reload(), 1500); 
+      // Si la respuesta incluye el evento creado, recargar datos para renderizar la tarjeta con la imagen
+      if (typeof loadAdminData === 'function') {
+        // pequeña espera para que el archivo se escriba en disco
+        setTimeout(() => loadAdminData(), 800);
+      } else {
+        setTimeout(() => location.reload(), 1200);
+      }
     } else {
       showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
     }

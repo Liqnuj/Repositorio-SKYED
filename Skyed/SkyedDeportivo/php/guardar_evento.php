@@ -25,7 +25,6 @@ if (!$nombre || !$categoria || !$fecha || !$hora || !$ubicacion) {
 }
 
 try {
-    // Si se recibió una imagen en base64, decodificarla y guardarla en /img/events
     if (preg_match('/^data:(image\/[a-zA-Z0-9.+-]+);base64,/', $imagen)) {
         $parts = explode(',', $imagen, 2);
         $meta = $parts[0];
@@ -47,10 +46,8 @@ try {
             $filename = 'evento_' . time() . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
             $fullpath = $dir . '/' . $filename;
             file_put_contents($fullpath, $decoded);
-            // Guardar la ruta relativa a la carpeta pública
             $imagen = 'img/events/' . $filename;
         } else {
-            // si falla la decodificación, usar default
             $imagen = 'default.jpg';
         }
     }
@@ -61,7 +58,25 @@ try {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
     $ok = $stmt->execute([$nombre, $categoria, $fecha, $hora, $ubicacion, $descripcion, $requisitos, $imagen, $cupos, $estado]);
-    echo json_encode(['ok' => $ok, 'id' => $pdo->lastInsertId()]);
+    $lastId = $pdo->lastInsertId();
+    // Devolver información del evento creada para uso en el frontend
+    echo json_encode([
+        'ok' => (bool)$ok,
+        'id' => $lastId,
+        'evento' => [
+            'id_e' => $lastId,
+            'nombre_e' => $nombre,
+            'categoria_e' => $categoria,
+            'fecha_e' => $fecha,
+            'hora_e' => $hora,
+            'ubicacion_e' => $ubicacion,
+            'descripcion_e' => $descripcion,
+            'requisitos_e' => $requisitos,
+            'imagen_e' => $imagen,
+            'cupos_disponibles_e' => $cupos,
+            'estado_e' => $estado,
+        ]
+    ]);
 } catch (PDOException $e) {
     echo json_encode(['ok' => false, 'error' => $e->getMessage()]);
 }
