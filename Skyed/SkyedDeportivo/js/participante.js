@@ -4,6 +4,15 @@
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
 
+  // Esta página vive en /php/, pero las rutas de imagen guardadas (ej. "img/event1.jpg")
+  // son relativas a la raíz del sitio. Sin este ajuste, el navegador buscaría
+  // la imagen en /php/img/... y nunca la encontraría.
+  const imgPath = p => {
+    if (!p) return '';
+    if (/^https?:\/\//i.test(p) || p.startsWith('../') || p.startsWith('/')) return p;
+    return '../' + p;
+  };
+
   const toast = (msg, type = 'ok') => {
     if (window.showToast) return window.showToast(msg, type);
     const t = document.createElement('div');
@@ -99,7 +108,7 @@
           const days = daysUntil(v.eventoFecha);
           const cat  = v.eventoCategoria || v.categoriaNombre || 'Evento';
           const badgeColor = /mtb/i.test(cat) ? '#16a34a' : /gravel/i.test(cat) ? '#a16207' : 'var(--accent)';
-          const bg   = v.eventoImg ? `background-image:url('${escape(v.eventoImg)}')` : '';
+          const bg   = v.eventoImg ? `background-image:url('${escape(imgPath(v.eventoImg))}')` : '';
           const idRef = v.ref_id || v.id || '';
           return `
             <div class="upcoming-card">
@@ -270,7 +279,7 @@
     const hasImg = !!v.eventoImg;
     // Usamos background-image + overrides para que no lo tape el gradiente del CSS
     const imgStyle = hasImg
-      ? `style="background-image:url('${escape(v.eventoImg)}');background-size:cover;background-position:center;background-color:transparent"`
+      ? `style="background-image:url('${escape(imgPath(v.eventoImg))}');background-size:cover;background-position:center;background-color:transparent"`
       : '';
     const initial = (v.eventoNombre || '?')[0].toUpperCase();
     let result;

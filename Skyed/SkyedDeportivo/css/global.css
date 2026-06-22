@@ -86,7 +86,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .btn-primary:hover{background:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow);color:#fff}
 .btn-outline{color:var(--primary)}
 .btn-outline:hover{color:#ffffff;color:#fff}
-.btn-ghost{margin-left: 140px;color:var(--primary)}
+.btn-ghost{margin-left: auto;color:var(--primary)}
 .btn-ghost:hover{background:var(--bg); border:2px solid var(--accent);color:#0a6fa2}
 .btn-block{width:100%}
 

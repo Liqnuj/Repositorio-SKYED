@@ -87,7 +87,11 @@ try {
             'eventoLugar'     => $ev['lugar']     ?? '',
             'eventoCategoria' => $ev['categoria'] ?? '',
             'eventoKm'        => $ev['km']        ?? '',
-            'eventoImg'       => $ev['imagen']    ?? '',
+            'eventoImg'       => !empty($ev['imagen'])
+                    ? (str_starts_with($ev['imagen'], 'http') || str_starts_with($ev['imagen'], '/')
+                        ? $ev['imagen']
+                        : '../' . $ev['imagen'])
+                    : '',
             'categoriaNombre' => $ev['categoria_nombre'] ?? $ev['categoria'] ?? '',
         ];
     }, $rows);

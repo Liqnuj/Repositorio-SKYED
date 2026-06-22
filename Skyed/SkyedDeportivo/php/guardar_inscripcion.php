@@ -14,16 +14,16 @@ $d = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
 // Campos requeridos
 $usuario_id  = (int)$_SESSION['user_id'];
-$evento_id   = (int)($d['evento_id'] ?? 0);
+$evento_id   = $d['evento_id'] ?? 0;
 
-if ($evento_id <= 0) {
+if (empty($evento_id)) {
     echo json_encode(['ok' => false, 'error' => 'Evento inválido']);
     exit;
 }
 
 // Verificar que el evento existe
 try {
-    $stmt = $pdo->prepare("SELECT * FROM eventos WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM eventoDeportivo WHERE id_e = ?");
     $stmt->execute([$evento_id]);
     $evento = $stmt->fetch();
 
@@ -31,29 +31,32 @@ try {
         // El evento viene como datos del JS (mock), los aceptamos del payload
         // para compatibilidad con la inscripcion.js que usa datos mock
         $evento = [
-            'id'              => $evento_id,
-            'nombre'          => $d['eventoNombre'] ?? 'Evento',
-            'fecha'           => $d['eventoFecha']  ?? date('Y-m-d'),
-            'lugar'           => $d['eventoLugar']  ?? '',
-            'categoria'       => $d['eventoCategoria'] ?? '',
-            'distancia'       => $d['eventoKm']     ?? '',
-            'imagen'          => $d['eventoImg']    ?? '',
-            'precio'          => (float)($d['precio'] ?? 0),
+            'id_e'                  => $evento_id,
+            'nombre_e'               => $d['eventoNombre'] ?? 'Evento',
+            'fecha_e'                => $d['eventoFecha']  ?? date('Y-m-d'),
+            'ubicacion_e'            => $d['eventoLugar']  ?? '',
+            'categoria_e'            => $d['eventoCategoria'] ?? '',
+            'distancia_total_e'      => $d['eventoKm']     ?? '',
+            'imagen_e'               => $d['eventoImg']    ?? '',
+            'precio_e'               => (float)($d['precio'] ?? 0),
         ];
     }
 
     // Verificar inscripción duplicada
-    $chk = $pdo->prepare("SELECT id FROM inscripciones WHERE usuario_id = ? AND evento_id = ? AND estado != 'cancelado'");
-    $chk->execute([$usuario_id, $evento_id]);
-    if ($chk->fetch()) {
-        echo json_encode(['ok' => false, 'error' => 'Ya estás inscrito en este evento']);
-        exit;
+    // Solo bloquear si hay inscripción real (evento_id válido y no cancelada)
+    if (!empty($evento_id)) {
+        $chk = $pdo->prepare("SELECT id FROM inscripciones WHERE usuario_id = ? AND evento_id = ? AND estado NOT IN ('cancelado','rechazado') AND evento_id != 0 AND evento_id != ''");
+        $chk->execute([$usuario_id, $evento_id]);
+        if ($chk->fetch()) {
+            echo json_encode(['ok' => false, 'error' => 'Ya estás inscrito en este evento']);
+            exit;
+        }
     }
 
     // Preparar datos
     $metodo_pago       = $d['metodo_pago']       ?? 'transferencia';
     $estado            = ($metodo_pago === 'efectivo') ? 'pendiente_pago' : 'pendiente_validacion';
-    $precio_pagado     = (float)($d['precio']    ?? ($evento['precio'] ?? 0));
+    $precio_pagado     = (float)($d['precio']    ?? ($evento['precio_e'] ?? 0));
     $doc_u             = $d['doc_u']              ?? ($_SESSION['documento'] ?? '');
     $rh_u              = $d['rh_u']               ?? '';
     $telefono_u        = $d['telefono_u']          ?? ($_SESSION['telefono'] ?? '');
@@ -71,12 +74,12 @@ try {
 
     // Datos extra del evento para mostrar en el panel (guardados en JSON)
     $evento_data = json_encode([
-        'nombre'    => $d['eventoNombre']    ?? ($evento['nombre'] ?? ''),
-        'fecha'     => $d['eventoFecha']     ?? ($evento['fecha']  ?? ''),
-        'lugar'     => $d['eventoLugar']     ?? ($evento['lugar']  ?? ''),
-        'categoria' => $d['eventoCategoria'] ?? ($evento['categoria'] ?? ''),
-        'km'        => $d['eventoKm']        ?? ($evento['distancia'] ?? ''),
-        'imagen'    => $d['eventoImg']       ?? ($evento['imagen'] ?? ''),
+        'nombre'    => $d['eventoNombre']    ?? ($evento['nombre_e'] ?? ''),
+        'fecha'     => $d['eventoFecha']     ?? ($evento['fecha_e']  ?? ''),
+        'lugar'     => $d['eventoLugar']     ?? ($evento['ubicacion_e']  ?? ''),
+        'categoria' => $d['eventoCategoria'] ?? ($evento['categoria_e'] ?? ''),
+        'km'        => $d['eventoKm']        ?? ($evento['distancia_total_e'] ?? ''),
+        'imagen'    => $d['eventoImg']       ?? ($evento['imagen_e'] ?? ''),
         'categoria_nombre' => $categoria_nombre,
     ]);
 

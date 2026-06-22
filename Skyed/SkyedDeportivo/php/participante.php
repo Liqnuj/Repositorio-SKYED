@@ -276,7 +276,7 @@ if (isset($_SESSION['email'])) {
     <!-- Columna SKYED -->
     <div class="sky-footer-col">
       <div class="sky-logo-row">
-        <img src="img/logo.png" alt="SKYED" class="sky-logo-icon">
+        <img src="../img/logo.png" alt="SKYED" class="sky-logo-icon">
         <div class="sky-logo-text">SKY<span>ED</span></div>
       </div>
       <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
