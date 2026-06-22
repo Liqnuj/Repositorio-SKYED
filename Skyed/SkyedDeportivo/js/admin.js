@@ -5,7 +5,7 @@ const sectionColumns = {
     { label: 'Evento', keys: ['nombre', 'nombre_e', 'titulo'] },
     { label: 'Categoría', keys: ['categoria', 'cat', 'categoria_e'] },
     { label: 'Fecha', keys: ['fecha', 'fecha_e'] },
-    { label: 'Ubicación', keys: ['lugar', 'ubicacion'] },
+    { label: 'Ubicación', keys: ['lugar', 'ubicacion', 'ubicacion_e'] },
     { label: 'Cupos', fn: row => formatCupos(row) },
     { label: 'Estado', fn: row => renderStatus(row) },
     { label: 'Acciones', fn: () => actionButtons() },
@@ -235,7 +235,7 @@ function renderEventCards(events) {
     const name = getField(event, ['nombre', 'nombre_e', 'titulo']) || 'Evento';
     const category = getField(event, ['categoria', 'cat', 'categoria_e']) || 'General';
     const date = getField(event, ['fecha', 'fecha_e']) || 'Fecha no disponible';
-    const location = getField(event, ['lugar', 'ubicacion']) || 'Ubicación';
+    const location = getField(event, ['lugar', 'ubicacion', 'ubicacion_e']) || 'Ubicación';
     const total = Number(getField(event, ['cupos_totales', 'cupos_totales_e', 'cupos'])) || 0;
     const available = Number(getField(event, ['cupos_disponibles', 'cupos_disponibles_e'])) || 0;
     const filled = total > 0 ? total - available : 0;
@@ -281,6 +281,7 @@ function renderEventCards(events) {
   grid.innerHTML = cards + createCard;
 }
 
+
 function renderDashboardUpcoming(events) {
   const tbody = document.getElementById('dashboardUpcomingEvents');
   if (!tbody) return;
@@ -293,7 +294,7 @@ function renderDashboardUpcoming(events) {
     const name = getField(event, ['nombre', 'nombre_e', 'titulo']) || 'Evento';
     const category = getField(event, ['categoria', 'cat', 'categoria_e']) || 'General';
     const date = getField(event, ['fecha', 'fecha_e']) || 'Fecha';
-    const location = getField(event, ['lugar', 'ubicacion']) || 'Lugar';
+    const location = getField(event, ['lugar', 'ubicacion', 'ubicacion_e']) || 'Lugar';
     const total = Number(getField(event, ['cupos_totales', 'cupos_totales_e', 'cupos'])) || 0;
     const available = Number(getField(event, ['cupos_disponibles', 'cupos_disponibles_e'])) || 0;
     const filled = total > 0 ? total - available : 0;

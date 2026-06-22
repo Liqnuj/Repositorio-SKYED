@@ -2164,6 +2164,7 @@ window.getFormData = function() {
 window.guardarEvento = async function() {
   const payload = getFormData();
 
+
   if (!payload.nombre_e)    { showToast('Ingresa el nombre del evento ❌', 'error'); return; }
   if (!payload.categoria_e) { showToast('Selecciona una categoría ❌', 'error'); return; }
   if (!payload.fecha_e)     { showToast('Selecciona una fecha ❌', 'error'); return; }
@@ -2175,11 +2176,12 @@ window.guardarEvento = async function() {
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload),
     });
+    
     const data = await res.json();
     if (data.ok) {
       closeModal('modal-evento');
       showToast('Evento guardado ✅', 'success');
-      setTimeout(() => location.reload(), 1500); // recarga para mostrar el nuevo evento
+      setTimeout(() => location.reload(), 1500); 
     } else {
       showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
     }

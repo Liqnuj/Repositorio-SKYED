@@ -118,7 +118,7 @@
             </div>`;
         }).join('');
       } else {
-        proximasEl.innerHTML = '<div class="empty-row" style="grid-column:1/-1">Sin eventos próximos. <a href="eventos.html">Explora eventos →</a></div>';
+        proximasEl.innerHTML = '<div class="empty-row" style="grid-column:1/-1">Sin eventos próximos. <a href="../eventos.html">Explora eventos →</a></div>';
       }
     }
 

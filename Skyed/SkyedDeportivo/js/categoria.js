@@ -106,15 +106,15 @@ document.addEventListener('DOMContentLoaded', function () {
         catLimpiarError('cat-descripcion');
       }
     });
-  }
-
-});
-
+    
   catDesc.addEventListener('blur', function () {
     if (!this.value.trim()) {
       catMostrarError('cat-descripcion', 'La descripción es obligatoria');
     }
   });
+  }
+
+});
 
 
 /* ── Guardar con validación completa ── */

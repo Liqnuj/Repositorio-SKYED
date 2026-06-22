@@ -18,8 +18,12 @@
         if (validarPasoActual()) mevGoStep(1);
       } else if (esGuardar) {
         if (validarPasoActual()) {
-          closeModal('modal-evento');
-          showToast('Evento guardado ✅', 'success');
+          if (typeof guardarEvento === 'function') {
+            guardarEvento();
+          } else {
+            closeModal('modal-evento');
+            showToast('Evento guardado ✅', 'success');
+          }
         }
       }
     }, true);
