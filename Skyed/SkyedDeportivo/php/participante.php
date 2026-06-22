@@ -344,15 +344,6 @@ if (isset($_SESSION['email'])) {
       </div>
     </div>
     <div class="acc-section">
-      <span class="acc-label">Tipografía</span>
-      <div class="font-family-grid">
-        <div class="font-option active" data-font="'DM Sans', sans-serif" style="font-family:'DM Sans',sans-serif">DM Sans</div>
-        <div class="font-option" data-font="'Playfair Display', Georgia, serif" style="font-family:'Playfair Display',serif">Serif</div>
-        <div class="font-option" data-font="'Courier New', monospace" style="font-family:'Courier New',monospace">Mono</div>
-        <div class="font-option" data-font="Montserrat" style="font-family:Montserrat">Sistema</div>
-      </div>
-    </div>
-    <div class="acc-section">
       <span class="acc-label">Dislexia</span>
       <div class="mode-row">
         <button class="mode-btn" id="dyslexiaOff">Normal</button>

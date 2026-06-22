@@ -120,14 +120,14 @@
                 <div class="meta">📅 ${fmtFechaLarga(v.eventoFecha)}${v.eventoLugar ? ' · 📍 ' + escape(v.eventoLugar) : ''}${v.eventoKm ? ' · ' + v.eventoKm + ' km' : ''}</div>
                 <div class="upcoming-countdown">
                   <span class="countdown-num">${days > 0 ? `En ${days} días` : days === 0 ? 'Hoy' : 'En curso'}</span>
-                  <a href="eventos.html" class="btn btn-outline" style="padding:.4rem .9rem;font-size:.82rem">Ver detalles</a>
+                  <a href="../eventos.html" class="btn btn-outline" style="padding:.4rem .9rem;font-size:.82rem">Ver detalles</a>
                 </div>
                 ${idRef ? `<button type="button" class="btn btn-outline btn-eliminar-inscripcion" data-ref="${escape(idRef)}" style="margin-top:.5rem;padding:.35rem .8rem;font-size:.78rem;color:var(--danger,#dc2626);border-color:var(--danger,#dc2626)">🗑 Eliminar inscripción</button>` : ''}
               </div>
             </div>`;
         }).join('');
       } else {
-        proximasEl.innerHTML = '<div class="empty-row" style="grid-column:1/-1">Sin eventos próximos. <a href="eventos.html">Explora eventos →</a></div>';
+        proximasEl.innerHTML = '<div class="empty-row" style="grid-column:1/-1">Sin eventos próximos. <a href="../eventos.html">Explora eventos →</a></div>';
       }
     }
 
