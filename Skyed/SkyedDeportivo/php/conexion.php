@@ -2,7 +2,7 @@
 $DB_HOST = 'localhost';
 $DB_NAME = 'Skyed';
 $DB_USER = 'root';
-$DB_PASS = '1234567';
+$DB_PASS = '2907sindy';
 
 try {
     $pdo = new PDO(
