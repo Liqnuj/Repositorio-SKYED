@@ -61,7 +61,7 @@ try {
     if ($e->getCode() == 23000) {
         echo json_encode(['ok'=>false, 'error'=>'El documento o correo ya se encuentran registrados en SKYED.']);
     } else {
-        echo json_encode(['ok'=>false, 'error'=>'Error BD: ' . $e->getMessage()]);
+        // echo json_encode(['ok'=>false, 'error'=>'Error BD: ' . $e->getMessage()]);
     }
 }
 ?>
