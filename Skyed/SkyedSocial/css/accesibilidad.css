@@ -54,6 +54,10 @@ body.dark-mode {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
   background: #e3e3e3;
 }
+
+.dark-mode .acc-panel {
+  background: #1f1c19;
+}
 .acc-panel.open {
   display: block;
 }
@@ -66,8 +70,9 @@ body.dark-mode {
   color: var(--ink-soft);
   margin-bottom: 16px;
   padding-bottom: 12px;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--accent);
 }
+
 
 .acc-section {
   margin-bottom: 16px;
@@ -202,6 +207,9 @@ body.dark-mode .pay-icon {
   color: rgba(232, 228, 222, 0.6);
 }
 
+nav{
+  background:rgba(26, 10, 46, 0.96);
+}
 /* ── MODO OSCURO - NAV ── */
 body.dark-mode nav {
   background: #1f1c19;
