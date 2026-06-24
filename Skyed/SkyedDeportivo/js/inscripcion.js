@@ -722,6 +722,19 @@
         eventoImg:           evento.imagen_e,
       };
 
+      const paymentReference = `REF-${String(payload.metodo_pago || 'PAGO').toUpperCase().slice(0,6)}-${Date.now()}`;
+      let paymentComprobante = '';
+      if (payload.metodo_pago === 'efectivo') {
+        paymentComprobante = document.getElementById('punto-pago')?.value || 'Pago presencial';
+      } else {
+        const inputId = payload.metodo_pago === 'transferencia' ? 'comprobante-file' : 'comprobante-nequi';
+        const fileInput = document.getElementById(inputId);
+        const file = fileInput?.files?.[0];
+        paymentComprobante = file?.name || 'Pago digital';
+      }
+      payload.referencia = paymentReference;
+      payload.comprobante = paymentComprobante;
+
       fetch('php/guardar_inscripcion.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -769,6 +782,10 @@
             id_cc:            estado.categoriaId,
             categoriaNombre:  estado.categoriaNombre,
             qr_code:          data.qr_code,
+            referencia_p:     data.referencia_p || paymentReference,
+            comprobante_p:    data.comprobante_p || paymentComprobante,
+            fecha_p:          data.fecha_p || new Date().toISOString(),
+            estado_p:         data.estado_p || 'pendiente',
           };
 
           // Guardar en localStorage como caché para participante.js
@@ -868,6 +885,9 @@
         ['Referencia', insc.id],
         ['Estado',     insc.estado_i === 'pendiente_pago' ? 'Pendiente de pago' : 'Pendiente de validación'],
         ['Total',      fmtMoney(insc.precio_pagado_i)],
+        ['Método',     insc.metodo_pago_i ? insc.metodo_pago_i.replace('transferencia','Transferencia bancaria').replace('nequi','Nequi / Daviplata').replace('efectivo','Efectivo en punto autorizado') : '—'],
+        ['Referencia pago', insc.referencia_p || '—'],
+        ['Comprobante', insc.comprobante_p || '—'],
       ];
       details.innerHTML = rows.map(([dt,dd]) =>
         `<div class="success-detail-row"><dt>${dt}</dt><dd>${dd}</dd></div>`
