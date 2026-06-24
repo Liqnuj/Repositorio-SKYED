@@ -309,6 +309,7 @@ try {
       <div style="display:flex;gap:.5rem">
         <button class="btn btn-outline btn-sm">📤 Exportar</button>
         <button class="btn btn-primary" onclick="openModal('modal-evento')">+ Crear evento</button>
+              
       </div>
     </div>
 
@@ -341,7 +342,6 @@ try {
       </div>
     </div>
   </div>
-
   <!-- ===== USUARIOS ===== -->
   <div class="page" id="page-usuarios">
     <div class="page-title">
@@ -413,7 +413,7 @@ try {
                   <td><?= count($inscripcionesRecientes) ?></td>
                   
                   <td>
-                    <button onclick="abrirModalUsuario(<?= $u['id_u'] ?>)">Ver / Editar</button>
+                    <button onclick="abrirModalUsuario(<?= $u['id_u'] ?>)">Editar</button>
                   </td>
                 </tr>
                 <?php endforeach; ?>
@@ -2032,7 +2032,8 @@ let step=0;
     document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act','sel-ina'));
     el.classList.add(cls);
   };
-
+                }
+);
   /* ---- Stepper ---- */
 window.mevGoStep = function(dir) {
   if (step === 3 && dir === 1) {
@@ -2160,34 +2161,34 @@ window.getFormData = function() {
   };
 };
 
-// Guarda el evento al llegar al paso 4 y hacer clic en Guardar
 window.guardarEvento = async function() {
   const payload = getFormData();
+  const idEvento = document.getElementById('modal-evento').dataset.idEvento;
 
+  if (!window.skyedImagenBase64 && window.skyedImagenActual) {
+    payload.imagen_e = window.skyedImagenActual;
+  }
 
   if (!payload.nombre_e)    { showToast('Ingresa el nombre del evento ❌', 'error'); return; }
   if (!payload.categoria_e) { showToast('Selecciona una categoría ❌', 'error'); return; }
   if (!payload.fecha_e)     { showToast('Selecciona una fecha ❌', 'error'); return; }
   if (!payload.ubicacion_e) { showToast('Ingresa la ubicación ❌', 'error'); return; }
+  if (idEvento) payload.id_e = idEvento;
+  const endpoint = idEvento ? 'php/actualizar_evento.php' : 'php/guardar_evento.php';
 
   try {
-    const res  = await fetch('php/guardar_evento.php', {
+    const res  = await fetch(endpoint, {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload),
     });
-    
     const data = await res.json();
     if (data.ok) {
+      delete document.getElementById('modal-evento').dataset.idEvento;
+      window.skyedImagenActual = null;
       closeModal('modal-evento');
-      showToast('Evento guardado ✅', 'success');
-      // Si la respuesta incluye el evento creado, recargar datos para renderizar la tarjeta con la imagen
-      if (typeof loadAdminData === 'function') {
-        // pequeña espera para que el archivo se escriba en disco
-        setTimeout(() => loadAdminData(), 800);
-      } else {
-        setTimeout(() => location.reload(), 1200);
-      }
+      showToast(idEvento ? 'Evento actualizado ✅' : 'Evento guardado ✅', 'success');
+      setTimeout(() => loadAdminData(), 800);
     } else {
       showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
     }
@@ -2195,9 +2196,75 @@ window.guardarEvento = async function() {
     showToast('Error de conexión ❌', 'error');
   }
 };
-  /* Init */
-  renderYrs(); renderCal();
-})();
+
+
+window.abrirModalEditarEvento = async function(idEvento) {
+  openModal('modal-evento');
+
+  if (!idEvento) return; 
+
+  try {
+    const res  = await fetch(`php/obtener_datos_admin.php`);
+    const json = await res.json();
+    if (!json.ok) return;
+
+    const evento = (json.data.eventos || []).find(e => String(e.id_e) === String(idEvento));
+    if (!evento) return;
+
+    document.getElementById('modal-evento').dataset.idEvento = idEvento;
+
+    document.getElementById('ev-nombre').value = evento.nombre_e || '';
+    mevChar('ev-nombre', 'mev-ch-n', 50);
+
+    document.querySelectorAll('.mev-cat-card').forEach(c => {
+      c.classList.toggle('sel', c.dataset.cat === evento.categoria_e);
+    });
+
+    document.getElementById('ev-cupos').value = evento.cupos_disponibles_e || 200;
+
+    document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act', 'sel-ina'));
+    const esActivo = (evento.estado_e || '').toLowerCase() === 'activo';
+    const btnActivo   = document.querySelector('.mev-stbtn:first-child');
+    const btnInactivo = document.querySelector('.mev-stbtn:last-child');
+    if (esActivo && btnActivo)   btnActivo.classList.add('sel-act');
+    if (!esActivo && btnInactivo) btnInactivo.classList.add('sel-ina');
+
+    document.getElementById('ev-ubicacion').value = evento.ubicacion_e || '';
+
+    if (evento.fecha_e) {
+      document.getElementById('ev-fecha-iso').value = evento.fecha_e;
+      const [y, m, d] = evento.fecha_e.split('-').map(Number);
+      const DIAS   = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+      const MES_F  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
+                      'septiembre','octubre','noviembre','diciembre'];
+      const dt  = new Date(y, m - 1, d);
+      const dow = DIAS[(dt.getDay() + 6) % 7];
+      const dateVal = document.getElementById('mev-date-val');
+      dateVal.className = 'val set';
+      dateVal.textContent = `${dow} ${d} de ${MES_F[m - 1]} de ${y}`;
+    }
+
+    if (evento.hora_e) {
+      document.getElementById('t-inicio').value = evento.hora_e.slice(0, 5);
+    }
+
+    document.getElementById('ev-desc').value = evento.descripcion_e || '';
+    mevChar('ev-desc', 'mev-ch-d', 250);
+    document.getElementById('ev-req').value  = evento.requisitos_e  || '';
+
+    if (evento.imagen_e && evento.imagen_e !== 'default.jpg') {
+      const preview = document.getElementById('mev-img-preview');
+      preview.src = evento.imagen_e;
+      preview.style.display = 'block';
+      document.getElementById('mev-drop-zone').style.display = 'none';
+      window.skyedImagenBase64 = null; 
+      window.skyedImagenActual = evento.imagen_e; 
+    }
+
+  } catch (e) {
+    console.error('Error cargando evento:', e);
+  }
+};
 
 // editar usuario
 
