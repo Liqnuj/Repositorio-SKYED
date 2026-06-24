@@ -110,6 +110,19 @@ try {
         INDEX idx_evento   (evento_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
+    $pdo->exec("CREATE TABLE IF NOT EXISTS qr_entrada (
+        id_qr               INT AUTO_INCREMENT PRIMARY KEY,
+        codigo_qr           VARCHAR(120) NOT NULL,
+        qr_imagen_qr        TEXT DEFAULT NULL,
+        fecha_generacion_qr DATETIME NOT NULL,
+        fecha_uso_qr        DATETIME DEFAULT NULL,
+        estado_qr           VARCHAR(40) NOT NULL DEFAULT 'activo',
+        id_i                INT NOT NULL,
+        INDEX idx_inscripcion_qr (id_i),
+        INDEX idx_codigo_qr (codigo_qr),
+        CONSTRAINT fk_qr_entrada_inscripcion FOREIGN KEY (id_i) REFERENCES inscripciones(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
     // Insertar inscripción
     $sql = "INSERT INTO inscripciones (
                 ref_id, usuario_id, evento_id, estado, metodo_pago,
@@ -130,6 +143,47 @@ try {
     ]);
 
     $nuevo_id = $pdo->lastInsertId();
+    $qr_fecha = date('Y-m-d H:i:s');
+    $qr_estado = 'activo';
+    $qr_imagen = null;
+
+    $stmtQr = $pdo->prepare("INSERT INTO qr_entrada (
+        codigo_qr, qr_imagen_qr, fecha_generacion_qr,
+        fecha_uso_qr, estado_qr, id_i
+    ) VALUES (?,?,?,?,?,?)");
+    $stmtQr->execute([
+        $qr_code, $qr_imagen, $qr_fecha, null, $qr_estado, $nuevo_id
+    ]);
+    $qr_id = $pdo->lastInsertId();
+
+    // Guardar el pago asociado a la inscripción
+    $pago_referencia   = $d['referencia']   ?? ('REF-' . strtoupper(uniqid()));
+    $pago_comprobante  = $d['comprobante']  ?? ($metodo_pago === 'efectivo' ? 'Pago presencial' : null);
+    $pago_estado       = 'pendiente';
+    $pago_fecha        = date('Y-m-d H:i:s');
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS pago (
+        id_pago        INT AUTO_INCREMENT PRIMARY KEY,
+        metodo_pago_p  VARCHAR(50) DEFAULT NULL,
+        referencia_p   VARCHAR(100) DEFAULT NULL,
+        comprobante_p  VARCHAR(255) DEFAULT NULL,
+        monto_p        DECIMAL(10,7) DEFAULT NULL,
+        fecha_p        DATETIME DEFAULT CURRENT_TIMESTAMP(),
+        estado_p       ENUM('pendiente','aprobado','rechazado') DEFAULT 'pendiente',
+        id_i           INT NOT NULL,
+        INDEX idx_pago_inscripcion (id_i),
+        CONSTRAINT fk_pago_inscripcion FOREIGN KEY (id_i) REFERENCES inscripciones(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    $stmtPago = $pdo->prepare("INSERT INTO pago (
+        metodo_pago_p, referencia_p, comprobante_p,
+        monto_p, fecha_p, estado_p, id_i
+    ) VALUES (?,?,?,?,?,?,?)");
+    $stmtPago->execute([
+        $metodo_pago, $pago_referencia, $pago_comprobante,
+        $precio_pagado, $pago_fecha, $pago_estado, $nuevo_id
+    ]);
+    $pago_id = $pdo->lastInsertId();
 
     echo json_encode([
         'ok'          => true,
@@ -137,9 +191,17 @@ try {
         'ref_id'      => $ref_id,
         'estado'      => $estado,
         'qr_code'     => $qr_code,
+        'qr_id'       => $qr_id,
+        'qr_estado'   => $qr_estado,
+        'qr_fecha'    => $qr_fecha,
         'precio'      => $precio_pagado,
         'eventoNombre'=> $d['eventoNombre'] ?? '',
         'eventoFecha' => $d['eventoFecha']  ?? '',
+        'referencia_p'=> $pago_referencia,
+        'comprobante_p'=> $pago_comprobante,
+        'estado_p'    => $pago_estado,
+        'fecha_p'     => $pago_fecha,
+        'id_pago'     => $pago_id,
     ]);
 
 } catch (PDOException $e) {

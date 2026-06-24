@@ -120,7 +120,7 @@
                 <div class="meta">📅 ${fmtFechaLarga(v.eventoFecha)}${v.eventoLugar ? ' · 📍 ' + escape(v.eventoLugar) : ''}${v.eventoKm ? ' · ' + v.eventoKm + ' km' : ''}</div>
                 <div class="upcoming-countdown">
                   <span class="countdown-num">${days > 0 ? `En ${days} días` : days === 0 ? 'Hoy' : 'En curso'}</span>
-                  <a href="../eventos.html" class="btn btn-outline" style="padding:.4rem .9rem;font-size:.82rem">Ver detalles</a>
+                  ${idRef ? `<button type="button" class="btn btn-outline btn-detalles-inscripcion" data-ref="${escape(idRef)}" style="padding:.4rem .9rem;font-size:.82rem">Ver detalles</button>` : '<span class="btn btn-outline" style="padding:.4rem .9rem;font-size:.82rem;opacity:.6;pointer-events:none">Sin detalle</span>'}
                 </div>
                 ${idRef ? `<button type="button" class="btn btn-outline btn-eliminar-inscripcion" data-ref="${escape(idRef)}" style="margin-top:.5rem;padding:.35rem .8rem;font-size:.78rem;color:var(--danger,#dc2626);border-color:var(--danger,#dc2626)">🗑 Eliminar inscripción</button>` : ''}
               </div>
@@ -352,8 +352,107 @@
 
   document.addEventListener('click', e => {
     const btn = e.target.closest('.btn-eliminar-inscripcion');
-    if (!btn) return;
-    eliminarInscripcion(btn.dataset.ref);
+    if (btn) {
+      eliminarInscripcion(btn.dataset.ref);
+      return;
+    }
+    const detailBtn = e.target.closest('.btn-detalles-inscripcion');
+    if (detailBtn) {
+      mostrarDetalleInscripcion(detailBtn.dataset.ref);
+    }
+  });
+
+  function mostrarDetalleInscripcion(ref) {
+    const insc = ventas.find(v => String(v.ref_id || v.id) === String(ref));
+    const container = $('#inscripcion-detalle-content');
+    if (!container) return;
+    if (!insc) {
+      container.innerHTML = '<div class="empty-row">No se encontró la inscripción seleccionada.</div>';
+      return;
+    }
+    // Rellenar success-panel dentro del panel de detalle
+    const title = $('#insc-success-title');
+    const sub = $('#insc-success-sub');
+    const details = $('#insc-success-details');
+    const panel = $('#insc-success-panel');
+    if (title) title.textContent = insc.eventoNombre || 'Inscripción';
+    if (sub) sub.textContent = insc.eventoLugar ? `${fmtFechaLarga(insc.eventoFecha)} · ${insc.eventoLugar}` : fmtFechaLarga(insc.eventoFecha);
+    const rows = [
+      ['Referencia',    insc.ref_id || insc.id || '—'],
+      ['Estado',        insc.estado_i === 'pendiente_pago' ? 'Pago pendiente' : insc.estado_i === 'pendiente_validacion' ? 'En validación' : insc.estado_i || 'Confirmado'],
+      ['Método',        insc.metodo_pago_i ? insc.metodo_pago_i.replace('transferencia','Transferencia bancaria').replace('nequi','Nequi / Daviplata').replace('efectivo','Efectivo en punto autorizado') : '—'],
+      ['Total',         fmtMoney(insc.precio_pagado_i || insc.precio || 0)],
+      ['Referencia pago', insc.referencia_p || '—'],
+      ['Comprobante',   insc.comprobante_p || '—'],
+      ['Fecha pago',    insc.fecha_p ? fmtFechaLarga(insc.fecha_p) : '—'],
+      ['QR',            insc.qr_code ? `<code>${escape(insc.qr_code)}</code>` : '—'],
+    ];
+    if (details) {
+      details.innerHTML = rows.map(([dt, dd]) => `<div class="success-detail-row"><dt>${dt}</dt><dd>${dd}</dd></div>`).join('');
+    }
+
+    // Mostrar panel y preparar QR
+    if (panel) panel.classList.add('show');
+    const qrContainer = $('#insc-success-qr-container');
+    const qrText = $('#insc-success-qr-text');
+    const qrScreen = $('#insc-success-qr-screen');
+    const btnVerQr = $('#insc-btn-ver-qr');
+    const btnCerrarQr = $('#insc-btn-cerrar-qr');
+    if (qrText) qrText.textContent = insc.qr_code || '';
+    async function renderSvgQrWithLogo(code, containerId, size = 260) {
+      if (!code) return;
+      const url = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&format=svg&data=${encodeURIComponent(code)}`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('QR service error');
+        let svgText = await res.text();
+        svgText = svgText.replace(/<\?xml[^>]*\?>/, '');
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = svgText;
+        const svg = container.querySelector('svg');
+        if (svg) { svg.setAttribute('width', String(size)); svg.setAttribute('height', String(size)); }
+      } catch (err) {
+        const container = document.getElementById(containerId);
+        if (container) container.innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodeURIComponent(insc.qr_code || '')}" alt="QR" width="${size}" height="${size}" />`;
+      }
+    }
+
+    if (btnVerQr) {
+      btnVerQr.onclick = async () => {
+        await renderSvgQrWithLogo(insc.qr_code, 'insc-success-qr-container');
+        if (qrScreen) qrScreen.style.display = 'block';
+        btnVerQr.setAttribute('aria-expanded', 'true');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+    }
+    if (btnCerrarQr) {
+      btnCerrarQr.onclick = () => {
+        if (qrScreen) qrScreen.style.display = 'none';
+        if (btnVerQr) btnVerQr.setAttribute('aria-expanded', 'false');
+      };
+    }
+
+    // Volver al listado cuando el usuario lo pida
+    const volverBtn = $('#insc-btn-volver-list');
+    if (volverBtn) volverBtn.onclick = (e) => { e.preventDefault(); panel.classList.remove('show'); switchDetailPanel(false); };
+
+    switchDetailPanel(true);
+  }
+
+  function switchDetailPanel(show) {
+    const detailPanel = $('#panel-detalles-inscripcion');
+    const inscripcionesPanel = $('#panel-inscripciones');
+    if (!detailPanel || !inscripcionesPanel) return;
+    detailPanel.classList.toggle('active', show);
+    inscripcionesPanel.classList.toggle('active', !show);
+    if (show) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const btnVolver = $('#btn-volver-inscripciones');
+  if (btnVolver) btnVolver.addEventListener('click', e => {
+    e.preventDefault();
+    switchDetailPanel(false);
   });
 
   /* Primer render con datos de localStorage (inmediato) */

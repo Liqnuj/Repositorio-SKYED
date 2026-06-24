@@ -160,6 +160,43 @@ if (isset($_SESSION['email'])) {
             </div>
           </div>
 
+          <div class="tab-panel" id="panel-detalles-inscripcion">
+            <div class="section-card">
+              <div class="section-card-header">
+                <h2>Detalles de la inscripción</h2>
+                <button class="btn btn-link" id="btn-volver-inscripciones">← Volver a inscripciones</button>
+              </div>
+                  <div class="event-history" id="inscripcion-detalle-content">
+                    <!-- Success view (mimic inscripcion.html) -->
+                    <div class="success-panel" id="insc-success-panel" role="alert" aria-live="polite" style="display:block;">
+                      <div class="success-icon">🎉</div>
+                      <h2 id="insc-success-title">Detalle de la inscripción</h2>
+                      <p id="insc-success-sub">Aquí encontrarás el estado del pago y el código QR de tu inscripción.</p>
+                      <dl class="success-details" id="insc-success-details"></dl>
+                      <div class="success-actions">
+                        <button type="button" class="btn btn-primary" id="insc-btn-ver-qr" aria-expanded="false">
+                          <i class="ti ti-qrcode"></i> Ver mi QR
+                        </button>
+                        <button type="button" class="btn btn-outline" id="insc-btn-volver-list">← Volver a inscripciones</button>
+                        <a href="../eventos.html" class="btn btn-ghost">Ver más eventos</a>
+                      </div>
+                    </div>
+
+                    <div id="insc-success-qr-screen" style="display:none; margin-top:1.5rem; border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,.08); background:var(--surface);">
+                      <div style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.5rem; border-bottom:1px solid var(--border);">
+                        <div style="font-weight:700; color:var(--primary);">Tu entrada QR</div>
+                        <button type="button" class="btn btn-ghost" id="insc-btn-cerrar-qr" style="font-size:1rem; padding:.5rem .75rem;">Volver</button>
+                      </div>
+                      <div class="card" style="padding:1.5rem; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1rem; border:none; box-shadow:none;">
+                        <div id="insc-success-qr-container" style="width:260px; height:260px; border-radius:16px; background:#fff; display:flex; align-items:center; justify-content:center;"></div>
+                        <div id="insc-success-qr-text" style="margin-top:1rem; font-weight:700; word-break:break-all; color:var(--muted); text-align:center;"></div>
+                        <p style="margin-top:1rem; color:var(--muted); text-align:center;">Muestra este código en el punto de control el día del evento.</p>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+          </div>
+
           <!-- TAB: AJUSTES -->
           <div class="tab-panel" id="panel-ajustes">
             <div class="settings-grid">
