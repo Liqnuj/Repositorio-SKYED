@@ -80,7 +80,7 @@ try {
   <button class="sidebar-toggle" id="sidebarToggle" 
           onclick="toggleSidebar()" aria-label="Abrir menú">☰</button>
   <a href="index.html" class="brand" aria-label="Inicio SKYED">
-    <img src="img/logo.png" alt="" onerror="this.style.display='none'" />
+    <img src="img/logo_deportivo.png" alt="" onerror="this.style.display='none'" />
     <span>SKY<em>ED</em></span>
   </a>
 </div>
@@ -102,7 +102,7 @@ try {
     </button>
     <button class="nav-item" data-page="eventos">
       <span class="icon">🏁</span> Eventos
-      <span class="badge-count"></span>
+      <span class="badge-count"><?= count($eventosRegistrados); ?></span>
     </button>
     <button class="nav-item" data-page="usuarios">
       <span class="icon">👥</span> Usuarios
@@ -2147,22 +2147,23 @@ window.mevGoStep = function(dir) {
 window.getFormData = function() {
   const catCard = document.querySelector('.mev-cat-card.sel');
   return {
-    nombre_e:             document.getElementById('ev-nombre').value.trim(),
-    categoria_e:          catCard ? catCard.dataset.cat : '',
-    cupos_disponibles_e:  parseInt(document.getElementById('ev-cupos').value) || 0,
-    estado_e:             document.querySelector('.mev-stbtn.sel-act') ? 'activo' : 'inactivo',
-    ubicacion_e:          document.getElementById('ev-ubicacion').value.trim(),
-    fecha_e:              document.getElementById('ev-fecha-iso')?.value || '',
-    hora_e:               document.getElementById('t-inicio').value || '07:00',
-    descripcion_e:        document.getElementById('ev-desc').value.trim(),
-    requisitos_e:         document.getElementById('ev-req').value.trim(),
-    imagen_e:             'default.jpg',
+    nombre_e:            document.getElementById('ev-nombre').value.trim(),
+    categoria_e:         catCard ? catCard.dataset.cat : '',
+    cupos_disponibles_e: parseInt(document.getElementById('ev-cupos').value) || 0,
+    estado_e:            document.querySelector('.mev-stbtn.sel-act') ? 'activo' : 'inactivo',
+    ubicacion_e:         document.getElementById('ev-ubicacion').value.trim(),
+    fecha_e:             document.getElementById('ev-fecha-iso')?.value || '',
+    hora_e:              document.getElementById('t-inicio').value || '07:00',
+    descripcion_e:       document.getElementById('ev-desc').value.trim(),
+    requisitos_e:        document.getElementById('ev-req').value.trim(),
+    imagen_e:            window.skyedImagenBase64 || 'default.jpg',
   };
 };
 
 // Guarda el evento al llegar al paso 4 y hacer clic en Guardar
 window.guardarEvento = async function() {
   const payload = getFormData();
+
 
   if (!payload.nombre_e)    { showToast('Ingresa el nombre del evento ❌', 'error'); return; }
   if (!payload.categoria_e) { showToast('Selecciona una categoría ❌', 'error'); return; }
@@ -2175,11 +2176,18 @@ window.guardarEvento = async function() {
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify(payload),
     });
+    
     const data = await res.json();
     if (data.ok) {
       closeModal('modal-evento');
       showToast('Evento guardado ✅', 'success');
-      setTimeout(() => location.reload(), 1500); // recarga para mostrar el nuevo evento
+      // Si la respuesta incluye el evento creado, recargar datos para renderizar la tarjeta con la imagen
+      if (typeof loadAdminData === 'function') {
+        // pequeña espera para que el archivo se escriba en disco
+        setTimeout(() => loadAdminData(), 800);
+      } else {
+        setTimeout(() => location.reload(), 1200);
+      }
     } else {
       showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
     }
