@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Recupera tu contraseña en SKYED mediante un código de verificación." />
   <title>Recuperar contraseña — SKYED</title>
-  <link rel="icon" href="img/logo_deportivo.png" />
+  <link rel="icon" href="img/logo_deportivo_nav.png" />
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/auth.css" />
   <link rel="stylesheet" href="css/accesibilidad.css" />
