@@ -80,7 +80,7 @@ try {
   <button class="sidebar-toggle" id="sidebarToggle" 
           onclick="toggleSidebar()" aria-label="Abrir menú">☰</button>
   <a href="index.html" class="brand" aria-label="Inicio SKYED">
-    <img src="img/logo.png" alt="" onerror="this.style.display='none'" />
+    <img src="img/logo_deportivo.png" alt="" onerror="this.style.display='none'" />
     <span>SKY<em>ED</em></span>
   </a>
 </div>
