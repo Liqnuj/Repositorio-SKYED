@@ -232,7 +232,6 @@ function renderEventCards(events) {
   }
 
   const cards = events.slice(0, 6).map(event => {
-    console.log('Evento recibido (renderEventCards):', event);
     const name = getField(event, ['nombre', 'nombre_e', 'titulo']) || 'Evento';
     const category = getField(event, ['categoria', 'cat', 'categoria_e']) || 'General';
     const date = getField(event, ['fecha', 'fecha_e']) || 'Fecha no disponible';
@@ -250,10 +249,7 @@ function renderEventCards(events) {
     const percent = total > 0 ? Math.min(100, Math.round((filled / total) * 100)) : 0;
     const status = getField(event, ['estado', 'estado_e']) || 'Activo';
     const badge = status.includes('Lleno') ? 'badge-danger' : status.includes('Inactivo') ? 'badge-warning' : 'badge-success';
-
-    // Imagen: buscar varios campos posibles
     const imageUrlRaw = event.imagen_e || event.imagen || event.imagen_evento || '';
-    console.log('Imagen raw:', imageUrlRaw);
     let imageUrl = imageUrlRaw || '';
     if (imageUrl && !/^https?:\/\//.test(imageUrl)) {
       if (!imageUrl.includes('/')) imageUrl = 'img/' + imageUrl;
@@ -264,10 +260,7 @@ function renderEventCards(events) {
 
 return `
   <div class="evento-card">
-    <div class="evento-card-img" style="
-      background: url('${getField(event, ['imagen_e', 'imagen'])}') center/cover no-repeat,
-                  linear-gradient(135deg,#0b1f3a,#2c9caf);
-      position: relative;">
+    <div class="evento-card-img" style="${imgStyle} position: relative;">
       <span class="cat-badge">${category}</span>
     </div>
         <div class="evento-card-body">
@@ -282,7 +275,7 @@ return `
         <div class="evento-card-footer">
           <span class="badge ${badge}">${status}</span>
           <div style="display:flex;gap:.4rem">
-            <button class="btn btn-outline btn-sm" onclick="openModal('modal-evento')">✏️</button>
+            <button class="btn btn-outline btn-sm" onclick="abrirModalEditarEvento(${event.id_e || event.id})">✏️</button>
             <button class="btn btn-danger btn-sm">🗑️</button>
           </div>
         </div>
@@ -291,7 +284,7 @@ return `
   }).join('');
 
   const createCard = `
-    <div class="evento-card" style="border-style:dashed;cursor:pointer;background:transparent;box-shadow:none" onclick="openModal('modal-evento')">
+    <div class="evento-card" style="border-style:dashed;cursor:pointer;background:transparent;box-shadow:none" onclick="resetEventoModal(); openModal('modal-evento')">
       <div style="height:100%;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;color:var(--muted);gap:.5rem">
         <span style="font-size:2.5rem">➕</span>
         <span style="font-weight:700;font-size:.9rem">Crear nuevo evento</span>
@@ -335,7 +328,7 @@ function renderDashboardUpcoming(events) {
         </td>
         <td><span class="badge ${badgeClass(status)}">${status}</span></td>
         <td>
-          <button class="btn btn-outline btn-sm" onclick="openModal('modal-evento')">✏️</button>
+          <button class="btn btn-outline btn-sm" onclick="abrirEventoParaEditar(${event.id_e || event.id})">✏️</button>
           <button class="btn btn-danger btn-sm">🗑️</button>
         </td>
       </tr>
@@ -347,6 +340,112 @@ function setText(id, value) {
   const element = document.getElementById(id);
   if (!element) return;
   element.textContent = value;
+}
+
+function resetEventoModal() {
+  const modal = document.getElementById('modal-evento');
+  if (!modal) return;
+  delete modal.dataset.idEvento;
+  window.skyedImagenBase64 = null;
+  window.skyedImagenActual = null;
+  const img = document.getElementById('mev-img-preview');
+  const drop = document.getElementById('mev-drop-zone');
+  if (img) img.style.display = 'none';
+  if (drop) drop.style.display = 'flex';
+  document.getElementById('ev-nombre').value = '';
+  document.getElementById('ev-ubicacion').value = '';
+  document.getElementById('ev-fecha-iso').value = '';
+  document.getElementById('mev-date-val').textContent = 'Elige un día';
+  document.getElementById('t-inicio').value = '07:00';
+  document.getElementById('t-fin').value = '12:00';
+  document.getElementById('ev-desc').value = '';
+  document.getElementById('ev-req').value = '';
+  document.getElementById('ev-cupos').value = '200';
+  document.querySelectorAll('.mev-cat-card').forEach(c => c.classList.remove('sel'));
+  document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act','sel-ina'));
+  const defaultBtn = document.querySelector('.mev-stbtn[onclick*="sel-act"]');
+  if (defaultBtn) defaultBtn.classList.add('sel-act');
+}
+
+function formatDateLabelFromIso(iso) {
+  if (!iso) return 'Elige un día';
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth()+1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+}
+
+function getEventoById(id) {
+  return (window.adminEventos || []).find(e => Number(e.id_e || e.id || 0) === Number(id));
+}
+
+function cargarEventoEnModal(evento) {
+  const modal = document.getElementById('modal-evento');
+  if (!modal || !evento) return;
+  modal.dataset.idEvento = evento.id_e || evento.id || '';
+
+  document.getElementById('ev-nombre').value = evento.nombre_e || evento.nombre || '';
+  document.getElementById('ev-ubicacion').value = evento.ubicacion_e || evento.ubicacion || '';
+  document.getElementById('ev-fecha-iso').value = evento.fecha_e || evento.fecha || '';
+  document.getElementById('mev-date-val').textContent = formatDateLabelFromIso(evento.fecha_e || evento.fecha || '');
+  document.getElementById('t-inicio').value = evento.hora_e || evento.hora || '07:00';
+  document.getElementById('t-fin').value = evento.hora_fin || evento.hora || '12:00';
+  document.getElementById('ev-desc').value = evento.descripcion_e || evento.descripcion || '';
+  document.getElementById('ev-req').value = evento.requisitos_e || evento.requisitos || '';
+  document.getElementById('ev-cupos').value = evento.cupos_disponibles_e || evento.cupos || '0';
+
+  document.querySelectorAll('.mev-cat-card').forEach(c => {
+    c.classList.toggle('sel', c.dataset.cat === String(evento.categoria_e || evento.categoria || '').toLowerCase());
+  });
+  const estado = String(evento.estado_e || evento.estado || 'activo').toLowerCase();
+  document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act','sel-ina'));
+  if (estado === 'inactivo') {
+    const btn = document.querySelector('.mev-stbtn[onclick*="sel-ina"]');
+    if (btn) btn.classList.add('sel-ina');
+  } else {
+    const btn = document.querySelector('.mev-stbtn[onclick*="sel-act"]');
+    if (btn) btn.classList.add('sel-act');
+  }
+
+  const imageUrlRaw = evento.imagen_e || evento.imagen || evento.imagen_evento || '';
+  let imageUrl = imageUrlRaw || '';
+  if (imageUrl && !/^https?:\/\//.test(imageUrl)) {
+    if (!imageUrl.includes('/')) imageUrl = 'img/' + imageUrl;
+  }
+  const imgPreview = document.getElementById('mev-img-preview');
+  const dropZone = document.getElementById('mev-drop-zone');
+  if (imgPreview) {
+    if (imageUrl) {
+      imgPreview.src = imageUrl;
+      imgPreview.style.display = 'block';
+      if (dropZone) dropZone.style.display = 'none';
+      window.skyedImagenBase64 = null;
+      window.skyedImagenActual = imageUrl;
+    } else {
+      imgPreview.style.display = 'none';
+      if (dropZone) dropZone.style.display = 'flex';
+      window.skyedImagenBase64 = null;
+      window.skyedImagenActual = null;
+    }
+  }
+
+  if (typeof step !== 'undefined') {
+    step = 0;
+    document.getElementById('mev-btn-back').disabled = true;
+    document.getElementById('mev-btn-next').innerHTML = 'Siguiente <i class="ti ti-arrow-right"></i>';
+    document.getElementById('mev-prog').style.width = '25%';
+    document.querySelectorAll('.mev-tab').forEach((t,i) => { t.classList.remove('active','done'); if(i===0) t.classList.add('active'); });
+    document.querySelectorAll('.mev-panel').forEach((p,i) => { p.classList.toggle('active', i===0); });
+  }
+}
+
+function abrirEventoParaEditar(id) {
+  const evento = getEventoById(id);
+  if (!evento) {
+    showToast('Evento no encontrado', 'error');
+    return;
+  }
+  cargarEventoEnModal(evento);
+  openModal('modal-evento');
 }
 
 function loadAdminData() {
@@ -373,6 +472,7 @@ function loadAdminData() {
       setText('pagosRechazadosCount', summary.pagosRechazados ?? finance.pagos?.rechazado ?? 0);
       setText('usuariosCountLabel', summary.usuarios ? `${summary.usuarios} usuarios` : '— usuarios');
 
+      window.adminEventos = data.eventos || [];
       renderDashboardUpcoming(data.eventos || []);
       renderEventCards(data.eventos || []);
 

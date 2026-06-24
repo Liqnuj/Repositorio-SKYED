@@ -131,7 +131,7 @@
       const input = document.getElementById(id);
       if (!input) return;
       inyectarError(input);
-      bindTextoLibre(input);           // ← usa la versión SIN números
+      bindTextoConNumeros(input);           // ← usa la versión SIN números
       input.addEventListener('input', () => clearError(input));
     });
 

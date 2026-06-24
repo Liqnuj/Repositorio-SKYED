@@ -14,16 +14,16 @@ $d = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
 // Campos requeridos
 $usuario_id  = (int)$_SESSION['user_id'];
-$evento_id   = (int)($d['evento_id'] ?? 0);
+$evento_id   = $d['evento_id'] ?? 0;
 
-if ($evento_id <= 0) {
+if (empty($evento_id)) {
     echo json_encode(['ok' => false, 'error' => 'Evento inválido']);
     exit;
 }
 
 // Verificar que el evento existe
 try {
-    $stmt = $pdo->prepare("SELECT * FROM eventos WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM eventoDeportivo WHERE id_e = ?");
     $stmt->execute([$evento_id]);
     $evento = $stmt->fetch();
 
@@ -31,29 +31,32 @@ try {
         // El evento viene como datos del JS (mock), los aceptamos del payload
         // para compatibilidad con la inscripcion.js que usa datos mock
         $evento = [
-            'id'              => $evento_id,
-            'nombre'          => $d['eventoNombre'] ?? 'Evento',
-            'fecha'           => $d['eventoFecha']  ?? date('Y-m-d'),
-            'lugar'           => $d['eventoLugar']  ?? '',
-            'categoria'       => $d['eventoCategoria'] ?? '',
-            'distancia'       => $d['eventoKm']     ?? '',
-            'imagen'          => $d['eventoImg']    ?? '',
-            'precio'          => (float)($d['precio'] ?? 0),
+            'id_e'                  => $evento_id,
+            'nombre_e'               => $d['eventoNombre'] ?? 'Evento',
+            'fecha_e'                => $d['eventoFecha']  ?? date('Y-m-d'),
+            'ubicacion_e'            => $d['eventoLugar']  ?? '',
+            'categoria_e'            => $d['eventoCategoria'] ?? '',
+            'distancia_total_e'      => $d['eventoKm']     ?? '',
+            'imagen_e'               => $d['eventoImg']    ?? '',
+            'precio_e'               => (float)($d['precio'] ?? 0),
         ];
     }
 
     // Verificar inscripción duplicada
-    $chk = $pdo->prepare("SELECT id FROM inscripciones WHERE usuario_id = ? AND evento_id = ? AND estado != 'cancelado'");
-    $chk->execute([$usuario_id, $evento_id]);
-    if ($chk->fetch()) {
-        echo json_encode(['ok' => false, 'error' => 'Ya estás inscrito en este evento']);
-        exit;
+    // Solo bloquear si hay inscripción real (evento_id válido y no cancelada)
+    if (!empty($evento_id)) {
+        $chk = $pdo->prepare("SELECT id FROM inscripciones WHERE usuario_id = ? AND evento_id = ? AND estado NOT IN ('cancelado','rechazado') AND evento_id != 0 AND evento_id != ''");
+        $chk->execute([$usuario_id, $evento_id]);
+        if ($chk->fetch()) {
+            echo json_encode(['ok' => false, 'error' => 'Ya estás inscrito en este evento']);
+            exit;
+        }
     }
 
     // Preparar datos
     $metodo_pago       = $d['metodo_pago']       ?? 'transferencia';
     $estado            = ($metodo_pago === 'efectivo') ? 'pendiente_pago' : 'pendiente_validacion';
-    $precio_pagado     = (float)($d['precio']    ?? ($evento['precio'] ?? 0));
+    $precio_pagado     = (float)($d['precio']    ?? ($evento['precio_e'] ?? 0));
     $doc_u             = $d['doc_u']              ?? ($_SESSION['documento'] ?? '');
     $rh_u              = $d['rh_u']               ?? '';
     $telefono_u        = $d['telefono_u']          ?? ($_SESSION['telefono'] ?? '');
@@ -71,12 +74,12 @@ try {
 
     // Datos extra del evento para mostrar en el panel (guardados en JSON)
     $evento_data = json_encode([
-        'nombre'    => $d['eventoNombre']    ?? ($evento['nombre'] ?? ''),
-        'fecha'     => $d['eventoFecha']     ?? ($evento['fecha']  ?? ''),
-        'lugar'     => $d['eventoLugar']     ?? ($evento['lugar']  ?? ''),
-        'categoria' => $d['eventoCategoria'] ?? ($evento['categoria'] ?? ''),
-        'km'        => $d['eventoKm']        ?? ($evento['distancia'] ?? ''),
-        'imagen'    => $d['eventoImg']       ?? ($evento['imagen'] ?? ''),
+        'nombre'    => $d['eventoNombre']    ?? ($evento['nombre_e'] ?? ''),
+        'fecha'     => $d['eventoFecha']     ?? ($evento['fecha_e']  ?? ''),
+        'lugar'     => $d['eventoLugar']     ?? ($evento['ubicacion_e']  ?? ''),
+        'categoria' => $d['eventoCategoria'] ?? ($evento['categoria_e'] ?? ''),
+        'km'        => $d['eventoKm']        ?? ($evento['distancia_total_e'] ?? ''),
+        'imagen'    => $d['eventoImg']       ?? ($evento['imagen_e'] ?? ''),
         'categoria_nombre' => $categoria_nombre,
     ]);
 
@@ -107,6 +110,19 @@ try {
         INDEX idx_evento   (evento_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
+    $pdo->exec("CREATE TABLE IF NOT EXISTS qr_entrada (
+        id_qr               INT AUTO_INCREMENT PRIMARY KEY,
+        codigo_qr           VARCHAR(120) NOT NULL,
+        qr_imagen_qr        TEXT DEFAULT NULL,
+        fecha_generacion_qr DATETIME NOT NULL,
+        fecha_uso_qr        DATETIME DEFAULT NULL,
+        estado_qr           VARCHAR(40) NOT NULL DEFAULT 'activo',
+        id_i                INT NOT NULL,
+        INDEX idx_inscripcion_qr (id_i),
+        INDEX idx_codigo_qr (codigo_qr),
+        CONSTRAINT fk_qr_entrada_inscripcion FOREIGN KEY (id_i) REFERENCES inscripciones(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
     // Insertar inscripción
     $sql = "INSERT INTO inscripciones (
                 ref_id, usuario_id, evento_id, estado, metodo_pago,
@@ -127,6 +143,47 @@ try {
     ]);
 
     $nuevo_id = $pdo->lastInsertId();
+    $qr_fecha = date('Y-m-d H:i:s');
+    $qr_estado = 'activo';
+    $qr_imagen = null;
+
+    $stmtQr = $pdo->prepare("INSERT INTO qr_entrada (
+        codigo_qr, qr_imagen_qr, fecha_generacion_qr,
+        fecha_uso_qr, estado_qr, id_i
+    ) VALUES (?,?,?,?,?,?)");
+    $stmtQr->execute([
+        $qr_code, $qr_imagen, $qr_fecha, null, $qr_estado, $nuevo_id
+    ]);
+    $qr_id = $pdo->lastInsertId();
+
+    // Guardar el pago asociado a la inscripción
+    $pago_referencia   = $d['referencia']   ?? ('REF-' . strtoupper(uniqid()));
+    $pago_comprobante  = $d['comprobante']  ?? ($metodo_pago === 'efectivo' ? 'Pago presencial' : null);
+    $pago_estado       = 'pendiente';
+    $pago_fecha        = date('Y-m-d H:i:s');
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS pago (
+        id_pago        INT AUTO_INCREMENT PRIMARY KEY,
+        metodo_pago_p  VARCHAR(50) DEFAULT NULL,
+        referencia_p   VARCHAR(100) DEFAULT NULL,
+        comprobante_p  VARCHAR(255) DEFAULT NULL,
+        monto_p        DECIMAL(10,7) DEFAULT NULL,
+        fecha_p        DATETIME DEFAULT CURRENT_TIMESTAMP(),
+        estado_p       ENUM('pendiente','aprobado','rechazado') DEFAULT 'pendiente',
+        id_i           INT NOT NULL,
+        INDEX idx_pago_inscripcion (id_i),
+        CONSTRAINT fk_pago_inscripcion FOREIGN KEY (id_i) REFERENCES inscripciones(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+    $stmtPago = $pdo->prepare("INSERT INTO pago (
+        metodo_pago_p, referencia_p, comprobante_p,
+        monto_p, fecha_p, estado_p, id_i
+    ) VALUES (?,?,?,?,?,?,?)");
+    $stmtPago->execute([
+        $metodo_pago, $pago_referencia, $pago_comprobante,
+        $precio_pagado, $pago_fecha, $pago_estado, $nuevo_id
+    ]);
+    $pago_id = $pdo->lastInsertId();
 
     echo json_encode([
         'ok'          => true,
@@ -134,9 +191,17 @@ try {
         'ref_id'      => $ref_id,
         'estado'      => $estado,
         'qr_code'     => $qr_code,
+        'qr_id'       => $qr_id,
+        'qr_estado'   => $qr_estado,
+        'qr_fecha'    => $qr_fecha,
         'precio'      => $precio_pagado,
         'eventoNombre'=> $d['eventoNombre'] ?? '',
         'eventoFecha' => $d['eventoFecha']  ?? '',
+        'referencia_p'=> $pago_referencia,
+        'comprobante_p'=> $pago_comprobante,
+        'estado_p'    => $pago_estado,
+        'fecha_p'     => $pago_fecha,
+        'id_pago'     => $pago_id,
     ]);
 
 } catch (PDOException $e) {

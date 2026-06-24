@@ -340,6 +340,38 @@
 .tab-panel.active { display: block; animation: fadeIn .25s ease; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
+/* Success panel (replicado desde inscripcion.html) */
+.success-panel {
+  display: none;
+  text-align: center; padding: 3rem 2rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.success-panel.show { display: block; animation: fadeSlide .4s ease; }
+.success-icon {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  border: 3px solid #16a34a;
+  display: grid; place-items: center; margin: 0 auto 1.5rem;
+  font-size: 2rem;
+}
+.success-panel h2 { font-size: 1.6rem; color: var(--primary); margin-bottom: .5rem; }
+.success-panel p { color: var(--muted); margin-bottom: 2rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+.success-details {
+  background: var(--bg); border-radius: 12px; padding: 1.25rem 1.5rem;
+  display: inline-flex; flex-direction: column; gap: .5rem;
+  margin-bottom: 2rem; min-width: 300px;
+}
+.success-detail-row {
+  display: flex; justify-content: space-between; gap: 2rem;
+  font-size: .9rem;
+}
+.success-detail-row dt { color: var(--muted); }
+.success-detail-row dd { font-weight: 700; color: var(--primary); }
+.success-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
 /* Panel ajustes */
 .settings-grid {
   display: grid;
