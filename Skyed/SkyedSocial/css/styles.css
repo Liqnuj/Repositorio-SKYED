@@ -234,7 +234,6 @@ section{padding:6rem 0}
 .form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.4)}
 
 /* FOOTER */
-/* ============ FOOTER SKYEDSOCIAL ============ */
 
 *{
     box-sizing:border-box;
@@ -445,6 +444,9 @@ section{padding:6rem 0}
         text-align:center;
     }
 }
+
+
+
 /* ANIMATIONS */
 @keyframes fade-up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
