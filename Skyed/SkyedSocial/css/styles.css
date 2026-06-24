@@ -233,7 +233,7 @@ section{padding:6rem 0}
 .form-submit{width:100%;padding:1rem;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--plum);border:none;border-radius:50px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:'Inter',sans-serif;margin-top:.5rem}
 .form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.4)}
 
-/* ============ FOOTER  ============ */
+/* FOOTER */
 
 *{
     box-sizing:border-box;
@@ -444,6 +444,8 @@ section{padding:6rem 0}
         text-align:center;
     }
 }
+
+
 
 /* ANIMATIONS */
 @keyframes fade-up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}

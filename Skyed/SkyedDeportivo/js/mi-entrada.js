@@ -1,17 +1,50 @@
 /* mi-entrada.js —  */
-(function(){
-  const u = SKY.usuario();
+(async function(){
   const root = document.getElementById('root');
-  if(!u){ root.innerHTML='<div class="alert alert-warn">Inicia sesión para ver tu entrada.</div>'; return; }
-
   const idEv = new URLSearchParams(location.search).get('evento');
-  const inscripciones = SKY.get(SKY.K.Inscripcion).filter(i=>i.doc_u==u.doc_u && i.estado_i==='confirmada');
-  let ins = idEv ? inscripciones.find(i=>i.id_e==idEv) : inscripciones[inscripciones.length-1];
-  if(!ins){ root.innerHTML='<div class="alert alert-info">No tienes entradas confirmadas todavía. <a href="eventos.html">Explora eventos</a>.</div>'; return; }
+  const u = SKY.usuario();
 
-  const ev  = SKY.evento(ins.id_e);
-  const qr  = SKY.get(SKY.K.QR).find(q=>q.id_i===ins.id_i);
-  if(!qr){ root.innerHTML='<div class="alert alert-err">No hay QR generado.</div>'; return; }
+  async function renderError(message) {
+    root.innerHTML = `<div class="alert alert-err">${message}</div>`;
+  }
+
+  if (!u) {
+    renderError('Inicia sesión para ver tu entrada.');
+    return;
+  }
+
+  let data;
+  try {
+    const resp = await fetch('php/get_inscripciones.php', { credentials: 'include' });
+    data = await resp.json();
+    if (!resp.ok || !data.ok || !Array.isArray(data.inscripciones)) {
+      renderError('No se pudo recuperar tus inscripciones. Asegúrate de iniciar sesión.');
+      return;
+    }
+  } catch (err) {
+    console.error('Error fetching inscriptions:', err);
+    renderError('No se pudo comunicar con el servidor. Intenta de nuevo más tarde.');
+    return;
+  }
+
+  const inscripciones = data.inscripciones.filter(i => i.estado_i === 'confirmada');
+  const ins = idEv ? inscripciones.find(i => String(i.evento_id) === String(idEv)) : inscripciones[inscripciones.length - 1];
+  if (!ins) {
+    root.innerHTML = '<div class="alert alert-info">No tienes entradas confirmadas todavía. <a href="eventos.html">Explora eventos</a>.</div>';
+    return;
+  }
+
+  const ev = SKY.evento(ins.evento_id);
+  const qr = {
+    codigo_qr: ins.qr_code,
+    estado_qr: ins.estado_qr || 'activo',
+    fecha_generacion_qr: ins.fecha_generacion_qr || null,
+    qr_imagen_qr: ins.qr_imagen_qr || null,
+  };
+  if (!qr.codigo_qr) {
+    renderError('No hay QR generado para esta inscripción.');
+    return;
+  }
 
   const qrImg = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=${encodeURIComponent(qr.codigo_qr)}`;
   const estPill = qr.estado_qr==='activo'?'pill-ok':qr.estado_qr==='usado'?'pill-info':'pill-err';
@@ -32,15 +65,15 @@
         <div><small style="color:var(--muted)">Documento</small><br><strong>${u.doc_u}</strong></div>
         <div><small style="color:var(--muted)">Método de pago</small><br><strong>${ins.metodo_pago_i}</strong></div>
         <div><small style="color:var(--muted)">Pagado</small><br><strong>${SKY.fmtCOP(ins.precio_pagado_i)}</strong></div>
-        <div><small style="color:var(--muted)">Fecha inscripción</small><br><strong>${SKY.fmtFecha(ins.fecha_i)}</strong></div>
+        <div><small style="color:var(--muted)">Fecha inscripción</small><br><strong>${SKY.fmtFecha(ins.fecha_inscripcion)}</strong></div>
         <div><small style="color:var(--muted)">Estado</small><br><span class="pill pill-ok">${ins.estado_i}</span></div>
       </div>
     </div>
 
     ${inscripciones.length>1?`<div class="card">
       <h2>🎫 Otras entradas</h2>
-      ${inscripciones.filter(i=>i.id_i!==ins.id_i).map(i=>{
-        const e=SKY.evento(i.id_e); return `<div class="cat-comp" style="display:flex;justify-content:space-between;align-items:center">
+      ${inscripciones.filter(i=>i.id!==ins.id).map(i=>{
+        const e=SKY.evento(i.evento_id); return `<div class="cat-comp" style="display:flex;justify-content:space-between;align-items:center">
           <div><strong>${e.nombre_e}</strong><br><small style="color:var(--muted)">${SKY.fmtFecha(e.fecha_e)}</small></div>
           <a href="mi-entrada.html?evento=${e.id_e}" class="btn btn-ghost">Ver QR</a>
         </div>`; }).join('')}
