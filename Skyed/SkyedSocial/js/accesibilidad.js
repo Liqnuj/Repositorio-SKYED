@@ -1,6 +1,6 @@
 (function () {
   let currentFont = localStorage.getItem("lumara-font") || "'DM Sans', sans-serif";
-  let currentAccent = localStorage.getItem("lumara-accent-deportivo") || "#2c9caf";
+  let currentAccent = localStorage.getItem("lumara-accent-social") || "#692caf";
   let darkMode = localStorage.getItem("lumara-dark") === "true";
 
   function applyAll() {
@@ -79,7 +79,7 @@
         currentAccent = this.dataset.color;
         document.documentElement.style.setProperty("--accent", currentAccent);
         document.documentElement.style.setProperty("--accent-2", currentAccent);
-        localStorage.setItem("lumara-accent-deportivo", currentAccent);
+        localStorage.setItem("lumara-accent-social", currentAccent);
         document.querySelectorAll(".color-swatch").forEach((s) => s.classList.remove("active"));
         this.classList.add("active");
       });
@@ -106,10 +106,10 @@
     /* Restablecer todo */
     document.getElementById("accReset").addEventListener("click", () => {
       currentFont = "'DM Sans', sans-serif";
-      currentAccent = "#2c9caf";
+      currentAccent = "#692caf";
       darkMode = false;
       localStorage.removeItem("lumara-font");
-      localStorage.removeItem("lumara-accent-deportivo");
+      localStorage.removeItem("lumara-accent-social");
       localStorage.removeItem("lumara-dark");
       document.body.style.fontFamily = currentFont;
       document.documentElement.style.setProperty("--accent", currentAccent);
@@ -118,7 +118,7 @@
       document.querySelectorAll(".font-option").forEach((o) => o.classList.remove("active"));
       document.querySelector("[data-font=\"'DM Sans', sans-serif\"]")?.classList.add("active");
       document.querySelectorAll(".color-swatch").forEach((s) => s.classList.remove("active"));
-      document.querySelector('[data-color="#2c9caf"]')?.classList.add("active");
+      document.querySelector('[data-color="#692caf"]')?.classList.add("active");
       document.getElementById("modeLight").classList.add("active");
       document.getElementById("modeDark").classList.remove("active");
 
