@@ -5,7 +5,7 @@ const sectionColumns = {
     { label: 'Evento', keys: ['nombre', 'nombre_e', 'titulo'] },
     { label: 'Categoría', keys: ['categoria', 'cat', 'categoria_e'] },
     { label: 'Fecha', keys: ['fecha', 'fecha_e'] },
-    { label: 'Ubicación', keys: ['lugar', 'ubicacion'] },
+    { label: 'Ubicación', keys: ['lugar', 'ubicacion', 'ubicacion_e'] },
     { label: 'Cupos', fn: row => formatCupos(row) },
     { label: 'Estado', fn: row => renderStatus(row) },
     { label: 'Acciones', fn: () => actionButtons() },
@@ -232,23 +232,44 @@ function renderEventCards(events) {
   }
 
   const cards = events.slice(0, 6).map(event => {
+    console.log('Evento recibido (renderEventCards):', event);
     const name = getField(event, ['nombre', 'nombre_e', 'titulo']) || 'Evento';
     const category = getField(event, ['categoria', 'cat', 'categoria_e']) || 'General';
     const date = getField(event, ['fecha', 'fecha_e']) || 'Fecha no disponible';
-    const location = getField(event, ['lugar', 'ubicacion']) || 'Ubicación';
-    const total = Number(getField(event, ['cupos_totales', 'cupos_totales_e', 'cupos'])) || 0;
-    const available = Number(getField(event, ['cupos_disponibles', 'cupos_disponibles_e'])) || 0;
-    const filled = total > 0 ? total - available : 0;
+    const location = getField(event, ['lugar', 'ubicacion', 'ubicacion_e']) || 'Ubicación';
+
+    const inscritos = Number(event.inscripciones_count || event.inscripcion_count || event.inscripciones || event.inscritos || 0);
+
+    let total = 0;
+    if ('cupos_totales_e' in event) total = Number(event.cupos_totales_e) || 0;
+    else if ('cupos_totales' in event) total = Number(event.cupos_totales) || 0;
+    else if ('cupos' in event) total = Number(event.cupos) || 0;
+    else if ('cupos_disponibles_e' in event) total = Number(event.cupos_disponibles_e) || 0;
+
+    const filled = inscritos;
     const percent = total > 0 ? Math.min(100, Math.round((filled / total) * 100)) : 0;
     const status = getField(event, ['estado', 'estado_e']) || 'Activo';
     const badge = status.includes('Lleno') ? 'badge-danger' : status.includes('Inactivo') ? 'badge-warning' : 'badge-success';
 
-    return `
-      <div class="evento-card">
-        <div class="evento-card-img" style="background:linear-gradient(135deg,#0b1f3a,#2c9caf)">
-          🚴
-          <span class="cat-badge">${category}</span>
-        </div>
+    // Imagen: buscar varios campos posibles
+    const imageUrlRaw = event.imagen_e || event.imagen || event.imagen_evento || '';
+    console.log('Imagen raw:', imageUrlRaw);
+    let imageUrl = imageUrlRaw || '';
+    if (imageUrl && !/^https?:\/\//.test(imageUrl)) {
+      if (!imageUrl.includes('/')) imageUrl = 'img/' + imageUrl;
+    }
+    const imgStyle = imageUrl
+      ? `background-image:url('${imageUrl}');background-size:cover;background-position:center;filter:contrast(0.95);`
+      : `background:linear-gradient(135deg,#0b1f3a,#2c9caf)`;
+
+return `
+  <div class="evento-card">
+    <div class="evento-card-img" style="
+      background: url('${getField(event, ['imagen_e', 'imagen'])}') center/cover no-repeat,
+                  linear-gradient(135deg,#0b1f3a,#2c9caf);
+      position: relative;">
+      <span class="cat-badge">${category}</span>
+    </div>
         <div class="evento-card-body">
           <div class="evento-card-title">${name}</div>
           <div class="evento-card-meta">
@@ -281,6 +302,7 @@ function renderEventCards(events) {
   grid.innerHTML = cards + createCard;
 }
 
+
 function renderDashboardUpcoming(events) {
   const tbody = document.getElementById('dashboardUpcomingEvents');
   if (!tbody) return;
@@ -293,10 +315,10 @@ function renderDashboardUpcoming(events) {
     const name = getField(event, ['nombre', 'nombre_e', 'titulo']) || 'Evento';
     const category = getField(event, ['categoria', 'cat', 'categoria_e']) || 'General';
     const date = getField(event, ['fecha', 'fecha_e']) || 'Fecha';
-    const location = getField(event, ['lugar', 'ubicacion']) || 'Lugar';
-    const total = Number(getField(event, ['cupos_totales', 'cupos_totales_e', 'cupos'])) || 0;
-    const available = Number(getField(event, ['cupos_disponibles', 'cupos_disponibles_e'])) || 0;
-    const filled = total > 0 ? total - available : 0;
+    const location = getField(event, ['lugar', 'ubicacion', 'ubicacion_e']) || 'Lugar';
+    const inscritos = Number(getField(event, ['inscripciones_count','inscripcion_count','inscripciones','inscritos'])) || 0;
+    const total = Number(getField(event, ['cupos_totales', 'cupos_totales_e', 'cupos', 'cupos_disponibles_e'])) || 0;
+    const filled = inscritos;
     const percent = total > 0 ? Math.min(100, Math.round((filled / total) * 100)) : 0;
     const status = getField(event, ['estado', 'estado_e']) || 'Activo';
     const statusClass = badgeClass(status);

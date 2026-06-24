@@ -46,7 +46,7 @@
   outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(255,106,0,.12);
 }
 .form-group input.invalid{border-color:var(--danger)}
-.form-group input.valid{border-color:var(--success)}
+.form-group input.valid{border-color:var(--accent)}
 .form-group .help{font-size:.82rem;color:var(--muted);margin-top:.3rem;display:block}
 .form-group .error{
   font-size:.85rem;color:var(--danger);margin-top:.35rem;

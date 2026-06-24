@@ -3,7 +3,6 @@
   document.addEventListener('DOMContentLoaded', function () {
     bindCampos();
 
-    /* Interceptar el botón Siguiente/Guardar */
     document.addEventListener('click', function (e) {
       const btn = e.target.closest('#mev-btn-next');
       if (!btn) return;
@@ -18,8 +17,12 @@
         if (validarPasoActual()) mevGoStep(1);
       } else if (esGuardar) {
         if (validarPasoActual()) {
-          closeModal('modal-evento');
-          showToast('Evento guardado ✅', 'success');
+          if (typeof guardarEvento === 'function') {
+            guardarEvento();
+          } else {
+            closeModal('modal-evento');
+            showToast('Evento guardado ✅', 'success');
+          }
         }
       }
     }, true);
@@ -177,7 +180,6 @@
      TEXTO LIBRE — SIN números (ubicación, desc, req)
   ══════════════════════════════════════════ */
   function bindTextoLibre(input) {
-    // ↓ Se eliminó 0-9 del charset permitido
     const permitido = /^[a-zA-ZáéíóúÁÉÍÓÚüÜñÑ\s\-,.:;()#°+%/']$/;
 
     input.addEventListener('keypress', e => {
@@ -197,7 +199,6 @@
     input.addEventListener('input', () => {
       const pos = input.selectionStart;
       let val = input.value;
-      // Eliminar cualquier número que se haya colado (p.ej. por autocompletar)
       val = val.replace(/[0-9]/g, '');
       if (/\s{2,}/.test(val)) {
         val = val.replace(/\s{2,}/g, ' ');
