@@ -665,7 +665,7 @@
 
 
 
-    document.getElementById('btn-confirmar').addEventListener('click', () => {
+    document.getElementById('btn-confirmar').addEventListener('click', async () => {
       // Validar términos
       let ok = true;
       if (!document.getElementById('chk-terminos').checked) {
@@ -711,16 +711,24 @@
       };
 
       const paymentReference = `REF-${String(payload.metodo_pago || 'PAGO').toUpperCase().slice(0,6)}-${Date.now()}`;
-      let paymentComprobante = '';
-      if (payload.metodo_pago === 'efectivo') {
-        paymentComprobante = document.getElementById('punto-pago')?.value || 'Pago presencial';
-      } else {
-        const inputId = payload.metodo_pago === 'transferencia' ? 'comprobante-file' : 'comprobante-nequi';
-        const fileInput = document.getElementById(inputId);
-        const file = fileInput?.files?.[0];
-        paymentComprobante = file?.name || 'Pago digital';
-      }
       payload.referencia = paymentReference;
+
+      // Leer comprobante como base64 si existe, si no texto plano
+      const getComprobante = () => new Promise(resolve => {
+        if (payload.metodo_pago === 'efectivo') {
+          resolve(document.getElementById('punto-pago')?.value || 'Pago presencial');
+          return;
+        }
+        const inputId = payload.metodo_pago === 'transferencia' ? 'comprobante-file' : 'comprobante-nequi';
+        const file = document.getElementById(inputId)?.files?.[0];
+        if (!file) { resolve('Pago digital'); return; }
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result); // base64 data URL
+        reader.onerror = () => resolve(file.name);
+        reader.readAsDataURL(file);
+      });
+
+      const paymentComprobante = await getComprobante();
       payload.comprobante = paymentComprobante;
 
       fetch('php/guardar_inscripcion.php', {
@@ -771,7 +779,7 @@
             categoriaNombre:  estado.categoriaNombre,
             qr_code:          data.qr_code,
             referencia_p:     data.referencia_p || paymentReference,
-            comprobante_p:    data.comprobante_p || paymentComprobante,
+            comprobante_p:    data.comprobante_p || (paymentComprobante && paymentComprobante.startsWith('data:') ? 'Comprobante enviado' : paymentComprobante),
             fecha_p:          data.fecha_p || new Date().toISOString(),
             estado_p:         data.estado_p || 'pendiente',
           };
@@ -867,15 +875,15 @@
 
       const details = document.getElementById('success-details');
       const rows = [
-        ['Evento',     insc.eventoNombre],
-        ['Fecha',      fmtFecha(insc.eventoFecha)],
-        ['Categoría',  insc.categoriaNombre],
-        ['Referencia', insc.id],
-        ['Estado',     insc.estado_i === 'pendiente_pago' ? 'Pendiente de pago' : 'Pendiente de validación'],
-        ['Total',      fmtMoney(insc.precio_pagado_i)],
-        ['Método',     insc.metodo_pago_i ? insc.metodo_pago_i.replace('transferencia','Transferencia bancaria').replace('nequi','Nequi / Daviplata').replace('efectivo','Efectivo en punto autorizado') : '—'],
+        ['Evento',     insc.eventoNombre    || '—'],
+        ['Fecha',      fmtFecha(insc.eventoFecha || insc.fecha_i)],
+        ['Categoría',  insc.categoriaNombre || insc.eventoCategoria || '—'],
+        ['Referencia', insc.ref_id || insc.id || '—'],
+        ['Estado',     (insc.estado_i || insc.estado) === 'pendiente_pago' ? 'Pendiente de pago' : 'Pendiente de validación'],
+        ['Total',      fmtMoney(insc.precio_pagado_i ?? insc.precio ?? 0)],
+        ['Método',     (insc.metodo_pago_i || insc.metodo_pago || '').replace('transferencia','Transferencia bancaria').replace('nequi','Nequi / Daviplata').replace('efectivo','Efectivo en punto autorizado') || '—'],
         ['Referencia pago', insc.referencia_p || '—'],
-        ['Comprobante', insc.comprobante_p || '—'],
+        ['Comprobante', insc.comprobante_p ? (insc.comprobante_p.startsWith('data:') ? 'Comprobante enviado ✓' : insc.comprobante_p) : (insc.metodo_pago_i === 'efectivo' ? 'Pago presencial' : '—')],
       ];
       details.innerHTML = rows.map(([dt,dd]) =>
         `<div class="success-detail-row"><dt>${dt}</dt><dd>${dd}</dd></div>`

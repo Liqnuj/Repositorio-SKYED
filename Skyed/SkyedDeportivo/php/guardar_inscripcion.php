@@ -67,8 +67,26 @@ try {
     $qr_id = $pdo->lastInsertId();
 
     // Insertar pago
-    $pago_referencia  = 'REF-' . strtoupper(uniqid());
-    $pago_comprobante = ($metodo_pago === 'efectivo') ? 'Pago presencial' : null;
+    $pago_referencia  = $d['referencia'] ?? ('REF-' . strtoupper(uniqid()));
+    $raw_comprobante  = $d['comprobante'] ?? null;
+
+    // Si es base64, guardar como archivo en uploads/comprobantes/
+    $pago_comprobante = null;
+    if ($raw_comprobante && str_starts_with($raw_comprobante, 'data:image')) {
+        $uploadDir = __DIR__ . '/../uploads/comprobantes/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+        // Extraer extension y datos
+        preg_match('/data:image\/(\w+);base64,(.+)/', $raw_comprobante, $matches);
+        if (count($matches) === 3) {
+            $ext      = $matches[1];
+            $imgData  = base64_decode($matches[2]);
+            $filename = 'comp_' . $id_i . '_' . time() . '.' . $ext;
+            file_put_contents($uploadDir . $filename, $imgData);
+            $pago_comprobante = 'uploads/comprobantes/' . $filename;
+        }
+    } elseif (!empty($raw_comprobante)) {
+        $pago_comprobante = $raw_comprobante; // texto plano (efectivo)
+    }
     $pago_fecha       = date('Y-m-d H:i:s');
     $stmtPago = $pdo->prepare("INSERT INTO pago (
         metodo_pago_p, referencia_p, comprobante_p, monto_p, fecha_p, estado_p, id_i
