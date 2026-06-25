@@ -168,9 +168,9 @@
         const data = await res.json();
         if (!data.ok || !Array.isArray(data.inscripciones)) return false;
         return data.inscripciones.some(i =>
-          Number(i.evento_id) === Number(idEvento) &&
-          i.estado !== 'cancelado' &&
-          i.estado !== 'rechazado'
+          (Number(i.id_e) === Number(idEvento) || Number(i.evento_id) === Number(idEvento)) &&
+          i.estado_i !== 'cancelado' &&
+          i.estado_i !== 'rechazado'
         );
       } catch (err) {
         console.error('Error verificando inscripción:', err);
@@ -179,8 +179,8 @@
     };
 
     if (await isAlreadyInscrito()) {
-      const yaInscrito = document.getElementById('ya-inscrito');
-      if (yaInscrito) yaInscrito.classList.add('show');
+      // Redirigir a eventos con mensaje en URL
+      location.href = 'eventos.html?msg=ya_inscrito';
       return;
     }
 
@@ -676,19 +676,7 @@
       } else document.getElementById('err-salud').classList.remove('show');
       if (!ok) return;
 
-      const ventas = JSON.parse(localStorage.getItem('cicloVentas') || '[]');
-      const already = ventas.some(v =>
-        (v.usuario === normalizedSession.email || v.email === normalizedSession.email) &&
-        Number(v.id_e) === Number(idEvento) &&
-        v.estado_i !== 'cancelada'
-      );
-      if (already) {
-        const yaInscrito = document.getElementById('ya-inscrito');
-        document.querySelector('.stepper') && (document.querySelector('.stepper').style.display = 'none');
-        document.querySelector('.insc-grid') && (document.querySelector('.insc-grid').style.display = 'none');
-        if (yaInscrito) { yaInscrito.classList.add('show'); }
-        return;
-      }
+      // El chequeo de duplicado lo hace el servidor; si llega aquí es porque pasó la validación inicial
 
 
       // Deshabilitar botón
