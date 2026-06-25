@@ -462,9 +462,6 @@ body {
   animation: ticker 26s linear infinite;
 }
 
-.ticker-wrap:hover .ticker-track {
-  animation-play-state: paused;
-}
 
 @keyframes ticker {
   from { transform: translateX(0); }
