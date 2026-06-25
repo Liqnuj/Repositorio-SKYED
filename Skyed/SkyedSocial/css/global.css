@@ -66,7 +66,7 @@ nav.scrolled {
   font-family: arial;
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--white);
+  color: #000000;
   letter-spacing: -.02em;
 }
 
@@ -86,7 +86,7 @@ nav.scrolled {
 }
 
 .nav-links a {
-  color: rgba(255,255,255,.82);
+  color:#000000;
   text-decoration: none;
   padding: .5rem .9rem;
   border-radius: 8px;
@@ -98,7 +98,7 @@ nav.scrolled {
 
 .nav-links a:hover,
 .nav-links a.active {
-  color: var(--white);
+  color: var(--accent);
   background: rgba(255,255,255,.1);
 }
 
@@ -161,20 +161,37 @@ nav.scrolled {
 
 
 /* HERO */
-.hero{min-height:100vh;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.hero{
+  min-height:100vh;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  overflow:hidden
+}
+
 .hero-bg{position:absolute;inset:0;background:linear-gradient(150deg,#0D0519 0%,#1A0A2E 40%,#2D1454 70%,#1A0A2E 100%)}
 .hero-particles{position:absolute;inset:0;overflow:hidden}
 .particle{position:absolute;border-radius:50%;opacity:0;animation:float-particle linear infinite}
 @keyframes float-particle{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:1}90%{opacity:.6}100%{transform:translateY(-100px) scale(1);opacity:0}}
 .hero-overlay{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 60%,rgba(139,34,82,.25) 0%,transparent 70%)}
-.hero-content{position:relative;z-index:10;text-align:center;max-width:900px;padding:0 2rem}
+.hero-content{
+  position:relative;
+  z-index:10;
+  text-align:left;
+  max-width:900px;
+  padding:0 2rem;
+  margin-left: 6rem;             
+  margin-right: auto;
+}
+
 .hero-badge{
   display:inline-flex;
   align-items:center;
   gap:.5rem;
-  background:linear-gradient(color-mix(in srgb,var(--accent) 35%, transparent) 0%, color-mix(in srgb, #ffffff 10%, transparent)50%,color-mix(in srgb, var(--accent) 15%, transparent) 100%);
+  background:var(--accent);
   border:1px solid var(--accent);
-  color:var(--accent);
+  color:#ffffff;
   padding:.45rem 1.25rem;
   border-radius:50px;
   font-size:.78rem;
@@ -184,10 +201,19 @@ nav.scrolled {
   margin-bottom:2rem;
   animation:fade-up .8s ease both;
 }
-.hero-title{font-family:'arial',serif;font-size:clamp(3rem,7vw,5.5rem);font-weight:700;color:var(--white);line-height:1.08;letter-spacing:-.03em;margin-bottom:1.5rem;animation:fade-up .8s .15s ease both}
+.hero-title{
+  font-family:'arial'
+  ,serif;
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-weight:700;color:var(--white);
+  line-height:1.08;
+  letter-spacing:-.03em;
+  margin-bottom:1.5rem;
+  animation:fade-up .8s .15s ease both
+}
 .hero-title em{color:var(--accent);font-style: arial}
 .hero-sub{font-size:clamp(1rem,2vw,1.2rem);color:rgba(255,255,255,.7);line-height:1.7;max-width:600px;margin:0 auto 2.75rem;animation:fade-up .8s .3s ease both;font-weight:300}
-.hero-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fade-up .8s .45s ease both}
+.hero-actions{display:flex;gap:1rem;justify-content:flex-start;flex-wrap:wrap;animation:fade-up .8s .45s ease both}
 .btn-primary{
   display:inline-flex;
   align-items:center;
