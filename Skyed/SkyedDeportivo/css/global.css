@@ -64,7 +64,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
   padding:.9rem 1.25rem;gap:1rem;
 }
 .brand{display:flex;align-items:center;gap:.6rem;font-weight:800;color:var(--primary);font-size:1.25rem}
-.brand img{width:38px;height:38px}
+.brand img{width:48px;}
 .brand span em{color:var(--accent);font-style:normal}
 
 .nav-links{display:flex;align-items:center;gap:.25rem;list-style:none}
