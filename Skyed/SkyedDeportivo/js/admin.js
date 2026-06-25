@@ -42,12 +42,12 @@ const sectionColumns = {
     { label: 'Acciones', fn: () => actionButtons() },
   ],
   kits: [
-    { label: 'Nombre', keys: ['nombre', 'nombre_kit', 'kit'] },
-    { label: 'Stock', keys: ['stock', 'cantidad'] },
-    { label: 'Talla', keys: ['talla', 'tallas'] },
-    { label: 'Dorsal', keys: ['dorsal', 'rango_dorsal'] },
-    { label: 'Entrega', keys: ['entrega', 'fecha_entrega'] },
-    { label: '', fn: () => renderButton('✏️') },
+    { label: 'Nombre',  keys: ['nombre_k', 'nombre_kit', 'kit'] },
+    { label: 'Stock',   keys: ['stock_k', 'stock'] },
+    { label: 'Talla',   keys: ['talla_camiseta_k', 'talla'] },
+    { label: 'Dorsal',  keys: ['numero_dorsal_k', 'dorsal'] },
+    { label: 'Entrega', keys: ['fecha_entrega_k', 'fecha_entrega'] },
+    { label: '', fn: row => `<button class="btn btn-outline btn-sm" onclick='abrirModalKit(${JSON.stringify(row)})'>✏️</button>` },
   ],
   entregas: [
     { label: 'Participante', keys: ['participante', 'nombre', 'usuario'] },
