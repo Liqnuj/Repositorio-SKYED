@@ -26,7 +26,9 @@ try {
 
     
     $pagos = $pdo->query("SELECT * FROM pago ORDER BY fecha_p DESC")->fetchAll(PDO::FETCH_ASSOC);
+    
 
+    $kits = $pdo->query("SELECT * FROM kit ORDER BY fecha_entrega_k ASC")->fetchAll(PDO::FETCH_ASSOC);
     
     $totalUsuarios     = count($usuarios);
     $totalEventos      = count($eventos);
@@ -39,6 +41,7 @@ try {
         'monto_p'
     ));
 
+
     echo json_encode([
         'ok' => true,
         'data' => [
@@ -46,7 +49,7 @@ try {
             'inscripciones' => $inscripciones,
             'eventos'       => $eventos,
             'pagos'         => $pagos,
-            'kits'          => [],
+            'kits'          => $kits,
             'entregas'      => [],
             'categorias'    => [],
             'patrocinadores'=> [],

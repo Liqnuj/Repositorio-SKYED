@@ -173,7 +173,7 @@ body.dark-mode {
   margin-top: 4px;
   padding: 9px;
   background: none;
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent);
   border-radius: 7px;
   cursor: pointer;
   font-size: 11px;
@@ -208,11 +208,12 @@ body.dark-mode .pay-icon {
 }
 
 nav{
-  background:rgba(26, 10, 46, 0.96);
+  background:rgba(255, 255, 255, 0.96);
 }
+
 /* ── MODO OSCURO - NAV ── */
 body.dark-mode nav {
-  background: #1f1c19;
+  background:rgba(26, 10, 46, 0.96);
   border-bottom-color: #3a3430;
 }
 body.dark-mode .nav-logo {
