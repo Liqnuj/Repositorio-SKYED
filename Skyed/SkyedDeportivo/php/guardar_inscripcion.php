@@ -56,7 +56,8 @@ try {
     // Preparar datos
     $metodo_pago       = $d['metodo_pago']       ?? 'transferencia';
     $estado            = ($metodo_pago === 'efectivo') ? 'pendiente_pago' : 'pendiente_validacion';
-    $precio_pagado     = (float)($d['precio']    ?? ($evento['precio_e'] ?? 0));
+    $precio_pagado     = round((float)($d['precio'] ?? ($evento['precio_e'] ?? 0)), 2);
+    $monto_pago        = round($precio_pagado, 2);
     $doc_u             = $d['doc_u']              ?? ($_SESSION['documento'] ?? '');
     $rh_u              = $d['rh_u']               ?? '';
     $telefono_u        = $d['telefono_u']          ?? ($_SESSION['telefono'] ?? '');
@@ -181,7 +182,7 @@ try {
     ) VALUES (?,?,?,?,?,?,?)");
     $stmtPago->execute([
         $metodo_pago, $pago_referencia, $pago_comprobante,
-        $precio_pagado, $pago_fecha, $pago_estado, $nuevo_id
+        number_format($monto_pago, 2, '.', ''), $pago_fecha, $pago_estado, $nuevo_id
     ]);
     $pago_id = $pdo->lastInsertId();
 
