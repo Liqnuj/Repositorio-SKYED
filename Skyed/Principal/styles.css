@@ -42,6 +42,14 @@ body {
   text-decoration: none;
 }
 
+.nav-gem img {
+  width: 48px;
+}
+
+.nav-gem img:hover {
+  transform: scale(1.2);
+}
+
 .nav-gem {
   width: 36px;
   height: 36px;
@@ -53,10 +61,6 @@ body {
   font-weight: 800;
   font-size: 14px;
   flex-shrink: 0;
-}
-
-.nav-gem img {
-  width: 48px;
 }
 
 .nav-title {
@@ -259,11 +263,11 @@ body {
   border-right: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-.choose-social { background: #18122c; }
-.choose-sport  { background: #0f272c; }
+.choose-social { background: #1a1330; }
+.choose-sport  { background: #132d33; }
 
-.choose-social:hover { background: #221746; }
-.choose-sport:hover  { background: #13393a; }
+.choose-social:hover { background: #26194d; }
+.choose-sport:hover  { background: #154041; }
 
 /* Orbs decorativos */
 .choose-orb {
@@ -675,7 +679,7 @@ body {
 .quote-mark {
   font-family: 'Playfair Display', serif;
   font-size: 7rem;
-  color: rgba(182, 145, 51, 0.404);
+  color: rgba(200, 162, 64, 0.14);
   line-height: 0.4;
   display: block;
   margin-bottom: 1.5rem;

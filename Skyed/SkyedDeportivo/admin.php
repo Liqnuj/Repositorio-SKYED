@@ -52,15 +52,24 @@ try {
 } catch (PDOException $e) {
     die("Error al conectar con la base de datos: " . $e->getMessage());
 }
-?>
 
+
+$kitsregistrados = [];
+try {
+  $stmt = $pdo->query("SELECT * FROM kit ORDER BY fecha_entrega_k ASC");
+  $kitsregistrados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error al conectar con la base de datos: " . $e->getMessage());
+}
+
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Admin — SKYED</title>
-  <link rel="icon" href="img/logo.png" />
+  <link rel="icon" href="img/logo_deportivo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/admin.css" />
@@ -120,6 +129,7 @@ try {
     </button>
     <button class="nav-item" data-page="kits">
       <span class="icon">🎽</span> Kits / Entregas
+      <span class="badge-count"><?= count($kitsregistrados); ?></span>
     </button>
     <button class="nav-item" data-page="categorias">
       <span class="icon">🏷️</span> Categorías
@@ -219,7 +229,7 @@ try {
       <div class="kpi-card">
         <div class="kpi-icon purple">🎽</div>
         <div>
-          <div class="kpi-val" id="kpiKits"></div>
+          <div class="kpi-val" id="kpiKits"><?= count($kitsregistrados); ?></div>
           <div class="kpi-label">Kits entregados</div>
           <div class="kpi-delta up"></div>
         </div>
@@ -1151,7 +1161,7 @@ try {
       <div style="display:flex;align-items:center;gap:.6rem">
         <i class="ti ti-user-circle" style="font-size:20px;color:var(--accent,#185FA5)" aria-hidden="true"></i>
         <div>
-          <span class="modal-title">Ver / Editar usuario</span>
+          <span class="modal-title">Editar usuario</span>
           <p style="font-size:11px;color:#949595;margin:0">Información personal y estado de la cuenta</p>
         </div>
       </div>
@@ -2297,9 +2307,7 @@ document.getElementById('modal-kit').addEventListener('click', function(e) {
   if (e.target === this) closeModal('modal-kit');
 });
 
-// Limpia el formulario al abrir
 function abrirModalKit(datos = null) {
-  // Si se pasan datos, es modo edición; si no, modo creación
   const esEdicion = datos !== null;
 
   document.querySelector('#modal-kit .kit-modal-header-left span').textContent =
@@ -2318,54 +2326,45 @@ function abrirModalKit(datos = null) {
 
 // Validación y guardado
 function guardarKit() {
-  const nombre   = document.getElementById('kit-nombre').value.trim();
-  const stock    = document.getElementById('kit-stock').value.trim();
-  const fecha    = document.getElementById('kit-fecha').value;
-  const lugar    = document.getElementById('kit-lugar').value.trim();
-  const talla    = document.getElementById('kit-talla').value;
-  const dorsal   = document.getElementById('kit-dorsal').value.trim();
-  const contenido= document.getElementById('kit-contenido').value.trim();
+  const nombre    = document.getElementById('kit-nombre').value.trim();
+  const stock     = document.getElementById('kit-stock').value.trim();
+  const fecha     = document.getElementById('kit-fecha').value;
+  const lugar     = document.getElementById('kit-lugar').value.trim();
+  const talla     = document.getElementById('kit-talla').value;
+  const dorsal    = document.getElementById('kit-dorsal').value.trim();
+  const contenido = document.getElementById('kit-contenido').value.trim();
 
-  // Validaciones básicas
-  if (!nombre) {
-    mostrarErrorKit('kit-nombre', 'El nombre del kit es obligatorio');
-    return;
-  }
-  if (!stock || isNaN(stock) || parseInt(stock) < 0) {
-    mostrarErrorKit('kit-stock', 'Ingresa un stock válido');
-    return;
-  }
-  if (!fecha) {
-    mostrarErrorKit('kit-fecha', 'La fecha de entrega es obligatoria');
-    return;
-  }
-  if (!lugar) {
-    mostrarErrorKit('kit-lugar', 'El lugar de entrega es obligatorio');
-    return;
-  }
+  if (!nombre) { mostrarErrorKit('kit-nombre', 'El nombre del kit es obligatorio'); return; }
+  if (!stock || isNaN(stock) || parseInt(stock) < 0) { mostrarErrorKit('kit-stock', 'Ingresa un stock válido'); return; }
+  if (!fecha)  { mostrarErrorKit('kit-fecha', 'La fecha de entrega es obligatoria'); return; }
+  if (!lugar)  { mostrarErrorKit('kit-lugar', 'El lugar de entrega es obligatorio'); return; }
 
   limpiarErroresKit();
 
-  closeModal('modal-kit');
-  showToast('Kit guardado ✅', 'success');
-}
-
-function mostrarErrorKit(campoId, mensaje) {
-  limpiarErroresKit();
-  const campo = document.getElementById(campoId);
-  campo.classList.add('kit-input-error');
-  const err = document.createElement('span');
-  err.className = 'kit-error-msg';
-  err.textContent = mensaje;
-  campo.closest('.kit-form-group').appendChild(err);
-  campo.focus();
-}
-
-function limpiarErroresKit() {
-  document.querySelectorAll('#modal-kit .kit-input-error')
-    .forEach(el => el.classList.remove('kit-input-error'));
-  document.querySelectorAll('#modal-kit .kit-error-msg')
-    .forEach(el => el.remove());
+  fetch('php/guardar_kit.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      nombre_kit:     nombre,
+      stock:          parseInt(stock),
+      fecha_entrega:  fecha,
+      lugar_entrega:  lugar,
+      contenido_kit:  contenido,
+      talla_camiseta: talla,
+      numero_dorsal:  parseInt(dorsal) || 0,
+    })
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      closeModal('modal-kit');
+      showToast('Kit guardado ✅', 'success');
+      loadAdminData(); 
+    } else {
+      showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
+    }
+  })
+  .catch(() => showToast('Error de conexión ❌', 'error'));
 }
 
 /* ===== SESSION MANAGEMENT ===== */
