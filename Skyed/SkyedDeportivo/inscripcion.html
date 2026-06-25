@@ -627,22 +627,6 @@
                       <span class="error" id="err-contacto-tel">Ingresa el teléfono del contacto</span>
                     </div>
                     <div class="form-group">
-                      <label for="p1-parentesco">Parentesco <span class="req">*</span></label>
-                      <select id="p1-parentesco" name="parentesco" required>
-                        <option value="">Seleccionar…</option>
-                        <option value="padre/madre">Padre / Madre</option>
-                        <option value="hermano/a">Hermano/a</option>
-                        <option value="conyuge">Cónyuge / Pareja</option>
-                        <option value="hijo/a">Hijo/a</option>
-                        <option value="amigo/a">Amigo/a</option>
-                        <option value="otro">Otro</option>
-                      </select>
-                      <span class="error" id="err-parentesco">Selecciona el parentesco</span>
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="form-group">
                       <label for="p1-fecha-nac">Fecha de nacimiento <span class="req">*</span></label>
                       <input type="date" id="p1-fecha-nac" name="fecha_nacimiento_u" autocomplete="bday" required />
                       <span class="error" id="err-fecha">Ingresa tu fecha de nacimiento</span>
@@ -700,93 +684,6 @@
                     <i class="ti ti-info-circle"></i>
                     <span>Tus datos médicos solo serán visibles para el personal de primeros auxilios del evento y nunca se compartirán con terceros.</span>
                   </div>
-
-                  <!-- ╔═ INVITADO ═╗ -->
-                  <div class="form-group" style="margin-top:1.5rem">
-                    <button type="button" id="btn-invitado" class="btn btn-outline" style="width:100%;border-color:var(--accent);color:var(--accent);gap:.5rem">
-                      <i class="ti ti-user-plus"></i> Agregar invitado (participante adicional)
-                    </button>
-                  </div>
-
-                  <div id="guest-section" style="display:none">
-                    <div class="alert alert-info" style="margin-bottom:1rem">
-                      <i class="ti ti-info-circle"></i>
-                      <span>Los datos del invitado se registrarán como participante adicional en este evento.</span>
-                    </div>
-                    <div class="form-card" style="background:var(--surface);border:1px solid var(--border);border-radius:.75rem;padding:1.25rem;margin-bottom:1rem">
-                      <h3 style="font-size:1rem;font-weight:700;color:var(--primary);margin-bottom:1rem"><i class="ti ti-users"></i> Datos del invitado</h3>
-
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label for="inv-tipo-doc">Tipo de documento <span class="req">*</span></label>
-                          <select id="inv-tipo-doc" name="inv_tipo_documento">
-                            <option value="">Seleccionar…</option>
-                            <option value="CC">Cédula de ciudadanía</option>
-                            <option value="TI">Tarjeta de identidad</option>
-                            <option value="CE">Cédula de extranjería</option>
-                            <option value="PA">Pasaporte</option>
-                          </select>
-                          <span class="error" id="err-inv-tipo-doc">Selecciona el tipo de documento</span>
-                        </div>
-                        <div class="form-group">
-                          <label for="inv-doc">N.º de documento <span class="req">*</span></label>
-                          <input type="text" id="inv-doc" name="inv_documento" placeholder="1234567890" inputmode="numeric" />
-                          <span class="error" id="err-inv-doc">Ingresa el documento del invitado</span>
-                        </div>
-                      </div>
-
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label for="inv-nombre">Nombre <span class="req">*</span></label>
-                          <input type="text" id="inv-nombre" name="inv_nombre" placeholder="Nombre" />
-                          <span class="error" id="err-inv-nombre">Ingresa el nombre del invitado</span>
-                        </div>
-                        <div class="form-group">
-                          <label for="inv-apellido">Apellido <span class="req">*</span></label>
-                          <input type="text" id="inv-apellido" name="inv_apellido" placeholder="Apellido" />
-                          <span class="error" id="err-inv-apellido">Ingresa el apellido del invitado</span>
-                        </div>
-                      </div>
-
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label for="inv-rh">Tipo de sangre (RH) <span class="req">*</span></label>
-                          <select id="inv-rh" name="inv_rh">
-                            <option value="">Seleccionar…</option>
-                            <option>O+</option><option>O-</option>
-                            <option>A+</option><option>A-</option>
-                            <option>B+</option><option>B-</option>
-                            <option>AB+</option><option>AB-</option>
-                          </select>
-                          <span class="error" id="err-inv-rh">Selecciona el tipo de sangre</span>
-                        </div>
-                        <div class="form-group">
-                          <label for="inv-tel">Teléfono <span class="req">*</span></label>
-                          <input type="tel" id="inv-tel" name="inv_telefono" placeholder="+57 300 000 0000" />
-                          <span class="error" id="err-inv-tel">Ingresa el teléfono del invitado</span>
-                        </div>
-                      </div>
-
-                      <div class="form-row">
-                        <div class="form-group">
-                          <label for="inv-fecha-nac">Fecha de nacimiento <span class="req">*</span></label>
-                          <input type="date" id="inv-fecha-nac" name="inv_fecha_nacimiento" />
-                          <span class="error" id="err-inv-fecha">Ingresa la fecha de nacimiento</span>
-                        </div>
-                        <div class="form-group">
-                          <label for="inv-correo">Correo electrónico <span style="color:var(--muted);font-weight:500">(opcional)</span></label>
-                          <input type="email" id="inv-correo" name="inv_correo" placeholder="invitado@correo.com" />
-                        </div>
-                      </div>
-
-                      <div style="text-align:right;margin-top:.5rem">
-                        <button type="button" id="btn-quitar-invitado" class="btn btn-outline" style="font-size:.82rem;border-color:var(--danger,#e53e3e);color:var(--danger,#e53e3e)">
-                          <i class="ti ti-trash"></i> Quitar invitado
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- ╚═ FIN INVITADO ═╝ -->
 
                   <div class="step-nav">
                     <span></span>
