@@ -42,11 +42,18 @@ body {
   text-decoration: none;
 }
 
+.nav-gem img {
+  width: 48px;
+}
+
+.nav-gem img:hover {
+  transform: scale(1.2);
+}
+
 .nav-gem {
   width: 36px;
   height: 36px;
   border-radius: 10px;
-  background: #534AB7;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,6 +73,7 @@ body {
 .nav-links {
   display: flex;
   gap: 2rem;
+  margin-left: 40px;
 }
 
 .nav-links a {
@@ -256,10 +264,10 @@ body {
 }
 
 .choose-social { background: #1a1330; }
-.choose-sport  { background: #123036; }
+.choose-sport  { background: #132d33; }
 
-.choose-social:hover { background: #201540; }
-.choose-sport:hover  { background: #0d2728; }
+.choose-social:hover { background: #26194d; }
+.choose-sport:hover  { background: #154041; }
 
 /* Orbs decorativos */
 .choose-orb {
