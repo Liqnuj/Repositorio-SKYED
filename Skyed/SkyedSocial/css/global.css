@@ -32,7 +32,7 @@ nav {
 }
 
 nav.scrolled {
-  background: rgba(26, 10, 46, 0.96);
+  background: rgba(255, 255, 255, 0.96);
   backdrop-filter: blur(20px);
   padding: .65rem 0;
   box-shadow: 0 4px 40px rgba(26, 10, 46, .3);
@@ -251,7 +251,7 @@ section{padding:6rem 0}
 .text-center .section-sub{margin:0 auto}
 
 /* ABOUT STRIP */
-.about-strip{background:var(--plum);padding:5rem 0}
+.about-strip{background:var(--plum) ;padding:5rem 0}
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
 .about-visual{position:relative}
 .about-img-wrap{position:relative;border-radius:24px;overflow:hidden;aspect-ratio:4/5}

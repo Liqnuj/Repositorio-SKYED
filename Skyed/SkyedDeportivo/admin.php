@@ -53,23 +53,25 @@ try {
     die("Error al conectar con la base de datos: " . $e->getMessage());
 }
 
-
-$kitsregistrados = [];
+$kitsRegistrados = [];
 try {
-  $stmt = $pdo->query("SELECT * FROM kit ORDER BY fecha_entrega_k ASC");
-  $kitsregistrados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $pdo->query("SELECT * FROM kit ORDER BY nombre_k ASC");
+    $kitsRegistrados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error al conectar con la base de datos: " . $e->getMessage());
 }
 
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Admin — SKYED</title>
-  <link rel="icon" href="img/logo_deportivo.png" />
+  <link rel="icon" href="img/logo_deportivo_nav.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/admin.css" />
@@ -129,7 +131,7 @@ try {
     </button>
     <button class="nav-item" data-page="kits">
       <span class="icon">🎽</span> Kits / Entregas
-      <span class="badge-count"><?= count($kitsregistrados); ?></span>
+      <span class="badge-count"><?= count($kitsRegistrados); ?></span>
     </button>
     <button class="nav-item" data-page="categorias">
       <span class="icon">🏷️</span> Categorías
@@ -229,7 +231,7 @@ try {
       <div class="kpi-card">
         <div class="kpi-icon purple">🎽</div>
         <div>
-          <div class="kpi-val" id="kpiKits"><?= count($kitsregistrados); ?></div>
+          <div class="kpi-val" id="kpiKits"></div>
           <div class="kpi-label">Kits entregados</div>
           <div class="kpi-delta up"></div>
         </div>
@@ -576,21 +578,15 @@ try {
           </thead>
           <tbody id="kitsBody">
             <tr>
-              <td><strong>Kit Gran Fondo</strong></td>
-              <td>200</td>
-              <td>M / L / XL</td>
-              <td>001–200</td>
-              <td>Tunja, 14 Jun</td>
+              <?php foreach ($kitsRegistrados as $kit): ?>
+              <td><strong><?php echo $kit['nombre_k']; ?></strong></td>
+              <td><?php echo $kit['stock']; ?></td>
+              <td><?php echo $kit['talla']; ?></td>
+              <td><?php echo $kit['dorsal']; ?></td>
+              <td><?php echo $kit['entrega']; ?></td>
               <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-kit')">✏️</button></td>
             </tr>
-            <tr>
-              <td><strong>Kit Trail Páramo</strong></td>
-              <td>120</td>
-              <td>S / M / L</td>
-              <td>001–120</td>
-              <td>Sogamoso, 21 Jun</td>
-              <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-kit')">✏️</button></td>
-            </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
@@ -1161,7 +1157,7 @@ try {
       <div style="display:flex;align-items:center;gap:.6rem">
         <i class="ti ti-user-circle" style="font-size:20px;color:var(--accent,#185FA5)" aria-hidden="true"></i>
         <div>
-          <span class="modal-title">Editar usuario</span>
+          <span class="modal-title">Ver / Editar usuario</span>
           <p style="font-size:11px;color:#949595;margin:0">Información personal y estado de la cuenta</p>
         </div>
       </div>
@@ -1818,7 +1814,6 @@ try {
   };
 
   function navigate(id) {
-    // Hide all pages
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
@@ -1830,146 +1825,139 @@ try {
 
     history.replaceState(null, '', '#' + id);
 
-    // Close sidebar on mobile
     if (window.innerWidth <= 860) closeSidebar();
   }
-
 
   document.querySelectorAll('.nav-item[data-page]').forEach(btn => {
     btn.addEventListener('click', () => navigate(btn.dataset.page));
   });
 
   document.addEventListener('DOMContentLoaded', function() {
-  // Restaurar página activa desde el hash de la URL
-  const hash = window.location.hash.replace('#', '');
-  if (hash && document.getElementById('page-' + hash)) {
-    navigate(hash);
-  }
-});
+    const hash = window.location.hash.replace('#', '');
+    if (hash && document.getElementById('page-' + hash)) {
+      navigate(hash);
+    }
+  });
 
   /* ===== MODALS ===== */
   function openModal(id) {
     document.getElementById(id).classList.add('open');
   }
+
   function closeModal(id) {
-  document.getElementById(id).classList.remove('open');
-  if (id === 'modal-evento') {
-    const tabs   = document.querySelectorAll('.mev-tab');
-    const panels = document.querySelectorAll('.mev-panel');
-    tabs.forEach((t,i)   => { t.classList.remove('active','done'); if(i===0) t.classList.add('active'); });
-    panels.forEach((p,i) => { p.classList.remove('active'); if(i===0) p.classList.add('active'); });
-    document.getElementById('mev-btn-back').disabled = true;
-    document.getElementById('mev-btn-next').innerHTML = 'Siguiente <i class="ti ti-arrow-right"></i>';
-    document.getElementById('mev-prog').style.width = '25%';
-    step = 0;
+    document.getElementById(id).classList.remove('open');
+    if (id === 'modal-evento') {
+      const tabs   = document.querySelectorAll('.mev-tab');
+      const panels = document.querySelectorAll('.mev-panel');
+      tabs.forEach((t,i)   => { t.classList.remove('active','done'); if(i===0) t.classList.add('active'); });
+      panels.forEach((p,i) => { p.classList.remove('active'); if(i===0) p.classList.add('active'); });
+      document.getElementById('mev-btn-back').disabled = true;
+      document.getElementById('mev-btn-next').innerHTML = 'Siguiente <i class="ti ti-arrow-right"></i>';
+      document.getElementById('mev-prog').style.width = '25%';
+      step = 0;
+    }
   }
-}
+
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', e => {
       if (e.target === overlay) overlay.classList.remove('open');
     });
   });
 
-async function abrirModalUsuario(idU) {
-  openModal('modal-usuario');           
-  limpiarModalUsuario();              
+  async function abrirModalUsuario(idU) {
+    openModal('modal-usuario');
+    limpiarModalUsuario();
 
-  try {
-    const res  = await fetch(`php/obtener_usuario.php?id=${idU}`);
-    const user = await res.json();
-    if (user.error) { showToast('Error al cargar usuario ❌', 'error'); return; }
+    try {
+      const res  = await fetch(`php/obtener_usuario.php?id=${idU}`);
+      const user = await res.json();
+      if (user.error) { showToast('Error al cargar usuario ❌', 'error'); return; }
 
-    document.getElementById('modal-usuario').dataset.idU = user.id_u;
+      document.getElementById('modal-usuario').dataset.idU = user.id_u;
 
-    // Avatar
-    const iniciales = `${user.nombre_u?.[0] ?? ''}${user.apellido_u?.[0] ?? ''}`.toUpperCase();
-    document.getElementById('mu-av').textContent       = iniciales || '?';
-    document.getElementById('mu-av-name').textContent  = `${user.nombre_u} ${user.apellido_u}`;
-    document.getElementById('mu-av-email').textContent = user.correo_u;
+      const iniciales = `${user.nombre_u?.[0] ?? ''}${user.apellido_u?.[0] ?? ''}`.toUpperCase();
+      document.getElementById('mu-av').textContent       = iniciales || '?';
+      document.getElementById('mu-av-name').textContent  = `${user.nombre_u} ${user.apellido_u}`;
+      document.getElementById('mu-av-email').textContent = user.correo_u;
 
-    // Documento
-    document.getElementById('mu-tipo-doc').value  = user.tipo_documento_u ?? '';
-    document.getElementById('mu-documento').value = user.documento_u ?? '';
+      document.getElementById('mu-tipo-doc').value  = user.tipo_documento_u ?? '';
+      document.getElementById('mu-documento').value = user.documento_u ?? '';
 
-    // Datos personales
-    document.getElementById('mu-nombre').value  = user.nombre_u ?? '';
-    document.getElementById('mu-apellido').value = user.apellido_u ?? '';
-    document.getElementById('mu-fecha').value   = user.fecha_nacimiento_u ?? '';
-    document.getElementById('mu-rh').value      = user.rh_u ?? '';
+      document.getElementById('mu-nombre').value   = user.nombre_u ?? '';
+      document.getElementById('mu-apellido').value = user.apellido_u ?? '';
+      document.getElementById('mu-fecha').value    = user.fecha_nacimiento_u ?? '';
+      document.getElementById('mu-rh').value       = user.rh_u ?? '';
 
-    // Contacto
-    document.getElementById('mu-email').value = user.correo_u ?? '';
-    document.getElementById('mu-tel').value   = user.telefono_u ?? '';
+      document.getElementById('mu-email').value = user.correo_u ?? '';
+      document.getElementById('mu-tel').value   = user.telefono_u ?? '';
 
-  } catch (e) {
-    showToast('Error de conexión ❌', 'error');
-  }
-}
-
-// ── Guardar cambios ────────────────────────────────────────
-async function guardarUsuario() {
-  const idU = document.getElementById('modal-usuario').dataset.idU;
-  if (!idU) { console.error('❌ No hay idU en el dataset'); return; }
-
-  const payload = {
-    id_u:               idU,
-    tipo_documento_u:   document.getElementById('mu-tipo-doc').value,
-    documento_u:        document.getElementById('mu-documento').value,
-    nombre_u:           document.getElementById('mu-nombre').value,
-    apellido_u:         document.getElementById('mu-apellido').value,
-    fecha_nacimiento_u: document.getElementById('mu-fecha').value,
-    rh_u:               document.getElementById('mu-rh').value,
-    correo_u:           document.getElementById('mu-email').value,
-    telefono_u:         document.getElementById('mu-tel').value,
-  };
-
-  console.log('📤 Enviando payload:', payload); // ← ve qué se envía
-
-  try {
-    const res  = await fetch('php/actualizar_usuario.php', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
-    });
-
-    const text = await res.text(); // ← texto crudo antes de parsear
-    console.log('📥 Respuesta cruda:', text);
-
-    const data = JSON.parse(text);
-    console.log('✅ JSON parseado:', data);
-
-    if (data.success) {
-      closeModal('modal-usuario');
-      showToast('Usuario guardado ✅', 'success');
-    } else {
-      showToast('Error al guardar ❌', 'error');
+    } catch (e) {
+      showToast('Error de conexión ❌', 'error');
     }
-  } catch (e) {
-    console.error('💥 Error:', e);
-    showToast('Error de conexión ❌', 'error');
   }
-}
 
-// ── Helpers ────────────────────────────────────────────────
-function limpiarModalUsuario() {
-  ['mu-av','mu-av-name','mu-av-email','mu-tipo-doc','mu-documento',
-   'mu-nombre','mu-apellido','mu-fecha','mu-rh','mu-email','mu-tel']
-    .forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.tagName === 'SELECT' || el.tagName === 'INPUT' ? el.value = '' : el.textContent = '…';
-    });
-}
+  async function guardarUsuario() {
+    const idU = document.getElementById('modal-usuario').dataset.idU;
+    if (!idU) { console.error('❌ No hay idU en el dataset'); return; }
 
-// Live update del avatar mientras editas
-function muUpdate() {
-  const n = document.getElementById('mu-nombre').value;
-  const a = document.getElementById('mu-apellido').value;
-  document.getElementById('mu-av').textContent      = `${n[0]??''}${a[0]??''}`.toUpperCase() || '?';
-  document.getElementById('mu-av-name').textContent = `${n} ${a}`.trim() || 'Nombre del usuario';
-}
-function muUpdateEmail(el) {
-  document.getElementById('mu-av-email').textContent = el.value || 'correo@gmail.com';
-}
+    const payload = {
+      id_u:               idU,
+      tipo_documento_u:   document.getElementById('mu-tipo-doc').value,
+      documento_u:        document.getElementById('mu-documento').value,
+      nombre_u:           document.getElementById('mu-nombre').value,
+      apellido_u:         document.getElementById('mu-apellido').value,
+      fecha_nacimiento_u: document.getElementById('mu-fecha').value,
+      rh_u:               document.getElementById('mu-rh').value,
+      correo_u:           document.getElementById('mu-email').value,
+      telefono_u:         document.getElementById('mu-tel').value,
+    };
+
+    console.log('📤 Enviando payload:', payload);
+
+    try {
+      const res  = await fetch('php/actualizar_usuario.php', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+
+      const text = await res.text();
+      console.log('📥 Respuesta cruda:', text);
+
+      const data = JSON.parse(text);
+      console.log('✅ JSON parseado:', data);
+
+      if (data.success) {
+        closeModal('modal-usuario');
+        showToast('Usuario guardado ✅', 'success');
+      } else {
+        showToast('Error al guardar ❌', 'error');
+      }
+    } catch (e) {
+      console.error('💥 Error:', e);
+      showToast('Error de conexión ❌', 'error');
+    }
+  }
+
+  function limpiarModalUsuario() {
+    ['mu-av','mu-av-name','mu-av-email','mu-tipo-doc','mu-documento',
+     'mu-nombre','mu-apellido','mu-fecha','mu-rh','mu-email','mu-tel']
+      .forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.tagName === 'SELECT' || el.tagName === 'INPUT' ? el.value = '' : el.textContent = '…';
+      });
+  }
+
+  function muUpdate() {
+    const n = document.getElementById('mu-nombre').value;
+    const a = document.getElementById('mu-apellido').value;
+    document.getElementById('mu-av').textContent      = `${n[0]??''}${a[0]??''}`.toUpperCase() || '?';
+    document.getElementById('mu-av-name').textContent = `${n} ${a}`.trim() || 'Nombre del usuario';
+  }
+
+  function muUpdateEmail(el) {
+    document.getElementById('mu-av-email').textContent = el.value || 'correo@gmail.com';
+  }
 
   /* ===== TOAST ===== */
   let toastTimer;
@@ -1982,29 +1970,23 @@ function muUpdateEmail(el) {
     toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
   }
 
-function toggleSidebar() {
-  const sb = document.getElementById('sidebar');
-  const collapsed = sb.classList.toggle('collapsed');
-  document.body.classList.toggle('sidebar-collapsed', collapsed);
-  if (window.innerWidth <= 860) {
-    document.getElementById('sidebarOverlay').classList.toggle('open', !collapsed);
+  function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    const collapsed = sb.classList.toggle('collapsed');
+    document.body.classList.toggle('sidebar-collapsed', collapsed);
+    if (window.innerWidth <= 860) {
+      document.getElementById('sidebarOverlay').classList.toggle('open', !collapsed);
+    }
   }
-}
 
-function closeSidebar() {
-  document.getElementById('sidebar').classList.add('collapsed');
-  document.getElementById('sidebarOverlay').classList.remove('open');
-  document.body.classList.add('sidebar-collapsed');
-}
-
-function closeSidebar() {
-  const sb = document.getElementById('sidebar');
-  const ov = document.getElementById('sidebarOverlay');
-  sb.classList.remove('open');
-  sb.classList.add('collapsed');
-  ov.classList.remove('open');
-  document.body.classList.add('sidebar-collapsed');
-}
+  function closeSidebar() {
+    const sb = document.getElementById('sidebar');
+    const ov = document.getElementById('sidebarOverlay');
+    sb.classList.remove('open');
+    sb.classList.add('collapsed');
+    ov.classList.remove('open');
+    document.body.classList.add('sidebar-collapsed');
+  }
 
   /* ===== NOTIFICACIONES ===== */
   document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -2015,382 +1997,397 @@ function closeSidebar() {
     });
   });
 
-// formulario de creación de eventos
-let step=0;
-(function(){
-  const TODAY = new Date(); TODAY.setHours(0,0,0,0);
-  const CY = TODAY.getFullYear(), CM = TODAY.getMonth();
-  let selY=CY, selM=CM, selD=null, yrOff=0; 
-  const MES    = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const MES_F  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
-                  'septiembre','octubre','noviembre','diciembre'];
-  const DIAS   = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+  /* ===== STEPPER (fuera del IIFE para que sea global) ===== */
+  let step = 0;
 
-  /* ---- Helpers ---- */
-  window.mevChar = function(inputId, hintId) {
-    document.getElementById(hintId).textContent = document.getElementById(inputId).value.length;
-  };
-  window.mevSelCat = function(el) {
-    document.querySelectorAll('.mev-cat-card').forEach(c => c.classList.remove('sel'));
-    el.classList.add('sel');
-  };
-  window.mevAdj = function(d) {
-    const i = document.getElementById('ev-cupos');
-    i.value = Math.max(1, (parseInt(i.value)||0) + d);
-  };
-  window.mevSelSt = function(el, cls) {
-    document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act','sel-ina'));
-    el.classList.add(cls);
-  };
-                }
-);
-  /* ---- Stepper ---- */
-window.mevGoStep = function(dir) {
-  if (step === 3 && dir === 1) {
-    guardarEvento();
-    return;
-  }
-
-  const tabs   = document.querySelectorAll('.mev-tab');
-  const panels = document.querySelectorAll('.mev-panel');
-  tabs[step].classList.remove('active'); tabs[step].classList.add('done');
-  panels[step].classList.remove('active');
-  step = Math.min(3, Math.max(0, step + dir));
-  tabs[step].classList.remove('done'); tabs[step].classList.add('active');
-  panels[step].classList.add('active');
-  document.getElementById('mev-btn-back').disabled = step === 0;
-  const nb = document.getElementById('mev-btn-next');
-  nb.innerHTML = step === 3
-    ? '<i class="ti ti-device-floppy" aria-hidden="true"></i> Guardar evento'
-    : 'Siguiente <i class="ti ti-arrow-right" aria-hidden="true"></i>';
-  document.getElementById('mev-prog').style.width = ((step + 1) / 4 * 100) + '%';
-};
-
-  /* ---- Calendario: años ---- */
-  function renderYrs() {
-    const c = document.getElementById('mev-yr-chips'); c.innerHTML = '';
-    for (let y = CY+yrOff; y < CY+yrOff+5; y++) {
-      const d = document.createElement('div');
-      d.className = 'mev-yr-chip' + (y===selY ? ' sel' : '');
-      d.textContent = y;
-      d.onclick = () => { selY=y; if(selY===CY&&selM<CM) selM=CM; renderYrs(); renderCal(); };
-      c.appendChild(d);
-    }
-    document.getElementById('mev-yr-l').style.visibility = yrOff<=0 ? 'hidden' : 'visible';
-  }
-  window.mevShiftYr = function(d) { yrOff+=d; if(yrOff<0)yrOff=0; renderYrs(); };
-
-  /* ---- Calendario: mes ---- */
-  window.mevShiftMo = function(d) {
-    selM+=d;
-    if(selM<0){selM=11;selY--;}
-    if(selM>11){selM=0;selY++;}
-    if(selY===CY&&selM<CM) selM=CM;
-    if(selY<CY){selY=CY;selM=CM;}
-    renderYrs(); renderCal();
-  };
-
-  /* ---- Calendario: días ---- */
-  function renderCal() {
-    document.getElementById('mev-mo-label').textContent = MES[selM] + ' ' + selY;
-    const grid  = document.getElementById('mev-cal-days'); grid.innerHTML = '';
-    const first = (new Date(selY,selM,1).getDay()+6)%7;
-    const days  = new Date(selY,selM+1,0).getDate();
-    for(let i=0;i<first;i++){const e=document.createElement('div');e.className='mev-cd empty';grid.appendChild(e);}
-    for(let d=1;d<=days;d++){
-      const dt    = new Date(selY,selM,d);
-      const past  = dt < TODAY;
-      const today = dt.getTime() === TODAY.getTime();
-      const isSel = d === selD;
-      const cell  = document.createElement('div');
-      cell.className = 'mev-cd'+(past?' past':'')+(today&&!isSel?' today':'')+(isSel?' sel':'');
-      cell.textContent = d;
-      if(!past) cell.onclick = () => { selD=d; updDate(); renderCal(); };
-      grid.appendChild(cell);
-    }
-  }
-
-  function updDate() {
-    const v = document.getElementById('mev-date-val');
-    const iso = document.getElementById('ev-fecha-iso');
-    if (!selD) {
-      v.className = 'val';
-      v.textContent = 'Elige un día';
-      if (iso) iso.value = '';
+  window.mevGoStep = function(dir) {
+    if (step === 3 && dir === 1) {
+      guardarEvento();
       return;
     }
-    const dt  = new Date(selY, selM, selD);
-    const dow = DIAS[(dt.getDay() + 6) % 7];
-    v.className = 'val set';
-    v.textContent = `${dow} ${selD} de ${MES_F[selM]} de ${selY}`;
-    // Guardar en formato YYYY-MM-DD para la BD
-    if (iso) iso.value = `${selY}-${String(selM+1).padStart(2,'0')}-${String(selD).padStart(2,'0')}`;
-  }
-
-  /* ---- Presets de hora ---- */
-  window.mevPreset = function(el,ini,fin) {
-    document.querySelectorAll('.mev-pp').forEach(p=>p.classList.remove('sel'));
-    el.classList.add('sel');
-    document.getElementById('t-inicio').value = ini;
-    document.getElementById('t-fin').value    = fin;
-  };
-  window.mevSyncPresets = function() {
-    document.querySelectorAll('.mev-pp').forEach(p=>p.classList.remove('sel'));
+    const tabs   = document.querySelectorAll('.mev-tab');
+    const panels = document.querySelectorAll('.mev-panel');
+    tabs[step].classList.remove('active'); tabs[step].classList.add('done');
+    panels[step].classList.remove('active');
+    step = Math.min(3, Math.max(0, step + dir));
+    tabs[step].classList.remove('done'); tabs[step].classList.add('active');
+    panels[step].classList.add('active');
+    document.getElementById('mev-btn-back').disabled = step === 0;
+    const nb = document.getElementById('mev-btn-next');
+    nb.innerHTML = step === 3
+      ? '<i class="ti ti-device-floppy" aria-hidden="true"></i> Guardar evento'
+      : 'Siguiente <i class="ti ti-arrow-right" aria-hidden="true"></i>';
+    document.getElementById('mev-prog').style.width = ((step + 1) / 4 * 100) + '%';
   };
 
-  /* ---- Preview imagen ---- */
-  window.mevPrevImg = function(input) {
-    const f = input.files[0]; if(!f) return;
-    const r = new FileReader();
-    r.onload = e => {
-      const img = document.getElementById('mev-img-preview');
-      img.src = e.target.result; img.style.display = 'block';
-      document.getElementById('mev-drop-zone').style.display = 'none';
+  /* ===== CALENDARIO (IIFE correctamente estructurado) ===== */
+  (function () {
+    const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+    const CY = TODAY.getFullYear();
+    const CM = TODAY.getMonth();
+    let selY = CY, selM = CM, selD = null, yrOff = 0;
+
+    const MES   = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    const MES_F = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
+                   'septiembre','octubre','noviembre','diciembre'];
+    const DIAS  = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+
+    /* ---- Helpers globales ---- */
+    window.mevChar = function(inputId, hintId) {
+      const el = document.getElementById(inputId);
+      const hint = document.getElementById(hintId);
+      if (el && hint) hint.textContent = el.value.length;
     };
-    r.readAsDataURL(f);
+    window.mevSelCat = function(el) {
+      document.querySelectorAll('.mev-cat-card').forEach(c => c.classList.remove('sel'));
+      el.classList.add('sel');
+    };
+    window.mevAdj = function(d) {
+      const i = document.getElementById('ev-cupos');
+      if (i) i.value = Math.max(1, (parseInt(i.value)||0) + d);
+    };
+    window.mevSelSt = function(el, cls) {
+      document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act','sel-ina'));
+      el.classList.add(cls);
+    };
+    window.mevPreset = function(el, ini, fin) {
+      document.querySelectorAll('.mev-pp').forEach(p => p.classList.remove('sel'));
+      el.classList.add('sel');
+      document.getElementById('t-inicio').value = ini;
+      document.getElementById('t-fin').value    = fin;
+    };
+    window.mevSyncPresets = function() {
+      document.querySelectorAll('.mev-pp').forEach(p => p.classList.remove('sel'));
+    };
+    window.mevPrevImg = function(input) {
+      const f = input.files[0]; if (!f) return;
+      const r = new FileReader();
+      r.onload = e => {
+        const img = document.getElementById('mev-img-preview');
+        if (img) { img.src = e.target.result; img.style.display = 'block'; }
+        const dz = document.getElementById('mev-drop-zone');
+        if (dz) dz.style.display = 'none';
+      };
+      r.readAsDataURL(f);
+    };
+
+    /* ---- Navegación del calendario ---- */
+    window.mevShiftYr = function(d) {
+      yrOff += d;
+      if (yrOff < 0) yrOff = 0;
+      renderYrs();
+    };
+    window.mevShiftMo = function(d) {
+      selM += d;
+      if (selM < 0)  { selM = 11; selY--; }
+      if (selM > 11) { selM = 0;  selY++; }
+      if (selY === CY && selM < CM) selM = CM;
+      if (selY < CY) { selY = CY; selM = CM; }
+      renderYrs(); renderCal();
+    };
+
+    /* ---- Render años ---- */
+    function renderYrs() {
+      const c = document.getElementById('mev-yr-chips');
+      if (!c) return;
+      c.innerHTML = '';
+      for (let y = CY + yrOff; y < CY + yrOff + 5; y++) {
+        const d = document.createElement('div');
+        d.className = 'mev-yr-chip' + (y === selY ? ' sel' : '');
+        d.textContent = y;
+        d.onclick = () => { selY = y; if (selY === CY && selM < CM) selM = CM; renderYrs(); renderCal(); };
+        c.appendChild(d);
+      }
+      const btnL = document.getElementById('mev-yr-l');
+      if (btnL) btnL.style.visibility = yrOff <= 0 ? 'hidden' : 'visible';
+    }
+
+    /* ---- Render días ---- */
+    function renderCal() {
+      const label = document.getElementById('mev-mo-label');
+      if (label) label.textContent = MES[selM] + ' ' + selY;
+      const grid = document.getElementById('mev-cal-days');
+      if (!grid) return;
+      grid.innerHTML = '';
+      const first = (new Date(selY, selM, 1).getDay() + 6) % 7;
+      const days  = new Date(selY, selM + 1, 0).getDate();
+      for (let i = 0; i < first; i++) {
+        const e = document.createElement('div');
+        e.className = 'mev-cd empty';
+        grid.appendChild(e);
+      }
+      for (let d = 1; d <= days; d++) {
+        const dt    = new Date(selY, selM, d);
+        const past  = dt < TODAY;
+        const today = dt.getTime() === TODAY.getTime();
+        const isSel = d === selD;
+        const cell  = document.createElement('div');
+        cell.className = 'mev-cd' +
+          (past           ? ' past'  : '') +
+          (today && !isSel ? ' today' : '') +
+          (isSel          ? ' sel'   : '');
+        cell.textContent = d;
+        if (!past) cell.onclick = () => { selD = d; updDate(); renderCal(); };
+        grid.appendChild(cell);
+      }
+    }
+
+    function updDate() {
+      const v   = document.getElementById('mev-date-val');
+      const iso = document.getElementById('ev-fecha-iso');
+      if (!selD) {
+        if (v)   { v.className = 'val'; v.textContent = 'Elige un día'; }
+        if (iso)   iso.value = '';
+        return;
+      }
+      const dt  = new Date(selY, selM, selD);
+      const dow = DIAS[(dt.getDay() + 6) % 7];
+      if (v) { v.className = 'val set'; v.textContent = `${dow} ${selD} de ${MES_F[selM]} de ${selY}`; }
+      if (iso) iso.value = `${selY}-${String(selM+1).padStart(2,'0')}-${String(selD).padStart(2,'0')}`;
+    }
+
+    /* ---- Init ---- */
+    function initCalendario() {
+      renderYrs();
+      renderCal();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      initCalendario();
+
+      /* Reiniciar cada vez que el modal se abre */
+      const modalEvento = document.getElementById('modal-evento');
+      if (modalEvento) {
+        new MutationObserver(function (mutations) {
+          mutations.forEach(function (m) {
+            if (m.target.classList.contains('open')) initCalendario();
+          });
+        }).observe(modalEvento, { attributes: true, attributeFilter: ['class'] });
+      }
+    });
+
+  })(); /* ── FIN IIFE calendario ── */
+
+  /* ===== FORM DATA Y GUARDADO ===== */
+  window.getFormData = function() {
+    const catCard = document.querySelector('.mev-cat-card.sel');
+    return {
+      nombre_e:            document.getElementById('ev-nombre').value.trim(),
+      categoria_e:         catCard ? catCard.dataset.cat : '',
+      cupos_disponibles_e: parseInt(document.getElementById('ev-cupos').value) || 0,
+      estado_e:            document.querySelector('.mev-stbtn.sel-act') ? 'activo' : 'inactivo',
+      ubicacion_e:         document.getElementById('ev-ubicacion').value.trim(),
+      fecha_e:             document.getElementById('ev-fecha-iso')?.value || '',
+      hora_e:              document.getElementById('t-inicio').value || '07:00',
+      descripcion_e:       document.getElementById('ev-desc').value.trim(),
+      requisitos_e:        document.getElementById('ev-req').value.trim(),
+      imagen_e:            window.skyedImagenBase64 || 'default.jpg',
+    };
   };
 
-  /* ---- Cerrar modal al hacer clic fuera ---- */
-  document.getElementById('modal-evento').addEventListener('click', function(e){
-    if(e.target === this) this.style.display = 'none';
+  window.guardarEvento = async function() {
+    const payload = getFormData();
+    const idEvento = document.getElementById('modal-evento').dataset.idEvento;
+
+    if (!window.skyedImagenBase64 && window.skyedImagenActual) {
+      payload.imagen_e = window.skyedImagenActual;
+    }
+
+    if (!payload.nombre_e)    { showToast('Ingresa el nombre del evento ❌', 'error'); return; }
+    if (!payload.categoria_e) { showToast('Selecciona una categoría ❌', 'error'); return; }
+    if (!payload.fecha_e)     { showToast('Selecciona una fecha ❌', 'error'); return; }
+    if (!payload.ubicacion_e) { showToast('Ingresa la ubicación ❌', 'error'); return; }
+    if (idEvento) payload.id_e = idEvento;
+
+    const endpoint = idEvento ? 'php/actualizar_evento.php' : 'php/guardar_evento.php';
+
+    try {
+      const res  = await fetch(endpoint, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        delete document.getElementById('modal-evento').dataset.idEvento;
+        window.skyedImagenActual = null;
+        closeModal('modal-evento');
+        showToast(idEvento ? 'Evento actualizado ✅' : 'Evento guardado ✅', 'success');
+        setTimeout(() => loadAdminData(), 800);
+      } else {
+        showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
+      }
+    } catch (e) {
+      showToast('Error de conexión ❌', 'error');
+    }
+  };
+
+  window.abrirModalEditarEvento = async function(idEvento) {
+    openModal('modal-evento');
+    if (!idEvento) return;
+
+    try {
+      const res  = await fetch(`php/obtener_datos_admin.php`);
+      const json = await res.json();
+      if (!json.ok) return;
+
+      const evento = (json.data.eventos || []).find(e => String(e.id_e) === String(idEvento));
+      if (!evento) return;
+
+      document.getElementById('modal-evento').dataset.idEvento = idEvento;
+
+      document.getElementById('ev-nombre').value = evento.nombre_e || '';
+      mevChar('ev-nombre', 'mev-ch-n', 50);
+
+      document.querySelectorAll('.mev-cat-card').forEach(c => {
+        c.classList.toggle('sel', c.dataset.cat === evento.categoria_e);
+      });
+
+      document.getElementById('ev-cupos').value = evento.cupos_disponibles_e || 200;
+
+      document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act', 'sel-ina'));
+      const esActivo    = (evento.estado_e || '').toLowerCase() === 'activo';
+      const btnActivo   = document.querySelector('.mev-stbtn:first-child');
+      const btnInactivo = document.querySelector('.mev-stbtn:last-child');
+      if (esActivo && btnActivo)    btnActivo.classList.add('sel-act');
+      if (!esActivo && btnInactivo) btnInactivo.classList.add('sel-ina');
+
+      document.getElementById('ev-ubicacion').value = evento.ubicacion_e || '';
+
+      if (evento.fecha_e) {
+        document.getElementById('ev-fecha-iso').value = evento.fecha_e;
+        const [y, m, d] = evento.fecha_e.split('-').map(Number);
+        const _DIAS  = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+        const _MES_F = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
+                        'septiembre','octubre','noviembre','diciembre'];
+        const dt  = new Date(y, m - 1, d);
+        const dow = _DIAS[(dt.getDay() + 6) % 7];
+        const dateVal = document.getElementById('mev-date-val');
+        dateVal.className = 'val set';
+        dateVal.textContent = `${dow} ${d} de ${_MES_F[m - 1]} de ${y}`;
+      }
+
+      if (evento.hora_e) document.getElementById('t-inicio').value = evento.hora_e.slice(0, 5);
+
+      document.getElementById('ev-desc').value = evento.descripcion_e || '';
+      mevChar('ev-desc', 'mev-ch-d', 250);
+      document.getElementById('ev-req').value = evento.requisitos_e || '';
+
+      if (evento.imagen_e && evento.imagen_e !== 'default.jpg') {
+        const preview = document.getElementById('mev-img-preview');
+        preview.src = evento.imagen_e;
+        preview.style.display = 'block';
+        document.getElementById('mev-drop-zone').style.display = 'none';
+        window.skyedImagenBase64 = null;
+        window.skyedImagenActual = evento.imagen_e;
+      }
+
+    } catch (e) {
+      console.error('Error cargando evento:', e);
+    }
+  };
+
+  /* ===== EDITAR USUARIO ===== */
+  window.muUpdate = function() {
+    const n = (document.getElementById('mu-nombre')?.value || '').trim();
+    const a = (document.getElementById('mu-apellido')?.value || '').trim();
+    const ini = [(n[0]||''),(a[0]||'')].join('').toUpperCase() || '?';
+    const av = document.getElementById('mu-av');
+    const nm = document.getElementById('mu-av-name');
+    if (av) av.textContent = ini;
+    if (nm) nm.textContent = [n,a].filter(Boolean).join(' ') || 'Nombre del usuario';
+  };
+
+  window.muUpdateEmail = function(input) {
+    const el = document.getElementById('mu-av-email');
+    if (el) el.textContent = input.value.trim() || 'correo@ejemplo.com';
+  };
+
+  window.muSelEst = function(el, cls) {
+    document.querySelectorAll('.mu-est-btn')
+      .forEach(b => b.classList.remove('sel-activo','sel-inactivo','sel-bloqueado'));
+    el.classList.add(cls);
+  };
+
+  /* ===== MODAL KIT ===== */
+  document.getElementById('modal-kit').addEventListener('click', function(e) {
+    if (e.target === this) closeModal('modal-kit');
   });
 
-window.getFormData = function() {
-  const catCard = document.querySelector('.mev-cat-card.sel');
-  return {
-    nombre_e:            document.getElementById('ev-nombre').value.trim(),
-    categoria_e:         catCard ? catCard.dataset.cat : '',
-    cupos_disponibles_e: parseInt(document.getElementById('ev-cupos').value) || 0,
-    estado_e:            document.querySelector('.mev-stbtn.sel-act') ? 'activo' : 'inactivo',
-    ubicacion_e:         document.getElementById('ev-ubicacion').value.trim(),
-    fecha_e:             document.getElementById('ev-fecha-iso')?.value || '',
-    hora_e:              document.getElementById('t-inicio').value || '07:00',
-    descripcion_e:       document.getElementById('ev-desc').value.trim(),
-    requisitos_e:        document.getElementById('ev-req').value.trim(),
-    imagen_e:            window.skyedImagenBase64 || 'default.jpg',
-  };
-};
+  function abrirModalKit(datos = null) {
+    const esEdicion = datos !== null;
+    document.querySelector('#modal-kit .kit-modal-header-left span').textContent =
+      esEdicion ? 'Editar kit' : 'Nuevo kit';
 
-window.guardarEvento = async function() {
-  const payload = getFormData();
-  const idEvento = document.getElementById('modal-evento').dataset.idEvento;
+    document.getElementById('kit-nombre').value    = datos?.nombre_kit     || '';
+    document.getElementById('kit-stock').value     = datos?.stock          || '';
+    document.getElementById('kit-fecha').value     = datos?.fecha_entrega  || '';
+    document.getElementById('kit-lugar').value     = datos?.lugar_entrega  || '';
+    document.getElementById('kit-talla').value     = datos?.talla_camiseta || '';
+    document.getElementById('kit-dorsal').value    = datos?.numero_dorsal  || '';
+    document.getElementById('kit-contenido').value = datos?.contenido_kit  || '';
 
-  if (!window.skyedImagenBase64 && window.skyedImagenActual) {
-    payload.imagen_e = window.skyedImagenActual;
+    openModal('modal-kit');
   }
 
-  if (!payload.nombre_e)    { showToast('Ingresa el nombre del evento ❌', 'error'); return; }
-  if (!payload.categoria_e) { showToast('Selecciona una categoría ❌', 'error'); return; }
-  if (!payload.fecha_e)     { showToast('Selecciona una fecha ❌', 'error'); return; }
-  if (!payload.ubicacion_e) { showToast('Ingresa la ubicación ❌', 'error'); return; }
-  if (idEvento) payload.id_e = idEvento;
-  const endpoint = idEvento ? 'php/actualizar_evento.php' : 'php/guardar_evento.php';
+  function guardarKit() {
+    const nombre    = document.getElementById('kit-nombre').value.trim();
+    const stock     = document.getElementById('kit-stock').value.trim();
+    const fecha     = document.getElementById('kit-fecha').value;
+    const lugar     = document.getElementById('kit-lugar').value.trim();
+    const talla     = document.getElementById('kit-talla').value;
+    const dorsal    = document.getElementById('kit-dorsal').value.trim();
+    const contenido = document.getElementById('kit-contenido').value.trim();
 
-  try {
-    const res  = await fetch(endpoint, {
-      method:  'POST',
+    if (!nombre) { mostrarErrorKit('kit-nombre', 'El nombre del kit es obligatorio'); return; }
+    if (!stock || isNaN(stock) || parseInt(stock) < 0) { mostrarErrorKit('kit-stock', 'Ingresa un stock válido'); return; }
+    if (!fecha)  { mostrarErrorKit('kit-fecha', 'La fecha de entrega es obligatoria'); return; }
+    if (!lugar)  { mostrarErrorKit('kit-lugar', 'El lugar de entrega es obligatorio'); return; }
+
+    limpiarErroresKit();
+
+    fetch('php/guardar_kit.php', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify(payload),
-    });
-    const data = await res.json();
-    if (data.ok) {
-      delete document.getElementById('modal-evento').dataset.idEvento;
-      window.skyedImagenActual = null;
-      closeModal('modal-evento');
-      showToast(idEvento ? 'Evento actualizado ✅' : 'Evento guardado ✅', 'success');
-      setTimeout(() => loadAdminData(), 800);
-    } else {
-      showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
-    }
-  } catch (e) {
-    showToast('Error de conexión ❌', 'error');
-  }
-};
-
-
-window.abrirModalEditarEvento = async function(idEvento) {
-  openModal('modal-evento');
-
-  if (!idEvento) return; 
-
-  try {
-    const res  = await fetch(`php/obtener_datos_admin.php`);
-    const json = await res.json();
-    if (!json.ok) return;
-
-    const evento = (json.data.eventos || []).find(e => String(e.id_e) === String(idEvento));
-    if (!evento) return;
-
-    document.getElementById('modal-evento').dataset.idEvento = idEvento;
-
-    document.getElementById('ev-nombre').value = evento.nombre_e || '';
-    mevChar('ev-nombre', 'mev-ch-n', 50);
-
-    document.querySelectorAll('.mev-cat-card').forEach(c => {
-      c.classList.toggle('sel', c.dataset.cat === evento.categoria_e);
-    });
-
-    document.getElementById('ev-cupos').value = evento.cupos_disponibles_e || 200;
-
-    document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act', 'sel-ina'));
-    const esActivo = (evento.estado_e || '').toLowerCase() === 'activo';
-    const btnActivo   = document.querySelector('.mev-stbtn:first-child');
-    const btnInactivo = document.querySelector('.mev-stbtn:last-child');
-    if (esActivo && btnActivo)   btnActivo.classList.add('sel-act');
-    if (!esActivo && btnInactivo) btnInactivo.classList.add('sel-ina');
-
-    document.getElementById('ev-ubicacion').value = evento.ubicacion_e || '';
-
-    if (evento.fecha_e) {
-      document.getElementById('ev-fecha-iso').value = evento.fecha_e;
-      const [y, m, d] = evento.fecha_e.split('-').map(Number);
-      const DIAS   = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
-      const MES_F  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
-                      'septiembre','octubre','noviembre','diciembre'];
-      const dt  = new Date(y, m - 1, d);
-      const dow = DIAS[(dt.getDay() + 6) % 7];
-      const dateVal = document.getElementById('mev-date-val');
-      dateVal.className = 'val set';
-      dateVal.textContent = `${dow} ${d} de ${MES_F[m - 1]} de ${y}`;
-    }
-
-    if (evento.hora_e) {
-      document.getElementById('t-inicio').value = evento.hora_e.slice(0, 5);
-    }
-
-    document.getElementById('ev-desc').value = evento.descripcion_e || '';
-    mevChar('ev-desc', 'mev-ch-d', 250);
-    document.getElementById('ev-req').value  = evento.requisitos_e  || '';
-
-    if (evento.imagen_e && evento.imagen_e !== 'default.jpg') {
-      const preview = document.getElementById('mev-img-preview');
-      preview.src = evento.imagen_e;
-      preview.style.display = 'block';
-      document.getElementById('mev-drop-zone').style.display = 'none';
-      window.skyedImagenBase64 = null; 
-      window.skyedImagenActual = evento.imagen_e; 
-    }
-
-  } catch (e) {
-    console.error('Error cargando evento:', e);
-  }
-};
-
-// editar usuario
-
-window.muUpdate = function() {
-  const n = (document.getElementById('mu-nombre')?.value || '').trim();
-  const a = (document.getElementById('mu-apellido')?.value || '').trim();
-  const ini = [(n[0]||''),(a[0]||'')].join('').toUpperCase() || '?';
-  const av = document.getElementById('mu-av');
-  const nm = document.getElementById('mu-av-name');
-  if (av) av.textContent = ini;
-  if (nm) nm.textContent = [n,a].filter(Boolean).join(' ') || 'Nombre del usuario';
-};
- 
-window.muUpdateEmail = function(input) {
-  const el = document.getElementById('mu-av-email');
-  if (el) el.textContent = input.value.trim() || 'correo@ejemplo.com';
-};
- 
-window.muSelEst = function(el, cls) {
-  document.querySelectorAll('.mu-est-btn')
-    .forEach(b => b.classList.remove('sel-activo','sel-inactivo','sel-bloqueado'));
-  el.classList.add(cls);
-};
-
-
-// ===== MODAL KIT =====
-
-// Cierra al hacer clic fuera del modal
-document.getElementById('modal-kit').addEventListener('click', function(e) {
-  if (e.target === this) closeModal('modal-kit');
-});
-
-function abrirModalKit(datos = null) {
-  const esEdicion = datos !== null;
-
-  document.querySelector('#modal-kit .kit-modal-header-left span').textContent =
-    esEdicion ? 'Editar kit' : 'Nuevo kit';
-
-  document.getElementById('kit-nombre').value   = datos?.nombre_kit     || '';
-  document.getElementById('kit-stock').value    = datos?.stock          || '';
-  document.getElementById('kit-fecha').value    = datos?.fecha_entrega  || '';
-  document.getElementById('kit-lugar').value    = datos?.lugar_entrega  || '';
-  document.getElementById('kit-talla').value    = datos?.talla_camiseta || '';
-  document.getElementById('kit-dorsal').value   = datos?.numero_dorsal  || '';
-  document.getElementById('kit-contenido').value= datos?.contenido_kit  || '';
-
-  openModal('modal-kit');
-}
-
-// Validación y guardado
-function guardarKit() {
-  const nombre    = document.getElementById('kit-nombre').value.trim();
-  const stock     = document.getElementById('kit-stock').value.trim();
-  const fecha     = document.getElementById('kit-fecha').value;
-  const lugar     = document.getElementById('kit-lugar').value.trim();
-  const talla     = document.getElementById('kit-talla').value;
-  const dorsal    = document.getElementById('kit-dorsal').value.trim();
-  const contenido = document.getElementById('kit-contenido').value.trim();
-
-  if (!nombre) { mostrarErrorKit('kit-nombre', 'El nombre del kit es obligatorio'); return; }
-  if (!stock || isNaN(stock) || parseInt(stock) < 0) { mostrarErrorKit('kit-stock', 'Ingresa un stock válido'); return; }
-  if (!fecha)  { mostrarErrorKit('kit-fecha', 'La fecha de entrega es obligatoria'); return; }
-  if (!lugar)  { mostrarErrorKit('kit-lugar', 'El lugar de entrega es obligatorio'); return; }
-
-  limpiarErroresKit();
-
-  fetch('php/guardar_kit.php', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      nombre_kit:     nombre,
-      stock:          parseInt(stock),
-      fecha_entrega:  fecha,
-      lugar_entrega:  lugar,
-      contenido_kit:  contenido,
-      talla_camiseta: talla,
-      numero_dorsal:  parseInt(dorsal) || 0,
+      body: JSON.stringify({
+        nombre_kit:     nombre,
+        stock:          parseInt(stock),
+        fecha_entrega:  fecha,
+        lugar_entrega:  lugar,
+        contenido_kit:  contenido,
+        talla_camiseta: talla,
+        numero_dorsal:  parseInt(dorsal) || 0,
+      })
     })
-  })
-  .then(r => r.json())
-  .then(data => {
-    if (data.ok) {
-      closeModal('modal-kit');
-      showToast('Kit guardado ✅', 'success');
-      loadAdminData(); 
-    } else {
-      showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
-    }
-  })
-  .catch(() => showToast('Error de conexión ❌', 'error'));
-}
-
-/* ===== SESSION MANAGEMENT ===== */
-function handleLogoutAdmin() {
-  const modal = document.getElementById('modal-logout');
-  if (modal) {
-    modal.style.display = 'flex';
-  }
-}
-
-function closeLogoutModalAdmin() {
-  const modal = document.getElementById('modal-logout');
-  if (modal) {
-    modal.style.display = 'none';
-  }
-}
-
-function confirmLogoutAdmin() {
-  fetch('php/cerrar_sesion.php', { method: 'POST' })
-    .then(() => {
-      window.location.href = 'login.html';
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        closeModal('modal-kit');
+        showToast('Kit guardado ✅', 'success');
+        loadAdminData();
+      } else {
+        showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
+      }
     })
-    .catch(() => {
-      window.location.href = 'login.html';
-    });
-}
+    .catch(() => showToast('Error de conexión ❌', 'error'));
+  }
+
+  /* ===== SESSION MANAGEMENT ===== */
+  function handleLogoutAdmin() {
+    const modal = document.getElementById('modal-logout');
+    if (modal) modal.style.display = 'flex';
+  }
+
+  function closeLogoutModalAdmin() {
+    const modal = document.getElementById('modal-logout');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function confirmLogoutAdmin() {
+    fetch('php/cerrar_sesion.php', { method: 'POST' })
+      .then(() => { window.location.href = 'login.html'; })
+      .catch(() => { window.location.href = 'login.html'; });
+  }
 </script>
 <script src="js/crear-evento.js"></script>
 <script src="js/accesibilidad.js"></script>
