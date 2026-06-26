@@ -213,8 +213,7 @@ nav{
 
 /* ── MODO OSCURO - NAV ── */
 body.dark-mode nav {
-  background:rgba(26, 10, 46, 0.96);
-  border-bottom-color: #3a3430;
+  background:rgb(45 31 64 / 96%);
 }
 body.dark-mode .nav-logo {
   color: #f0ebe5;
@@ -300,7 +299,7 @@ body.dark-mode .product-badge {
 
 /* ── MODO OSCURO - SECCIONES ── */
 body.dark-mode section {
-  background: var(--bg);
+  background: rgba(18, 4, 35, 0.96);
 }
 body.dark-mode .section-title {
   color: #f0ebe5;
@@ -587,12 +586,9 @@ body.dark-mode .nav {
 }
 
 body.dark-mode .nav-links a {
-  color: #a09890;
+  color: #ffffff;
 }
 
-body.dark-mode .nav-links a:hover {
-  color: #f0ebe5;
-}
 
 body.dark-mode .brand span {
   color: #f0ebe5;
@@ -634,7 +630,7 @@ body.dark-mode .flip-card-back p {
 
 /* ── MODO OSCURO - EVENT CARDS ── */
 body.dark-mode .event-card {
-  background: #12100f;
+  background:#2b2534;
   border-color: #009ee3;
 }
 
