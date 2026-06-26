@@ -27,7 +27,7 @@ if (isset($_SESSION['email'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Perfil de ciclista — SKYED" />
   <title>Mi perfil — SKYED</title>
-  <link rel="icon" href="../img/logo.png" />
+  <link rel="icon" href="../img/logo_deportivo.png" />
   <link rel="stylesheet" href="../css/auth.css" />
   <link rel="stylesheet" href="../css/global.css" />
   <link rel="stylesheet" href="../css/participante.css" />
@@ -37,7 +37,7 @@ if (isset($_SESSION['email'])) {
 
   <header class="site-header" role="banner">
     <nav class="nav" aria-label="Navegación principal">
-      <a href="../index.html" class="brand"><img src="../img/logo.png" alt="" /><span>SKY<em>ED</em></span></a>
+      <a href="../index.html" class="brand"><img src="../img/logo_deportivo.png" alt="" /><span>SKY<em>ED</em></span></a>
       <div id="nav-cta"></div>
     </nav>
   </header>
@@ -313,7 +313,7 @@ if (isset($_SESSION['email'])) {
     <!-- Columna SKYED -->
     <div class="sky-footer-col">
       <div class="sky-logo-row">
-        <img src="../img/logo.png" alt="SKYED" class="sky-logo-icon">
+        <img src="../img/logo_deportivo.png" alt="SKYED" class="sky-logo-icon">
         <div class="sky-logo-text">SKY<span>ED</span></div>
       </div>
       <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>

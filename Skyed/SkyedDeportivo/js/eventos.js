@@ -1,4 +1,15 @@
 /* ===== Página de eventos: data + filtros ===== */
+// Mostrar toast si viene redirigido desde inscripcion con mensaje
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('msg') === 'ya_inscrito') {
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => showToast('Ya estás inscrito en este evento', 'error'), 300);
+      // Limpiar el param de la URL sin recargar
+      history.replaceState(null, '', window.location.pathname);
+    });
+  }
+})();
 const EVENTOS = [
   { id:1, titulo:'Gran Fondo de Los Andes', cat:'ruta', categoria:'Ruta',
     img:'img/event1.jpg', fecha:'15 Jun 2026', lugar:'Bogotá, Colombia',
