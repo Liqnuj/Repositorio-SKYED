@@ -9,11 +9,54 @@
   <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/eventos.css" />
   <link rel="stylesheet" href="css/accesibilidad.css" />
+
+<!-- CSS -->
+<style>  
+.home-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  text-decoration: none;
+  transition: all 0.15s;
+  font-size: 20px;
+  position: absolute;  
+  left: 45px;          
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.home-btn:hover {
+  background: #f3eeff;
+  border-color: #2c9caf;
+  color: #2c9caf;
+}
+</style>
+
+
 </head>
 <body>
   <header class="site-header" role="banner">
     <nav class="nav" aria-label="Navegación principal">
-      <a href="index.html" class="brand"><img src="img/logo_deportivo.png" alt="" /><span>SKY<em>ED</em></span></a>
+      <a href="index.html" class="brand" aria-label="Inicio SKYED">
+        <img src="img/logo_deportivo.png" alt="" />
+        <span>SKY<em>ED</em></span>
+      </a>
+
+      <!-- Lgo casita-->
+      <a href="../Principal/principal.html"
+          class="home-btn"
+          title="Volver a SKYED Principal"
+          aria-label="Volver al inicio principal">
+          <i class="ti ti-home" aria-hidden="true"></i>
+      </a>
+
+      <!-- Navegacion -->
       <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list" aria-label="Abrir menú">☰</button>
       <ul class="nav-links" id="nav-list">
         <li><a href="index.html">Inicio</a></li>
