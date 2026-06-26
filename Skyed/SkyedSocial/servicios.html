@@ -70,15 +70,18 @@
     </button>
   </div>
 </nav>
-<div class="page-hero">
-  <div class="container">
+
+<section class="page-hero" id="pHero">
+  <canvas id="pageParticles"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="container" style="position:relative;z-index:2;">
     <div class="breadcrumb">
       <a href="index.html">Inicio</a><span>/</span><span>Servicios</span>
     </div>
-    <h1 class="page-hero-title">Todo lo que tu evento<br><em>necesita y más</em></h1>
+    <h1 class="page-hero-title">Todo lo que tu evento <em>necesita y más</em></h1>
     <p class="page-hero-sub">Un ecosistema completo de servicios para que cada momento sea perfecto.</p>
   </div>
-</div>
+</section>
 
 <!-- SERVICES -->
 <section class="services-section">
@@ -333,6 +336,44 @@
 
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg"></span></div>
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+(function(){
+  const canvas = document.getElementById('pageParticles');
+  const ctx = canvas.getContext('2d');
+  const hero = document.getElementById('pHero');
+  function resize(){
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  const particles = [];
+  for(let i = 0; i < 40; i++){
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3.5 + 1,
+      speedY: Math.random() * 0.5 + 0.25,
+      opacity: Math.random() * 0.7 + 0.2,
+      color: Math.random() > 0.5 ? '201,168,76' : '245,230,239'
+    });
+  }
+  function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.y -= p.speedY;
+      if(p.y < -10) p.y = canvas.height + 10;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${p.opacity})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+</script>
 
 <script src="js/shared.js"></script>
 <script src="js/accesibilidad.js"></script>

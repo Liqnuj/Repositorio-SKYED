@@ -8,9 +8,10 @@
 
 .page-hero {
   position: relative;
-  padding: 9rem 0 5rem;
+  padding: 7rem 0 3rem;    
   text-align: center;
   overflow: hidden;
   background-size: cover;
-  background-position: center top;
+  background-position: center;
+  min-height: auto;        
 }
