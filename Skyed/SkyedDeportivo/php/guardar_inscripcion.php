@@ -3,208 +3,206 @@ header('Content-Type: application/json');
 session_start();
 require __DIR__ . '/conexion.php';
 
-// Verificar sesión
 if (empty($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode(['ok' => false, 'error' => 'No autenticado']);
     exit;
 }
 
-$d = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+$d         = json_decode(file_get_contents('php://input'), true) ?: $_POST;
+$id_u      = (int)$_SESSION['user_id'];
+$id_e      = (int)($d['evento_id'] ?? 0);
 
-// Campos requeridos
-$usuario_id  = (int)$_SESSION['user_id'];
-$evento_id   = $d['evento_id'] ?? 0;
-
-if (empty($evento_id)) {
+if ($id_e <= 0) {
     echo json_encode(['ok' => false, 'error' => 'Evento inválido']);
     exit;
 }
 
-// Verificar que el evento existe
 try {
-    $stmt = $pdo->prepare("SELECT * FROM eventoDeportivo WHERE id_e = ?");
-    $stmt->execute([$evento_id]);
-    $evento = $stmt->fetch();
-
-    if (!$evento) {
-        // El evento viene como datos del JS (mock), los aceptamos del payload
-        // para compatibilidad con la inscripcion.js que usa datos mock
-        $evento = [
-            'id_e'                  => $evento_id,
-            'nombre_e'               => $d['eventoNombre'] ?? 'Evento',
-            'fecha_e'                => $d['eventoFecha']  ?? date('Y-m-d'),
-            'ubicacion_e'            => $d['eventoLugar']  ?? '',
-            'categoria_e'            => $d['eventoCategoria'] ?? '',
-            'distancia_total_e'      => $d['eventoKm']     ?? '',
-            'imagen_e'               => $d['eventoImg']    ?? '',
-            'precio_e'               => (float)($d['precio'] ?? 0),
-        ];
+    // ── 1. Verificar duplicado ──────────────────────────────────────────────
+    $chk = $pdo->prepare(
+        "SELECT id_i FROM inscripcion
+         WHERE id_u = ? AND id_e = ? AND estado_i != 'cancelada' LIMIT 1"
+    );
+    $chk->execute([$id_u, $id_e]);
+    if ($chk->fetch()) {
+        echo json_encode(['ok' => false, 'error' => 'Ya estás inscrito en este evento']);
+        exit;
     }
 
-    // Verificar inscripción duplicada
-    // Solo bloquear si hay inscripción real (evento_id válido y no cancelada)
-    if (!empty($evento_id)) {
-        $chk = $pdo->prepare("SELECT id FROM inscripciones WHERE usuario_id = ? AND evento_id = ? AND estado NOT IN ('cancelado','rechazado') AND evento_id != 0 AND evento_id != ''");
-        $chk->execute([$usuario_id, $evento_id]);
-        if ($chk->fetch()) {
-            echo json_encode(['ok' => false, 'error' => 'Ya estás inscrito en este evento']);
-            exit;
+    // ── 2. Verificar que el evento existe en la BD; si no, crearlo ──────────
+    $chkEvento = $pdo->prepare("SELECT id_e FROM eventoDeportivo WHERE id_e = ? LIMIT 1");
+    $chkEvento->execute([$id_e]);
+    if (!$chkEvento->fetch()) {
+        // Auto-insertar el evento desde los datos del payload
+        $pdo->prepare("INSERT INTO eventoDeportivo
+            (id_e, nombre_e, categoria_e, fecha_e, hora_e, ubicacion_e,
+             descripcion_e, requisitos_e, imagen_e, cupos_disponibles_e, estado_e)
+            VALUES (?, ?, 'ciclismo', ?, '07:00:00', ?, ?, ?, ?, 500, 'activo')")
+        ->execute([
+            $id_e,
+            $d['eventoNombre'] ?? "Evento $id_e",
+            $d['eventoFecha']  ?? date('Y-m-d'),
+            $d['eventoLugar']  ?? 'Colombia',
+            $d['eventoNombre'] ?? "Evento $id_e",
+            'Abierto a todo público',
+            $d['eventoImg']    ?? 'img/event1.jpg',
+        ]);
+    }
+
+    // ── 3. Calcular cupo ────────────────────────────────────────────────────
+    $cupoStmt = $pdo->prepare(
+        "SELECT COALESCE(MAX(cupo_i), 0) + 1 FROM inscripcion WHERE id_e = ?"
+    );
+    $cupoStmt->execute([$id_e]);
+    $cupo_i = (int)$cupoStmt->fetchColumn();
+
+    // ── 4. Datos del formulario ─────────────────────────────────────────────
+    $metodo_pago    = $d['metodo_pago']          ?? 'transferencia';
+    $precio_pagado  = round((float)($d['precio'] ?? 0), 2);
+    $contacto_nom   = trim($d['contacto_nombre']     ?? '');
+    $contacto_tel   = trim($d['contacto_telefono']   ?? '');
+    $parentesco     = trim($d['contacto_parentesco'] ?? ($d['parentesco'] ?? ''));
+    $invitado       = $d['invitado']             ?? null;
+
+    // estado_i solo acepta: 'pendiente', 'confirmada', 'cancelada'
+    $estado_i = 'pendiente';
+
+    // ── 5. Insertar inscripción ─────────────────────────────────────────────
+    $pdo->beginTransaction();
+
+    $stmt = $pdo->prepare("INSERT INTO inscripcion (
+        cupo_i, estado_i, fecha_i, precio_pagado_i,
+        contacto_emergencia_nombre, contacto_emergencia_telefono, contacto_emergencia_parentesco,
+        id_u, id_e
+    ) VALUES (?, 'pendiente', NOW(), ?, ?, ?, ?, ?, ?)");
+
+    $stmt->execute([
+        $cupo_i,
+        $precio_pagado,
+        $contacto_nom,
+        $contacto_tel,
+        $parentesco,
+        $id_u,
+        $id_e,
+    ]);
+
+    $id_i    = (int)$pdo->lastInsertId();
+    $ref_id  = 'INS-' . str_pad($id_i, 6, '0', STR_PAD_LEFT);
+    $qr_code = 'SKYED-' . $id_e . '-' . $id_u . '-' . $id_i . '-' . time();
+
+    $pdo->commit();
+
+    // ── 6. Insertar QR ──────────────────────────────────────────────────────
+    $qr_id    = null;
+    $qr_error = null;
+    try {
+        $pdo->prepare("INSERT INTO qr_entrada (codigo_qr, fecha_generacion_qr, estado_qr, id_i)
+                       VALUES (?, NOW(), 'activo', ?)")
+            ->execute([$qr_code, $id_i]);
+        $qr_id = (int)$pdo->lastInsertId();
+    } catch (PDOException $e) {
+        $qr_error = $e->getMessage();
+        error_log('[SKYED] qr_entrada: ' . $qr_error);
+    }
+
+    // ── 7. Insertar pago ────────────────────────────────────────────────────
+    $pago_id    = null;
+    $pago_error = null;
+    try {
+        $pago_ref        = $d['referencia'] ?? ('PAY-' . strtoupper(substr(uniqid(), -8)));
+        $raw_comprobante = $d['comprobante'] ?? null;
+        $pago_comprobante = null;
+
+        if ($raw_comprobante && str_starts_with($raw_comprobante, 'data:image')) {
+            $uploadDir = __DIR__ . '/../uploads/comprobantes/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+            preg_match('/data:image\/(\w+);base64,(.+)/', $raw_comprobante, $m);
+            if (count($m) === 3) {
+                $filename = 'comp_' . $id_i . '_' . time() . '.' . $m[1];
+                file_put_contents($uploadDir . $filename, base64_decode($m[2]));
+                $pago_comprobante = 'uploads/comprobantes/' . $filename;
+            }
+        } elseif (!empty($raw_comprobante)) {
+            $pago_comprobante = $raw_comprobante;
+        }
+
+        // monto_p: guardar como entero (sin decimales) para evitar overflow de DECIMAL(10,7)
+        // Si tienes control de la BD, cambia monto_p a DECIMAL(12,2)
+        $monto_db = (int)$precio_pagado;
+
+        $pdo->prepare("INSERT INTO pago (metodo_pago_p, referencia_p, comprobante_p, monto_p, estado_p, id_i)
+                       VALUES (?, ?, ?, ?, 'pendiente', ?)")
+            ->execute([$metodo_pago, $pago_ref, $pago_comprobante, $monto_db, $id_i]);
+        $pago_id = (int)$pdo->lastInsertId();
+    } catch (PDOException $e) {
+        $pago_error = $e->getMessage();
+        error_log('[SKYED] pago: ' . $pago_error);
+        $pago_ref = null;
+    }
+
+    // ── 8. Insertar invitado (si aplica) ────────────────────────────────────
+    $id_inv    = null;
+    $inv_error = null;
+    if (!empty($invitado) && !empty($invitado['documento_inv'])) {
+        try {
+            $chkInv = $pdo->prepare("SELECT id_inv FROM invitado WHERE documento_inv = ? LIMIT 1");
+            $chkInv->execute([(int)$invitado['documento_inv']]);
+            $invExistente = $chkInv->fetch(PDO::FETCH_ASSOC);
+
+            if ($invExistente) {
+                $id_inv = $invExistente['id_inv'];
+            } else {
+                $pdo->prepare("INSERT INTO invitado (
+                    tipo_documento, documento_inv, nombre_inv, apellido_inv,
+                    rh_inv, telefono_inv, fecha_nacimiento_inv, correo_inv
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+                ->execute([
+                    $invitado['tipo_documento']       ?? 'cedula_ciudadania',
+                    (int)$invitado['documento_inv'],
+                    trim($invitado['nombre_inv']       ?? ''),
+                    trim($invitado['apellido_inv']     ?? ''),
+                    $invitado['rh_inv']                ?? '',
+                    $invitado['telefono_inv']           ?? '',
+                    !empty($invitado['fecha_nacimiento_inv']) ? $invitado['fecha_nacimiento_inv'] : null,
+                    !empty($invitado['correo_inv'])           ? $invitado['correo_inv']           : null,
+                ]);
+                $id_inv = (int)$pdo->lastInsertId();
+            }
+        } catch (PDOException $e) {
+            $inv_error = $e->getMessage();
+            error_log('[SKYED] invitado: ' . $inv_error);
         }
     }
 
-    // Preparar datos
-    $metodo_pago       = $d['metodo_pago']       ?? 'transferencia';
-    $estado            = ($metodo_pago === 'efectivo') ? 'pendiente_pago' : 'pendiente_validacion';
-    $precio_pagado     = (float)($d['precio']    ?? ($evento['precio_e'] ?? 0));
-    $doc_u             = $d['doc_u']              ?? ($_SESSION['documento'] ?? '');
-    $rh_u              = $d['rh_u']               ?? '';
-    $telefono_u        = $d['telefono_u']          ?? ($_SESSION['telefono'] ?? '');
-    $contacto_nombre   = $d['contacto_nombre']    ?? '';
-    $contacto_telefono = $d['contacto_telefono']  ?? '';
-    $fecha_nacimiento  = $d['fecha_nacimiento']   ?? ($_SESSION['fecha_nacimiento'] ?? null);
-    $dorsal            = $d['dorsal']             ?? '';
-    $cond_medicas      = $d['condiciones_medicas'] ?? '';
-    $quiere_jersey     = !empty($d['quiere_jersey']) ? 1 : 0;
-    $talla_camiseta    = $d['talla_camiseta']     ?? '';
-    $id_cc             = !empty($d['id_cc']) ? (int)$d['id_cc'] : null;
-    $categoria_nombre  = $d['categoriaNombre']    ?? ($d['eventoCategoria'] ?? '');
-    $qr_code           = 'SKYED-' . $evento_id . '-' . $doc_u . '-' . time();
-    $ref_id            = 'INS-' . strtoupper(uniqid());
-
-    // Datos extra del evento para mostrar en el panel (guardados en JSON)
-    $evento_data = json_encode([
-        'nombre'    => $d['eventoNombre']    ?? ($evento['nombre_e'] ?? ''),
-        'fecha'     => $d['eventoFecha']     ?? ($evento['fecha_e']  ?? ''),
-        'lugar'     => $d['eventoLugar']     ?? ($evento['ubicacion_e']  ?? ''),
-        'categoria' => $d['eventoCategoria'] ?? ($evento['categoria_e'] ?? ''),
-        'km'        => $d['eventoKm']        ?? ($evento['distancia_total_e'] ?? ''),
-        'imagen'    => $d['eventoImg']       ?? ($evento['imagen_e'] ?? ''),
-        'categoria_nombre' => $categoria_nombre,
-    ]);
-
-    // Crear tabla si no existe (para robustez)
-    $pdo->exec("CREATE TABLE IF NOT EXISTS inscripciones (
-        id                 INT AUTO_INCREMENT PRIMARY KEY,
-        ref_id             VARCHAR(40)  NOT NULL,
-        usuario_id         INT          NOT NULL,
-        evento_id          INT          NOT NULL,
-        estado             VARCHAR(40)  NOT NULL DEFAULT 'pendiente_validacion',
-        metodo_pago        VARCHAR(40)  NOT NULL DEFAULT 'transferencia',
-        precio_pagado      DECIMAL(12,2) NOT NULL DEFAULT 0,
-        doc_u              VARCHAR(20)  DEFAULT NULL,
-        rh_u               VARCHAR(5)   DEFAULT NULL,
-        telefono_u         VARCHAR(20)  DEFAULT NULL,
-        contacto_nombre    VARCHAR(100) DEFAULT NULL,
-        contacto_telefono  VARCHAR(20)  DEFAULT NULL,
-        fecha_nacimiento   DATE         DEFAULT NULL,
-        dorsal             VARCHAR(10)  DEFAULT NULL,
-        condiciones_medicas TEXT        DEFAULT NULL,
-        quiere_jersey      TINYINT(1)   DEFAULT 0,
-        talla_camiseta     VARCHAR(5)   DEFAULT NULL,
-        id_cc              INT          DEFAULT NULL,
-        qr_code            VARCHAR(100) DEFAULT NULL,
-        evento_data        JSON         DEFAULT NULL,
-        fecha_inscripcion  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        INDEX idx_usuario  (usuario_id),
-        INDEX idx_evento   (evento_id)
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-
-    $pdo->exec("CREATE TABLE IF NOT EXISTS qr_entrada (
-        id_qr               INT AUTO_INCREMENT PRIMARY KEY,
-        codigo_qr           VARCHAR(120) NOT NULL,
-        qr_imagen_qr        TEXT DEFAULT NULL,
-        fecha_generacion_qr DATETIME NOT NULL,
-        fecha_uso_qr        DATETIME DEFAULT NULL,
-        estado_qr           VARCHAR(40) NOT NULL DEFAULT 'activo',
-        id_i                INT NOT NULL,
-        INDEX idx_inscripcion_qr (id_i),
-        INDEX idx_codigo_qr (codigo_qr),
-        CONSTRAINT fk_qr_entrada_inscripcion FOREIGN KEY (id_i) REFERENCES inscripciones(id) ON DELETE CASCADE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-
-    // Insertar inscripción
-    $sql = "INSERT INTO inscripciones (
-                ref_id, usuario_id, evento_id, estado, metodo_pago,
-                precio_pagado, doc_u, rh_u, telefono_u,
-                contacto_nombre, contacto_telefono, fecha_nacimiento,
-                dorsal, condiciones_medicas, quiere_jersey, talla_camiseta,
-                id_cc, qr_code, evento_data
-            ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute([
-        $ref_id, $usuario_id, $evento_id, $estado, $metodo_pago,
-        $precio_pagado, $doc_u, $rh_u, $telefono_u,
-        $contacto_nombre, $contacto_telefono,
-        $fecha_nacimiento ?: null,
-        $dorsal, $cond_medicas, $quiere_jersey, $talla_camiseta,
-        $id_cc, $qr_code, $evento_data
-    ]);
-
-    $nuevo_id = $pdo->lastInsertId();
-    $qr_fecha = date('Y-m-d H:i:s');
-    $qr_estado = 'activo';
-    $qr_imagen = null;
-
-    $stmtQr = $pdo->prepare("INSERT INTO qr_entrada (
-        codigo_qr, qr_imagen_qr, fecha_generacion_qr,
-        fecha_uso_qr, estado_qr, id_i
-    ) VALUES (?,?,?,?,?,?)");
-    $stmtQr->execute([
-        $qr_code, $qr_imagen, $qr_fecha, null, $qr_estado, $nuevo_id
-    ]);
-    $qr_id = $pdo->lastInsertId();
-
-    // Guardar el pago asociado a la inscripción
-    $pago_referencia   = $d['referencia']   ?? ('REF-' . strtoupper(uniqid()));
-    $pago_comprobante  = $d['comprobante']  ?? ($metodo_pago === 'efectivo' ? 'Pago presencial' : null);
-    $pago_estado       = 'pendiente';
-    $pago_fecha        = date('Y-m-d H:i:s');
-
-    $pdo->exec("CREATE TABLE IF NOT EXISTS pago (
-        id_pago        INT AUTO_INCREMENT PRIMARY KEY,
-        metodo_pago_p  VARCHAR(50) DEFAULT NULL,
-        referencia_p   VARCHAR(100) DEFAULT NULL,
-        comprobante_p  VARCHAR(255) DEFAULT NULL,
-        monto_p        DECIMAL(10,7) DEFAULT NULL,
-        fecha_p        DATETIME DEFAULT CURRENT_TIMESTAMP(),
-        estado_p       ENUM('pendiente','aprobado','rechazado') DEFAULT 'pendiente',
-        id_i           INT NOT NULL,
-        INDEX idx_pago_inscripcion (id_i),
-        CONSTRAINT fk_pago_inscripcion FOREIGN KEY (id_i) REFERENCES inscripciones(id) ON DELETE CASCADE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
-
-    $stmtPago = $pdo->prepare("INSERT INTO pago (
-        metodo_pago_p, referencia_p, comprobante_p,
-        monto_p, fecha_p, estado_p, id_i
-    ) VALUES (?,?,?,?,?,?,?)");
-    $stmtPago->execute([
-        $metodo_pago, $pago_referencia, $pago_comprobante,
-        $precio_pagado, $pago_fecha, $pago_estado, $nuevo_id
-    ]);
-    $pago_id = $pdo->lastInsertId();
-
+    // ── 9. Respuesta ────────────────────────────────────────────────────────
     echo json_encode([
-        'ok'          => true,
-        'id'          => $nuevo_id,
-        'ref_id'      => $ref_id,
-        'estado'      => $estado,
-        'qr_code'     => $qr_code,
-        'qr_id'       => $qr_id,
-        'qr_estado'   => $qr_estado,
-        'qr_fecha'    => $qr_fecha,
-        'precio'      => $precio_pagado,
-        'eventoNombre'=> $d['eventoNombre'] ?? '',
-        'eventoFecha' => $d['eventoFecha']  ?? '',
-        'referencia_p'=> $pago_referencia,
-        'comprobante_p'=> $pago_comprobante,
-        'estado_p'    => $pago_estado,
-        'fecha_p'     => $pago_fecha,
-        'id_pago'     => $pago_id,
+        'ok'           => true,
+        'id'           => $id_i,
+        'id_i'         => $id_i,
+        'ref_id'       => $ref_id,
+        'estado'       => $estado_i,
+        'qr_code'      => $qr_code,
+        'qr_id'        => $qr_id,
+        'precio'       => $precio_pagado,
+        'eventoNombre' => $d['eventoNombre'] ?? '',
+        'eventoFecha'  => $d['eventoFecha']  ?? '',
+        'referencia_p' => $pago_ref ?? '',
+        'id_pago'      => $pago_id,
+        'id_inv'       => $id_inv,
+        // Errores de sub-inserts (null = éxito)
+        '_debug' => [
+            'qr_error'          => $qr_error,
+            'pago_error'        => $pago_error,
+            'inv_error'         => $inv_error,
+            'invitado_recibido' => !empty($invitado) ? 'sí' : 'no',
+            'invitado_data'     => $invitado,   // <-- ver exactamente qué llega
+            'monto_enviado'     => $precio_pagado,
+        ],
     ]);
 
 } catch (PDOException $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
     http_response_code(500);
     echo json_encode(['ok' => false, 'error' => 'Error BD: ' . $e->getMessage()]);
 }

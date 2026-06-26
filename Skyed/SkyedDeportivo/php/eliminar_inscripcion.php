@@ -1,5 +1,4 @@
 <?php
-// php/eliminar_inscripcion.php — elimina una inscripción del usuario en sesión
 header('Content-Type: application/json');
 session_start();
 require __DIR__ . '/conexion.php';
@@ -10,47 +9,62 @@ if (empty($_SESSION['user_id'])) {
     exit;
 }
 
-$usuario_id = (int)$_SESSION['user_id'];
+$id_u = (int)$_SESSION['user_id'];
+$d    = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
-$d = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-
-$id     = (int)($d['id'] ?? 0);
+// Aceptar id_i, id o ref_id
+$id_i   = (int)($d['id_i'] ?? $d['id'] ?? 0);
 $ref_id = trim($d['ref_id'] ?? '');
 
-if ($id <= 0 && $ref_id === '') {
+if ($id_i <= 0 && $ref_id === '') {
     echo json_encode(['ok' => false, 'error' => 'Inscripción inválida']);
     exit;
 }
 
 try {
-    // Verificar que la inscripción exista y pertenezca al usuario en sesión
-    if ($id > 0) {
-        $stmt = $pdo->prepare("SELECT id, usuario_id FROM inscripciones WHERE id = ? LIMIT 1");
-        $stmt->execute([$id]);
+    // Buscar la inscripción
+    if ($id_i > 0) {
+        $stmt = $pdo->prepare("SELECT id_i, id_u FROM inscripcion WHERE id_i = ? LIMIT 1");
+        $stmt->execute([$id_i]);
+    } elseif (preg_match('/(\d+)/', $ref_id, $m)) {
+        // ref_id tipo "INS-000006" → extraer número
+        $stmt = $pdo->prepare("SELECT id_i, id_u FROM inscripcion WHERE id_i = ? LIMIT 1");
+        $stmt->execute([(int)$m[1]]);
     } else {
-        $stmt = $pdo->prepare("SELECT id, usuario_id FROM inscripciones WHERE ref_id = ? LIMIT 1");
-        $stmt->execute([$ref_id]);
+        echo json_encode(['ok' => false, 'error' => 'Referencia inválida']);
+        exit;
     }
-    $row = $stmt->fetch();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$row) {
-        echo json_encode(['ok' => false, 'error' => 'La inscripción no existe']);
+        echo json_encode([
+            'ok'    => false,
+            'error' => 'La inscripción no existe',
+            '_debug'=> ['id_i_buscado' => $id_i, 'ref_buscado' => $ref_id, 'recibido' => $d]
+        ]);
         exit;
     }
 
-    if ((int)$row['usuario_id'] !== $usuario_id) {
+    if ((int)$row['id_u'] !== $id_u) {
         http_response_code(403);
-        echo json_encode(['ok' => false, 'error' => 'No tienes permiso para eliminar esta inscripción']);
+        echo json_encode(['ok' => false, 'error' => 'No tienes permiso para cancelar esta inscripción']);
         exit;
     }
 
-    // Eliminar definitivamente la inscripción
-    $del = $pdo->prepare("DELETE FROM inscripciones WHERE id = ? AND usuario_id = ?");
-    $del->execute([$row['id'], $usuario_id]);
+    // Soft-delete: cambiar estado a 'cancelada'
+    $pdo->prepare("UPDATE inscripcion SET estado_i = 'cancelada' WHERE id_i = ? AND id_u = ?")
+        ->execute([$row['id_i'], $id_u]);
 
-    echo json_encode(['ok' => true, 'id' => $row['id']]);
+    // Cancelar QR asociado
+    try {
+        $pdo->prepare("UPDATE qr_entrada SET estado_qr = 'cancelado' WHERE id_i = ?")
+            ->execute([$row['id_i']]);
+    } catch (PDOException $e) { /* ignorar */ }
+
+    echo json_encode(['ok' => true, 'id_i' => $row['id_i'], 'id' => $row['id_i']]);
 
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['ok' => false, 'error' => 'Error BD: ' . $e->getMessage()]);
 }
+?>
