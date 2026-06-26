@@ -422,7 +422,10 @@ try {
                   <td><?= count($inscripcionesRecientes) ?></td>
                   
                   <td>
-                    <button onclick="abrirModalUsuario(<?= $u['id_u'] ?>)">Editar</button>
+                    <div style="display:flex;gap:.4rem">
+                      <button class="btn btn-outline btn-sm" onclick="abrirModalUsuario(<?= $u['id_u'] ?>)" >✏️</button>
+                      <button class="btn btn-danger btn-sm">🗑️</button>
+                    </div>
                   </td>
                 </tr>
                 <?php endforeach; ?>
@@ -567,7 +570,7 @@ try {
 
   <div class="dash-grid">
     <div class="card">
-      <div class="card-header"><span class="card-title">🎽 Kits registrados</span></div>
+      <div class="card-header"><span class="card-title">🎽 Kits </span></div>
       <div class="table-wrap">
         <table>
           <thead>
@@ -1918,7 +1921,7 @@ async function guardarUsuario() {
     telefono_u:         document.getElementById('mu-tel').value,
   };
 
-  console.log('📤 Enviando payload:', payload); // ← ve qué se envía
+  console.log('📤 Enviando payload:', payload);
 
   try {
     const res  = await fetch('php/actualizar_usuario.php', {
@@ -1927,7 +1930,7 @@ async function guardarUsuario() {
       body:    JSON.stringify(payload),
     });
 
-    const text = await res.text(); // ← texto crudo antes de parsear
+    const text = await res.text();
     console.log('📥 Respuesta cruda:', text);
 
     const data = JSON.parse(text);
@@ -2010,78 +2013,80 @@ function closeSidebar() {
     });
   });
 
-// formulario de creación de eventos
-let step=0;
-(function(){
-  const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+// ===== FORMULARIO DE CREACIÓN DE EVENTOS =====
+let step = 0;
+
+(function () {
+  const TODAY = new Date(); TODAY.setHours(0, 0, 0, 0);
   const CY = TODAY.getFullYear(), CM = TODAY.getMonth();
-  let selY=CY, selM=CM, selD=null, yrOff=0; 
-  const MES    = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  const MES_F  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
-                  'septiembre','octubre','noviembre','diciembre'];
-  const DIAS   = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
+  let selY = CY, selM = CM, selD = null, yrOff = 0;
+  const MES   = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  const MES_F = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto',
+                 'septiembre','octubre','noviembre','diciembre'];
+  const DIAS  = ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'];
 
   /* ---- Helpers ---- */
-  window.mevChar = function(inputId, hintId) {
+  window.mevChar = function (inputId, hintId) {
     document.getElementById(hintId).textContent = document.getElementById(inputId).value.length;
   };
-  window.mevSelCat = function(el) {
+
+  window.mevSelCat = function (el) {
     document.querySelectorAll('.mev-cat-card').forEach(c => c.classList.remove('sel'));
     el.classList.add('sel');
   };
-  window.mevAdj = function(d) {
+
+  window.mevAdj = function (d) {
     const i = document.getElementById('ev-cupos');
-    i.value = Math.max(1, (parseInt(i.value)||0) + d);
+    i.value = Math.max(1, (parseInt(i.value) || 0) + d);
   };
-  window.mevSelSt = function(el, cls) {
-    document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act','sel-ina'));
+
+  window.mevSelSt = function (el, cls) {
+    document.querySelectorAll('.mev-stbtn').forEach(b => b.classList.remove('sel-act', 'sel-ina'));
     el.classList.add(cls);
   };
-                }
-);
-  /* ---- Stepper ---- */
-window.mevGoStep = function(dir) {
-  if (step === 3 && dir === 1) {
-    guardarEvento();
-    return;
-  }
 
-  const tabs   = document.querySelectorAll('.mev-tab');
-  const panels = document.querySelectorAll('.mev-panel');
-  tabs[step].classList.remove('active'); tabs[step].classList.add('done');
-  panels[step].classList.remove('active');
-  step = Math.min(3, Math.max(0, step + dir));
-  tabs[step].classList.remove('done'); tabs[step].classList.add('active');
-  panels[step].classList.add('active');
-  document.getElementById('mev-btn-back').disabled = step === 0;
-  const nb = document.getElementById('mev-btn-next');
-  nb.innerHTML = step === 3
-    ? '<i class="ti ti-device-floppy" aria-hidden="true"></i> Guardar evento'
-    : 'Siguiente <i class="ti ti-arrow-right" aria-hidden="true"></i>';
-  document.getElementById('mev-prog').style.width = ((step + 1) / 4 * 100) + '%';
-};
+  /* ---- Stepper ---- */
+  window.mevGoStep = function (dir) {
+    if (step === 3 && dir === 1) {
+      guardarEvento();
+      return;
+    }
+    const tabs   = document.querySelectorAll('.mev-tab');
+    const panels = document.querySelectorAll('.mev-panel');
+    tabs[step].classList.remove('active'); tabs[step].classList.add('done');
+    panels[step].classList.remove('active');
+    step = Math.min(3, Math.max(0, step + dir));
+    tabs[step].classList.remove('done'); tabs[step].classList.add('active');
+    panels[step].classList.add('active');
+    document.getElementById('mev-btn-back').disabled = step === 0;
+    const nb = document.getElementById('mev-btn-next');
+    nb.innerHTML = step === 3
+      ? '<i class="ti ti-device-floppy" aria-hidden="true"></i> Guardar evento'
+      : 'Siguiente <i class="ti ti-arrow-right" aria-hidden="true"></i>';
+    document.getElementById('mev-prog').style.width = ((step + 1) / 4 * 100) + '%';
+  };
 
   /* ---- Calendario: años ---- */
   function renderYrs() {
     const c = document.getElementById('mev-yr-chips'); c.innerHTML = '';
-    for (let y = CY+yrOff; y < CY+yrOff+5; y++) {
+    for (let y = CY + yrOff; y < CY + yrOff + 5; y++) {
       const d = document.createElement('div');
-      d.className = 'mev-yr-chip' + (y===selY ? ' sel' : '');
+      d.className = 'mev-yr-chip' + (y === selY ? ' sel' : '');
       d.textContent = y;
-      d.onclick = () => { selY=y; if(selY===CY&&selM<CM) selM=CM; renderYrs(); renderCal(); };
+      d.onclick = () => { selY = y; if (selY === CY && selM < CM) selM = CM; renderYrs(); renderCal(); };
       c.appendChild(d);
     }
-    document.getElementById('mev-yr-l').style.visibility = yrOff<=0 ? 'hidden' : 'visible';
+    document.getElementById('mev-yr-l').style.visibility = yrOff <= 0 ? 'hidden' : 'visible';
   }
-  window.mevShiftYr = function(d) { yrOff+=d; if(yrOff<0)yrOff=0; renderYrs(); };
+  window.mevShiftYr = function (d) { yrOff += d; if (yrOff < 0) yrOff = 0; renderYrs(); };
 
   /* ---- Calendario: mes ---- */
-  window.mevShiftMo = function(d) {
-    selM+=d;
-    if(selM<0){selM=11;selY--;}
-    if(selM>11){selM=0;selY++;}
-    if(selY===CY&&selM<CM) selM=CM;
-    if(selY<CY){selY=CY;selM=CM;}
+  window.mevShiftMo = function (d) {
+    selM += d;
+    if (selM < 0)  { selM = 11; selY--; }
+    if (selM > 11) { selM = 0;  selY++; }
+    if (selY === CY && selM < CM) selM = CM;
+    if (selY < CY) { selY = CY; selM = CM; }
     renderYrs(); renderCal();
   };
 
@@ -2089,24 +2094,26 @@ window.mevGoStep = function(dir) {
   function renderCal() {
     document.getElementById('mev-mo-label').textContent = MES[selM] + ' ' + selY;
     const grid  = document.getElementById('mev-cal-days'); grid.innerHTML = '';
-    const first = (new Date(selY,selM,1).getDay()+6)%7;
-    const days  = new Date(selY,selM+1,0).getDate();
-    for(let i=0;i<first;i++){const e=document.createElement('div');e.className='mev-cd empty';grid.appendChild(e);}
-    for(let d=1;d<=days;d++){
-      const dt    = new Date(selY,selM,d);
+    const first = (new Date(selY, selM, 1).getDay() + 6) % 7;
+    const days  = new Date(selY, selM + 1, 0).getDate();
+    for (let i = 0; i < first; i++) {
+      const e = document.createElement('div'); e.className = 'mev-cd empty'; grid.appendChild(e);
+    }
+    for (let d = 1; d <= days; d++) {
+      const dt    = new Date(selY, selM, d);
       const past  = dt < TODAY;
       const today = dt.getTime() === TODAY.getTime();
       const isSel = d === selD;
       const cell  = document.createElement('div');
-      cell.className = 'mev-cd'+(past?' past':'')+(today&&!isSel?' today':'')+(isSel?' sel':'');
+      cell.className = 'mev-cd' + (past ? ' past' : '') + (today && !isSel ? ' today' : '') + (isSel ? ' sel' : '');
       cell.textContent = d;
-      if(!past) cell.onclick = () => { selD=d; updDate(); renderCal(); };
+      if (!past) cell.onclick = () => { selD = d; updDate(); renderCal(); };
       grid.appendChild(cell);
     }
   }
 
   function updDate() {
-    const v = document.getElementById('mev-date-val');
+    const v   = document.getElementById('mev-date-val');
     const iso = document.getElementById('ev-fecha-iso');
     if (!selD) {
       v.className = 'val';
@@ -2118,24 +2125,23 @@ window.mevGoStep = function(dir) {
     const dow = DIAS[(dt.getDay() + 6) % 7];
     v.className = 'val set';
     v.textContent = `${dow} ${selD} de ${MES_F[selM]} de ${selY}`;
-    // Guardar en formato YYYY-MM-DD para la BD
-    if (iso) iso.value = `${selY}-${String(selM+1).padStart(2,'0')}-${String(selD).padStart(2,'0')}`;
+    if (iso) iso.value = `${selY}-${String(selM + 1).padStart(2, '0')}-${String(selD).padStart(2, '0')}`;
   }
 
   /* ---- Presets de hora ---- */
-  window.mevPreset = function(el,ini,fin) {
-    document.querySelectorAll('.mev-pp').forEach(p=>p.classList.remove('sel'));
+  window.mevPreset = function (el, ini, fin) {
+    document.querySelectorAll('.mev-pp').forEach(p => p.classList.remove('sel'));
     el.classList.add('sel');
     document.getElementById('t-inicio').value = ini;
     document.getElementById('t-fin').value    = fin;
   };
-  window.mevSyncPresets = function() {
-    document.querySelectorAll('.mev-pp').forEach(p=>p.classList.remove('sel'));
+  window.mevSyncPresets = function () {
+    document.querySelectorAll('.mev-pp').forEach(p => p.classList.remove('sel'));
   };
 
   /* ---- Preview imagen ---- */
-  window.mevPrevImg = function(input) {
-    const f = input.files[0]; if(!f) return;
+  window.mevPrevImg = function (input) {
+    const f = input.files[0]; if (!f) return;
     const r = new FileReader();
     r.onload = e => {
       const img = document.getElementById('mev-img-preview');
@@ -2146,9 +2152,16 @@ window.mevGoStep = function(dir) {
   };
 
   /* ---- Cerrar modal al hacer clic fuera ---- */
-  document.getElementById('modal-evento').addEventListener('click', function(e){
-    if(e.target === this) this.style.display = 'none';
+  document.getElementById('modal-evento').addEventListener('click', function (e) {
+    if (e.target === this) this.style.display = 'none';
   });
+
+  /* ---- Arrancar calendario ---- */
+  document.addEventListener('DOMContentLoaded', function () {
+    if (document.getElementById('mev-yr-chips')) { renderYrs(); renderCal(); }
+  });
+
+})();
 
 window.getFormData = function() {
   const catCard = document.querySelector('.mev-cat-card.sel');
@@ -2329,11 +2342,75 @@ function guardarKit() {
   const dorsal    = document.getElementById('kit-dorsal').value.trim();
   const contenido = document.getElementById('kit-contenido').value.trim();
 
-  if (!nombre) { mostrarErrorKit('kit-nombre', 'El nombre del kit es obligatorio'); return; }
-  if (!stock || isNaN(stock) || parseInt(stock) < 0) { mostrarErrorKit('kit-stock', 'Ingresa un stock válido'); return; }
-  if (!fecha)  { mostrarErrorKit('kit-fecha', 'La fecha de entrega es obligatoria'); return; }
-  if (!lugar)  { mostrarErrorKit('kit-lugar', 'El lugar de entrega es obligatorio'); return; }
+  let hayError = false;
+  let primerCampo = null;
 
+  if (!nombre) {
+    mostrarErrorKit('kit-nombre', 'El nombre del kit es obligatorio');
+    if (!primerCampo) primerCampo = 'kit-nombre';
+    hayError = true;
+  } else if (/[0-9]/.test(nombre)) {
+    mostrarErrorKit('kit-nombre', 'El nombre no puede contener números');
+    if (!primerCampo) primerCampo = 'kit-nombre';
+    hayError = true;
+  }
+
+  const stockNum = parseInt(stock);
+  if (!stock) {
+    mostrarErrorKit('kit-stock', 'El stock es obligatorio');
+    if (!primerCampo) primerCampo = 'kit-stock';
+    hayError = true;
+  } else if (isNaN(stockNum) || stockNum < 1) {
+    mostrarErrorKit('kit-stock', 'El stock mínimo es 1');
+    if (!primerCampo) primerCampo = 'kit-stock';
+    hayError = true;
+  }
+
+  if (!fecha) {
+    mostrarErrorKit('kit-fecha', 'La fecha de entrega es obligatoria');
+    if (!primerCampo) primerCampo = 'kit-fecha';
+    hayError = true;
+  } else {
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    if (new Date(fecha + 'T00:00:00') < hoy) {
+      mostrarErrorKit('kit-fecha', 'La fecha no puede ser anterior a hoy');
+      if (!primerCampo) primerCampo = 'kit-fecha';
+      hayError = true;
+    }
+  }
+
+  if (!lugar) {
+    mostrarErrorKit('kit-lugar', 'El lugar de entrega es obligatorio');
+    if (!primerCampo) primerCampo = 'kit-lugar';
+    hayError = true;
+  }
+
+  if (!talla) {
+    mostrarErrorKit('kit-talla', 'La talla de camiseta es obligatoria');
+    if (!primerCampo) primerCampo = 'kit-talla';
+    hayError = true;
+  }
+
+  if (!dorsal) {
+    mostrarErrorKit('kit-dorsal', 'El número dorsal es obligatorio');
+    if (!primerCampo) primerCampo = 'kit-dorsal';
+    hayError = true;
+  } else if (/[^0-9]/.test(dorsal)) {
+    mostrarErrorKit('kit-dorsal', 'El dorsal solo puede contener números');
+    if (!primerCampo) primerCampo = 'kit-dorsal';
+    hayError = true;
+  }
+
+  if (!contenido) {
+    mostrarErrorKit('kit-contenido', 'El contenido del kit es obligatorio');
+    if (!primerCampo) primerCampo = 'kit-contenido';
+    hayError = true;
+  }
+
+  if (hayError) {
+    if (primerCampo) document.getElementById(primerCampo).focus();
+    return;
+  }
   limpiarErroresKit();
 
   fetch('php/guardar_kit.php', {

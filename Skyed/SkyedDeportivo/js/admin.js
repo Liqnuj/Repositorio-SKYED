@@ -18,6 +18,7 @@ const sectionColumns = {
     { label: 'Estado', fn: row => renderStatus(row) },
     { label: 'Inscripciones', keys: ['inscripciones', 'inscripcion_count', 'inscripciones_count'] },
     { label: 'Acciones', fn: () => actionButtons() },
+    
   ],
   inscripciones: [
     { label: '#', fn: row => getField(row, ['id_i', 'id', 'inscripcion_id', 'id_inscripcion']) },
@@ -42,12 +43,14 @@ const sectionColumns = {
     { label: 'Acciones', fn: () => actionButtons() },
   ],
   kits: [
-    { label: 'Nombre',  keys: ['nombre_k', 'nombre_kit', 'kit'] },
-    { label: 'Stock',   keys: ['stock_k', 'stock'] },
-    { label: 'Talla',   keys: ['talla_camiseta_k', 'talla'] },
-    { label: 'Dorsal',  keys: ['numero_dorsal_k', 'dorsal'] },
-    { label: 'Entrega', keys: ['fecha_entrega_k', 'fecha_entrega'] },
-    { label: '', fn: row => `<button class="btn btn-outline btn-sm" onclick='abrirModalKit(${JSON.stringify(row)})'>✏️</button>` },
+    { label: 'Nombre',            keys: ['nombre_k', 'nombre_kit', 'kit'] },
+    { label: 'Stock',             keys: ['stock_k', 'stock'] },
+    { label: 'Fecha de entrega',  keys: ['fecha_entrega_k', 'fecha_entrega'] },
+    { label: 'Lugar de entrega',  keys: ['lugar_entrega_k', 'lugar_entrega'] },
+    { label: 'Contenido del kit', keys: ['contenido_k', 'contenido_kit', 'contenido'] },
+    { label: 'Talla camiseta',    keys: ['talla_camiseta_k', 'talla_camiseta', 'talla'] },
+    { label: 'Numero dorsal',     keys: ['numero_dorsal_k', 'numero_dorsal', 'dorsal'] },
+    { label: 'Acciones',          fn: row => `<div style="display:flex;gap:.4rem"><button class="btn btn-outline btn-sm" onclick='abrirModalKit(${JSON.stringify(row)})'>✏️</button><button class="btn btn-danger btn-sm">🗑️</button></div>` },
   ],
   entregas: [
     { label: 'Participante', keys: ['participante', 'nombre', 'usuario'] },
