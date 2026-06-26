@@ -7,6 +7,34 @@
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/accesibilidad.css">
 <link rel="icon" href="img/logo_social.png" />
+
+<!-- CSS -->
+<style>  
+.home-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  text-decoration: none;
+  transition: all 0.15s;
+  font-size: 20px;
+  position: absolute;  
+  left: 50px;         
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.home-btn:hover {
+  background: #f3eeff;
+  border-color: #7c3aed;
+  color: #7c3aed;
+}
+</style>
 </head>
 <body>
 
@@ -18,6 +46,16 @@
       <img src="img/logo_social.png" alt="logo social" />
       <span>SKYED<em>SOCIAL</em></span>
     </a>
+
+    <!-- Lgo casita-->
+    <a href="../Principal/principal.html"
+       class="home-btn"
+       title="Volver a SKYED Principal"
+       aria-label="Volver al inicio principal">
+      <i class="ti ti-home" aria-hidden="true"></i>
+    </a>
+
+    <!-- Navegacion -->
     <div class="nav-links" id="navLinks">
       <a href="index.html" onclick="closeNav()">Inicio</a>
       <a href="eventos.html" class="active" onclick="closeNav()">Eventos</a>
