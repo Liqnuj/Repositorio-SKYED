@@ -574,7 +574,7 @@ try {
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Nombre</th><th>Stock</th><th>Talla</th><th>Dorsal</th><th>Fecha de Entrega</th><th></th></tr>
+            <tr><th>Nombre del kit</th><th>Stock</th><th>Fecha de Entrega</th><th>Lugar y dirección de entrega</th><th>Contenido</th><th>Talla camiseta</th><th>Numero Dorsal</th><th>Acciones</th></tr>
           </thead>
           <tbody id="kitsBody">
             <tr>
@@ -582,9 +582,11 @@ try {
                 <tr>
                   <td><?= htmlspecialchars($kit['nombre_k']) ?></td>
                   <td><?= htmlspecialchars($kit['stock_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['fecha_entrega_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['lugar_entrega_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['contenido_k']) ?></td>
                   <td><?= htmlspecialchars($kit['talla_camiseta_k']) ?></td>
                   <td><?= htmlspecialchars($kit['dorsal_k']) ?></td>
-                  <td><?= htmlspecialchars($kit['fecha_entrega_k']) ?></td>
                   <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-kit')">✏️</button></td>
                 </tr>
               <?php endforeach; ?>
