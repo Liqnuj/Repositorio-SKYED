@@ -21,7 +21,7 @@
       --font-head: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth}
     body.dark-mode{
       color:#aaaaaa;
     }
@@ -420,7 +420,7 @@
       text-transform: uppercase;
       letter-spacing: .07em;
       padding: .7rem 1rem;
-      text-align: left;
+      text-align: center;
       border-bottom: 1px solid var(--border);
       white-space: nowrap;
     }
@@ -433,7 +433,7 @@
     tbody tr:last-child { border-bottom: none; }
     tbody tr:hover { background: #d8d9da; }
     .dark-mode tbody tr:hover { background: #2f2f2f; }
-    tbody td { padding: .8rem 1rem; vertical-align: middle; }
+    tbody td { padding: .8rem 1rem; vertical-align: middle; text-align:center; }
 
     /* ===== BADGES ===== */
     .badge {
@@ -1693,9 +1693,14 @@ body {
   padding: 1.75rem;
   overflow-y: auto;
   height: calc(100vh - 66px);
-  /* SIN margin-left, SIN margin-top */
   margin: 0;
+  scrollbar-width: none;
 }
+
+.main-wrap::-webkit-scrollbar {
+  display: none;
+}
+
 
 /* Botón toggle DENTRO del header — static */
 .sidebar-toggle {
