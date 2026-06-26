@@ -320,7 +320,7 @@
 
   /* ---------- ELIMINAR INSCRIPCIÓN ---------- */
   async function eliminarInscripcion(ref) {
-    if (!confirm('¿Seguro que deseas eliminar esta inscripción? Esta acción no se puede deshacer.')) return;
+    if (!confirm('¿Seguro que deseas cancelar esta inscripción?')) return;
     try {
       const body = /^\d+$/.test(String(ref)) && !String(ref).startsWith('INS-')
         ? { id: ref }
@@ -335,16 +335,30 @@
         toast((data && data.error) || 'No se pudo eliminar la inscripción', 'error');
         return;
       }
-      // Quitar de las listas en memoria y re-renderizar
-      ventas   = ventas.filter(v => String(v.ref_id || v.id) !== String(ref));
-      past     = past.filter(v => String(v.ref_id || v.id) !== String(ref));
-      upcoming = upcoming.filter(v => String(v.ref_id || v.id) !== String(ref));
-      // Sincronizar caché local también
-      const local = JSON.parse(localStorage.getItem('cicloVentas') || '[]')
-        .filter(v => String(v.ref_id || v.id) !== String(ref));
+
+      // Filtrar por ref_id, id, id_i — cualquier coincidencia
+      const match = v => String(v.ref_id || v.id || v.id_i || '') === String(ref);
+
+      // Encontrar el item para saber también su id_e (por si está duplicado en local)
+      const eliminado = ventas.find(match);
+
+      const noMatch = v => {
+        if (match(v)) return false;
+        // Si es el mismo evento que el eliminado y viene de localStorage (sin id_i), también quitarlo
+        if (eliminado && !v.id_i && String(v.id_e || v.eventoId || v.eventoNombre) === String(eliminado.id_e || eliminado.eventoId || eliminado.eventoNombre)) return false;
+        return true;
+      };
+
+      ventas   = ventas.filter(noMatch);
+      past     = past.filter(noMatch);
+      upcoming = upcoming.filter(noMatch);
+
+      // Limpiar localStorage
+      const local = JSON.parse(localStorage.getItem('cicloVentas') || '[]').filter(noMatch);
       localStorage.setItem('cicloVentas', JSON.stringify(local));
+
       renderAll();
-      toast('Inscripción eliminada correctamente', 'ok');
+      toast('Inscripción cancelada correctamente', 'ok');
     } catch (err) {
       toast('Error de conexión al eliminar la inscripción', 'error');
     }

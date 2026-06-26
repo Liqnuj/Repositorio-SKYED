@@ -168,9 +168,9 @@
         const data = await res.json();
         if (!data.ok || !Array.isArray(data.inscripciones)) return false;
         return data.inscripciones.some(i =>
-          Number(i.evento_id) === Number(idEvento) &&
-          i.estado !== 'cancelado' &&
-          i.estado !== 'rechazado'
+          (Number(i.id_e) === Number(idEvento) || Number(i.evento_id) === Number(idEvento)) &&
+          i.estado_i !== 'cancelado' &&
+          i.estado_i !== 'rechazado'
         );
       } catch (err) {
         console.error('Error verificando inscripción:', err);
@@ -179,8 +179,8 @@
     };
 
     if (await isAlreadyInscrito()) {
-      const yaInscrito = document.getElementById('ya-inscrito');
-      if (yaInscrito) yaInscrito.classList.add('show');
+      // Redirigir a eventos con mensaje en URL
+      location.href = 'eventos.html?msg=ya_inscrito';
       return;
     }
 
@@ -206,11 +206,14 @@
     const fechaField = document.getElementById('p1-fecha-nac');
     const nombreField = document.getElementById('p1-nombre');
     const correoField = document.getElementById('p1-correo');
-    const guestNameInput = document.getElementById('p1-guest-nombre');
-    const guestDocInput = document.getElementById('p1-guest-doc');
-    const guestTelInput = document.getElementById('p1-guest-tel');
-    const guestRhInput = document.getElementById('p1-guest-rh');
-    const guestFechaInput = document.getElementById('p1-guest-fecha-nac');
+    const guestNameInput     = document.getElementById('inv-nombre');
+    const guestDocInput      = document.getElementById('inv-doc');
+    const guestTelInput      = document.getElementById('inv-tel');
+    const guestRhInput       = document.getElementById('inv-rh');
+    const guestFechaInput    = document.getElementById('inv-fecha-nac');
+    const guestTipoDocInput  = document.getElementById('inv-tipo-doc');
+    const guestApellidoInput = document.getElementById('inv-apellido');
+    const guestCorreoInput   = document.getElementById('inv-correo');
     let guestMode = false;
 
     const parseToISO = s => {
@@ -241,12 +244,7 @@
     }
 
     const applyGuestData = () => {
-      if (!guestMode) return;
-      if (guestNameInput && guestNameInput.value.trim() && nombreField) nombreField.textContent = guestNameInput.value.trim();
-      if (guestDocInput && docField) docField.value = guestDocInput.value.replace(/[^0-9]/g,'').slice(0,10);
-      if (guestTelInput && telField) telField.value = guestTelInput.value.replace(/[^0-9]/g,'').slice(0,15);
-      if (guestRhInput && rhField) rhField.value = guestRhInput.value;
-      if (guestFechaInput && fechaField) fechaField.value = guestFechaInput.value;
+      // Los datos del invitado se recogen por separado, no sobreescriben los del usuario
     };
 
     // Fecha de nacimiento
@@ -270,7 +268,19 @@
         showToast('Complete los datos del invitado.', 'success');
       });
     }
-    [guestNameInput, guestDocInput, guestTelInput, guestRhInput, guestFechaInput].forEach(inp => {
+    const cancelarInvitadoBtn = document.getElementById('btn-quitar-invitado');
+    if (cancelarInvitadoBtn) {
+      cancelarInvitadoBtn.addEventListener('click', () => {
+        if (guestSection) guestSection.style.display = 'none';
+        if (invitadosBtn) invitadosBtn.style.display = 'inline-flex';
+        guestMode = false;
+        [guestTipoDocInput, guestDocInput, guestNameInput, guestApellidoInput,
+         guestTelInput, guestRhInput, guestFechaInput, guestCorreoInput]
+          .forEach(inp => { if (inp) inp.value = ''; });
+      });
+    }
+    [guestNameInput, guestDocInput, guestTelInput, guestRhInput, guestFechaInput,
+     guestTipoDocInput, guestApellidoInput, guestCorreoInput].forEach(inp => {
       if (!inp) return;
       inp.addEventListener('input', applyGuestData);
       inp.addEventListener('change', applyGuestData);
@@ -651,9 +661,25 @@
       estado.telefono_u          = document.getElementById('p1-tel').value.trim();
       estado.contacto_nombre     = document.getElementById('p1-contacto-nombre').value.trim();
       estado.contacto_telefono   = document.getElementById('p1-contacto-tel').value.trim();
+      estado.contacto_parentesco = (document.getElementById('p1-contacto-parentesco') || {})?.value?.trim() || '';
       estado.fecha_nacimiento_u  = document.getElementById('p1-fecha-nac').value;
       estado.dorsal              = document.getElementById('p1-dorsal').value;
       estado.condiciones_medicas = document.getElementById('p1-medico').value;
+      // Datos del invitado
+      estado.invitado = guestMode ? {
+        tipo_documento: (() => {
+          const map = { CC:'cedula_ciudadania', TI:'tarjeta_identidad', CE:'cedula_extranjeria', PA:'pasaporte' };
+          const val = guestTipoDocInput ? guestTipoDocInput.value : '';
+          return map[val] || val; // si ya viene el valor largo, lo deja igual
+        })(),
+        documento_inv:        guestDocInput       ? guestDocInput.value.trim()        : '',
+        nombre_inv:           guestNameInput      ? guestNameInput.value.trim()       : '',
+        apellido_inv:         guestApellidoInput  ? guestApellidoInput.value.trim()   : '',
+        telefono_inv:         guestTelInput       ? guestTelInput.value.trim()        : '',
+        rh_inv:               guestRhInput        ? guestRhInput.value                : '',
+        fecha_nacimiento_inv: guestFechaInput     ? guestFechaInput.value             : '',
+        correo_inv:           guestCorreoInput    ? guestCorreoInput.value.trim()     : '',
+      } : null;
       if (validarPaso1()) mostrarPaso(2);
     });
 
@@ -665,7 +691,7 @@
 
 
 
-    document.getElementById('btn-confirmar').addEventListener('click', () => {
+    document.getElementById('btn-confirmar').addEventListener('click', async () => {
       // Validar términos
       let ok = true;
       if (!document.getElementById('chk-terminos').checked) {
@@ -676,19 +702,7 @@
       } else document.getElementById('err-salud').classList.remove('show');
       if (!ok) return;
 
-      const ventas = JSON.parse(localStorage.getItem('cicloVentas') || '[]');
-      const already = ventas.some(v =>
-        (v.usuario === normalizedSession.email || v.email === normalizedSession.email) &&
-        Number(v.id_e) === Number(idEvento) &&
-        v.estado_i !== 'cancelada'
-      );
-      if (already) {
-        const yaInscrito = document.getElementById('ya-inscrito');
-        document.querySelector('.stepper') && (document.querySelector('.stepper').style.display = 'none');
-        document.querySelector('.insc-grid') && (document.querySelector('.insc-grid').style.display = 'none');
-        if (yaInscrito) { yaInscrito.classList.add('show'); }
-        return;
-      }
+      // El chequeo de duplicado lo hace el servidor; si llega aquí es porque pasó la validación inicial
 
 
       // Deshabilitar botón
@@ -699,40 +713,50 @@
       // Payload que coincide con los campos de la tabla inscripciones
       const precioPagado = estado.quiereJersey ? evento.precio_e + PRECIO_JERSEY : evento.precio_e;
       const payload = {
-        evento_id:           evento.id_e,
-        doc_u:               estado.doc_u,
-        rh_u:                estado.rh_u,
-        telefono_u:          estado.telefono_u,
-        contacto_nombre:     estado.contacto_nombre,
-        contacto_telefono:   estado.contacto_telefono,
-        fecha_nacimiento:    estado.fecha_nacimiento_u,
-        dorsal:              estado.dorsal,
-        condiciones_medicas: estado.condiciones_medicas,
-        metodo_pago:         estado.metodo,
-        precio:              precioPagado,
-        quiere_jersey:       !!estado.quiereJersey,
-        talla_camiseta:      estado.talla || '',
-        id_cc:               estado.categoriaId,
-        categoriaNombre:     estado.categoriaNombre,
-        eventoNombre:        evento.nombre_e,
-        eventoFecha:         evento.fecha_e,
-        eventoLugar:         evento.ubicacion_e,
-        eventoCategoria:     evento.categoria_e,
-        eventoKm:            evento.distancia_total_e,
-        eventoImg:           evento.imagen_e,
+        evento_id:            evento.id_e,
+        doc_u:                estado.doc_u,
+        rh_u:                 estado.rh_u,
+        telefono_u:           estado.telefono_u,
+        contacto_nombre:      estado.contacto_nombre,
+        contacto_telefono:    estado.contacto_telefono,
+        contacto_parentesco:  estado.contacto_parentesco,
+        fecha_nacimiento:     estado.fecha_nacimiento_u,
+        dorsal:               estado.dorsal,
+        condiciones_medicas:  estado.condiciones_medicas,
+        metodo_pago:          estado.metodo,
+        precio:               precioPagado,
+        quiere_jersey:        !!estado.quiereJersey,
+        talla_camiseta:       estado.talla || '',
+        id_cc:                estado.categoriaId,
+        categoriaNombre:      estado.categoriaNombre,
+        eventoNombre:         evento.nombre_e,
+        eventoFecha:          evento.fecha_e,
+        eventoLugar:          evento.ubicacion_e,
+        eventoCategoria:      evento.categoria_e,
+        eventoKm:             evento.distancia_total_e,
+        eventoImg:            evento.imagen_e,
+        invitado:             estado.invitado || null,
       };
 
       const paymentReference = `REF-${String(payload.metodo_pago || 'PAGO').toUpperCase().slice(0,6)}-${Date.now()}`;
-      let paymentComprobante = '';
-      if (payload.metodo_pago === 'efectivo') {
-        paymentComprobante = document.getElementById('punto-pago')?.value || 'Pago presencial';
-      } else {
-        const inputId = payload.metodo_pago === 'transferencia' ? 'comprobante-file' : 'comprobante-nequi';
-        const fileInput = document.getElementById(inputId);
-        const file = fileInput?.files?.[0];
-        paymentComprobante = file?.name || 'Pago digital';
-      }
       payload.referencia = paymentReference;
+
+      // Leer comprobante como base64 si existe, si no texto plano
+      const getComprobante = () => new Promise(resolve => {
+        if (payload.metodo_pago === 'efectivo') {
+          resolve(document.getElementById('punto-pago')?.value || 'Pago presencial');
+          return;
+        }
+        const inputId = payload.metodo_pago === 'transferencia' ? 'comprobante-file' : 'comprobante-nequi';
+        const file = document.getElementById(inputId)?.files?.[0];
+        if (!file) { resolve('Pago digital'); return; }
+        const reader = new FileReader();
+        reader.onload = e => resolve(e.target.result); // base64 data URL
+        reader.onerror = () => resolve(file.name);
+        reader.readAsDataURL(file);
+      });
+
+      const paymentComprobante = await getComprobante();
       payload.comprobante = paymentComprobante;
 
       fetch('php/guardar_inscripcion.php', {
@@ -783,7 +807,7 @@
             categoriaNombre:  estado.categoriaNombre,
             qr_code:          data.qr_code,
             referencia_p:     data.referencia_p || paymentReference,
-            comprobante_p:    data.comprobante_p || paymentComprobante,
+            comprobante_p:    data.comprobante_p || (paymentComprobante && paymentComprobante.startsWith('data:') ? 'Comprobante enviado' : paymentComprobante),
             fecha_p:          data.fecha_p || new Date().toISOString(),
             estado_p:         data.estado_p || 'pendiente',
           };
@@ -879,15 +903,15 @@
 
       const details = document.getElementById('success-details');
       const rows = [
-        ['Evento',     insc.eventoNombre],
-        ['Fecha',      fmtFecha(insc.eventoFecha)],
-        ['Categoría',  insc.categoriaNombre],
-        ['Referencia', insc.id],
-        ['Estado',     insc.estado_i === 'pendiente_pago' ? 'Pendiente de pago' : 'Pendiente de validación'],
-        ['Total',      fmtMoney(insc.precio_pagado_i)],
-        ['Método',     insc.metodo_pago_i ? insc.metodo_pago_i.replace('transferencia','Transferencia bancaria').replace('nequi','Nequi / Daviplata').replace('efectivo','Efectivo en punto autorizado') : '—'],
+        ['Evento',     insc.eventoNombre    || '—'],
+        ['Fecha',      fmtFecha(insc.eventoFecha || insc.fecha_i)],
+        ['Categoría',  insc.categoriaNombre || insc.eventoCategoria || '—'],
+        ['Referencia', insc.ref_id || insc.id || '—'],
+        ['Estado',     (insc.estado_i || insc.estado) === 'pendiente_pago' ? 'Pendiente de pago' : 'Pendiente de validación'],
+        ['Total',      fmtMoney(insc.precio_pagado_i ?? insc.precio ?? 0)],
+        ['Método',     (insc.metodo_pago_i || insc.metodo_pago || '').replace('transferencia','Transferencia bancaria').replace('nequi','Nequi / Daviplata').replace('efectivo','Efectivo en punto autorizado') || '—'],
         ['Referencia pago', insc.referencia_p || '—'],
-        ['Comprobante', insc.comprobante_p || '—'],
+        ['Comprobante', insc.comprobante_p ? (insc.comprobante_p.startsWith('data:') ? 'Comprobante enviado ✓' : insc.comprobante_p) : (insc.metodo_pago_i === 'efectivo' ? 'Pago presencial' : '—')],
       ];
       details.innerHTML = rows.map(([dt,dd]) =>
         `<div class="success-detail-row"><dt>${dt}</dt><dd>${dd}</dd></div>`
