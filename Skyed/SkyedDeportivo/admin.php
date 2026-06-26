@@ -53,7 +53,6 @@ try {
     die("Error al conectar con la base de datos: " . $e->getMessage());
 }
 
-
 $kitsRegistrados = [];
 try {
   $stmt = $pdo->query("SELECT * FROM kit ORDER BY fecha_entrega_k ASC");
@@ -575,21 +574,21 @@ try {
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Nombre del Kit</th><th>Stock</th><th>Fecha de entrega</th><th>Lugar y dirección de entrega</th><th>Contenido del kit</th><th>Talla camiseta</th><th>Numero dorsal</th><th>Acciones</th></tr>
+            <tr><th>Nombre</th><th>Stock</th><th>Talla</th><th>Dorsal</th><th>Fecha de Entrega</th><th></th></tr>
           </thead>
           <tbody id="kitsBody">
+            <tr>
               <?php foreach ($kitsRegistrados as $kit): ?>
-              <tr>
-                <td><strong><?= htmlspecialchars($kit['nombre_k']) ?></strong></td>
-                <td><?= htmlspecialchars($kit['stock_k']) ?></td>
-                <td><?= htmlspecialchars($kit['fecha_entrega_k']) ?></td>
-                <td><?= htmlspecialchars($kit['lugar_entrega_k']) ?></td>
-                <td><?= htmlspecialchars($kit['contenido_k']) ?></td>
-                <td><?= htmlspecialchars($kit['talla_camiseta_k']) ?></td>
-                <td><?= htmlspecialchars($kit['numero_dorsal_k']) ?></td>
-                <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-kit', <?= $kit['id_k'] ?>) ">✏️</button></td>
-              </tr>
+                <tr>
+                  <td><?= htmlspecialchars($kit['nombre_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['stock_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['talla_camiseta_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['dorsal_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['fecha_entrega_k']) ?></td>
+                  <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-kit')">✏️</button></td>
+                </tr>
               <?php endforeach; ?>
+            </tr>
           </tbody>
         </table>
       </div>
