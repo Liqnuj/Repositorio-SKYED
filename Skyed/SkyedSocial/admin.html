@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Admin — SKYED SOCIAL</title>
+  <link rel="icon" href="img/logo_social.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <link rel="stylesheet" href="css/admin.css" />
+</head>
+<body>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- HEADER -->
+<header class="site-header" role="banner">
+  <div class="header-left">
+    <button class="btn-toggle" id="btnToggle" aria-label="Mostrar/ocultar menú">
+      <i class="ti ti-layout-sidebar" aria-hidden="true"></i>
+    </button>
+    <a href="index.html" class="brand-logo" aria-label="Inicio SKYED">
+<img src="img/logo_social.png" alt="Logo SKYED" style="width:36px;height:36px;border-radius:9px;object-fit:cover;" />
+      <span class="brand-name">SKY<em>ED</em></span>
+    </a>
+  </div>
+  <div class="header-right">
+    <span class="badge-admin">⚙ Panel Admin</span>
+    <a href="index.html" class="btn-back">← Volver al inicio</a>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar" aria-label="Navegación administrador">
+
+    <!-- Brand dentro del sidebar -->
+    <div class="sidebar-brand">
+      <div class="sidebar-star" style="width:36px;height:36px;background:var(--accent);border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 8 L16 4 L28 8 L28 18 C28 24 16 30 16 30 C16 30 4 24 4 18 Z" fill="#1e1040" stroke="#1e1040" stroke-width="1"/>
+          <path d="M10 14 L14 18 L22 11" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="sidebar-brand-text">
+        <strong>Skyed Social</strong>
+        <span>ADMIN</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" role="navigation">
+
+      <a href="#" class="nav-item active" data-section="inicio" data-label="Inicio">
+        <i class="ti ti-chart-bar" aria-hidden="true"></i>
+        <span class="nav-label">Inicio</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="eventos" data-label="Eventos">
+        <i class="ti ti-confetti" aria-hidden="true"></i>
+        <span class="nav-label">Eventos</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="reservas" data-label="Reservas">
+        <i class="ti ti-calendar-check" aria-hidden="true"></i>
+        <span class="nav-label">Reservas</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="usuarios" data-label="Usuarios">
+        <i class="ti ti-user-circle" aria-hidden="true"></i>
+        <span class="nav-label">Usuarios</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="pqr" data-label="PQR">
+        <i class="ti ti-message-dots" aria-hidden="true"></i>
+        <span class="nav-label">PQR</span>
+      </a>
+
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="avatar">AD</div>
+      <div class="user-info">
+        <strong id="adminName">Administrador</strong>
+        <span>admin@skyed.co</span>
+      </div>
+      <button class="btn-logout" id="btnLogout" title="Cerrar sesión" aria-label="Cerrar sesión">
+        <i class="ti ti-logout" aria-hidden="true"></i>
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content" id="mainContent">
+    <div class="topbar">
+      <h1 id="sectionTitle">Inicio</h1>
+      <div class="search-wrap">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input type="search" id="globalSearch" placeholder="Buscar..." aria-label="Buscar" />
+      </div>
+    </div>
+
+    <!-- Inicio -->
+    <section class="view" data-view="inicio">
+      <div class="kpi-grid">
+        <div class="kpi"><span>Usuarios</span><strong id="kpiUsuarios">0</strong></div>
+        <div class="kpi"><span>Eventos</span><strong id="kpiEventos">0</strong></div>
+        <div class="kpi"><span>Reservas</span><strong id="kpiReservas">0</strong></div>
+        <div class="kpi"><span>Ingresos</span><strong id="kpiIngresos">$0</strong></div>
+        <div class="kpi"><span>PQR abiertos</span><strong id="kpiPqr">0</strong></div>
+        <div class="kpi"><span>Confirmadas</span><strong id="kpiConfirmadas">0</strong></div>
+      </div>
+
+      <!-- CALENDARIO -->
+      <div class="card cal-card" style="margin-top:0.5rem;">
+        <div class="cal-toolbar">
+          <div class="cal-nav">
+            <button class="cal-btn" id="calPrev" aria-label="Mes anterior"><i class="ti ti-chevron-left"></i></button>
+            <h2 id="calTitle" class="cal-title"></h2>
+            <button class="cal-btn" id="calNext" aria-label="Mes siguiente"><i class="ti ti-chevron-right"></i></button>
+          </div>
+          <div class="cal-views">
+            <button class="cal-view-btn active" data-view="month">Mes</button>
+            <button class="cal-view-btn" data-view="week">Semana</button>
+          </div>
+          <button class="cal-today-btn" id="calToday">Hoy</button>
+        </div>
+
+        <!-- Vista mes -->
+        <div id="calMonthView">
+          <div class="cal-grid-header">
+            <span>Dom</span><span>Lun</span><span>Mar</span><span>Mié</span>
+            <span>Jue</span><span>Vie</span><span>Sáb</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+
+        <!-- Vista semana -->
+        <div id="calWeekView" style="display:none">
+          <div class="cal-week-wrap" id="calWeekWrap"></div>
+        </div>
+
+        <!-- Leyenda -->
+        <div class="cal-legend">
+          <span class="cal-legend-item">
+            <span class="cal-legend-dot" style="background:#059669"></span> Realizado
+          </span>
+          <span class="cal-legend-item">
+            <span class="cal-legend-dot" style="background:#3b82f6"></span> Pendiente
+          </span>
+          <span class="cal-legend-item">
+            <span class="cal-legend-dot" style="background:#f59e0b"></span> En curso
+          </span>
+          <span class="cal-legend-item" style="margin-left:auto;font-weight:400;color:#8a9bb0">
+            Clic en un evento para ver detalles
+          </span>
+        </div>
+      </div>
+
+      <!-- Panel lateral: evento seleccionado -->
+      <div class="card" id="calEventDetail" style="display:none">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
+          <h2 style="margin:0" id="detailTitle">—</h2>
+          <button onclick="document.getElementById('calEventDetail').style.display='none'"
+                  style="background:none;border:none;cursor:pointer;color:#8a9bb0;font-size:1.2rem">✕</button>
+        </div>
+        <p id="detailDate" style="font-size:.85rem;color:#3a4a6b;margin-bottom:.4rem"></p>
+        <p id="detailDesc" style="font-size:.9rem;color:#0f1a2e"></p>
+        <p id="detailCat" style="margin-top:.5rem"></p>
+      </div>
+
+      <div class="card">
+        <h2>Últimas reservas</h2>
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Cliente</th><th>Evento</th><th>Fecha</th><th>Estado</th></tr></thead>
+          <tbody id="ultimasReservas"><tr><td colspan="5" style="color:#8a9bb0;text-align:center;padding:2rem">Sin datos aún</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Eventos -->
+    <section class="view" data-view="eventos" hidden>
+      <div class="view-header">
+        <h2>Gestión de Eventos</h2>
+        <button class="btn-primary" id="btnNuevoEvento">+ Nuevo evento</button>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="tablaEventos"><tr><td colspan="7" style="color:#8a9bb0;text-align:center;padding:2rem">Sin eventos</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Reservas -->
+    <section class="view" data-view="reservas" hidden>
+      <div class="view-header">
+        <h2>Reservas</h2>
+        <select id="filtroReservas" class="select">
+          <option value="">Todas</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="confirmada">Confirmadas</option>
+          <option value="cancelada">Canceladas</option>
+        </select>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Cliente</th><th>Evento</th><th>Fecha</th><th>Invitados</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="tablaReservas"><tr><td colspan="8" style="color:#8a9bb0;text-align:center;padding:2rem">Sin reservas</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Usuarios -->
+    <section class="view" data-view="usuarios" hidden>
+      <div class="view-header"><h2>Usuarios</h2></div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Usuario</th><th>Nombre</th><th>Correo</th><th>Rol</th><th>Acciones</th></tr></thead>
+          <tbody id="tablaUsuarios"><tr><td colspan="6" style="color:#8a9bb0;text-align:center;padding:2rem">Sin usuarios</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PQR -->
+    <section class="view" data-view="pqr" hidden>
+      <div class="view-header">
+        <h2>Peticiones, Quejas y Reclamos</h2>
+        <select id="filtroPqr" class="select">
+          <option value="">Todos</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="en_proceso">En proceso</option>
+          <option value="resuelto">Resueltos</option>
+        </select>
+      </div>
+      <div class="card">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Tipo</th><th>Asunto</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="tablaPqr"><tr><td colspan="7" style="color:#8a9bb0;text-align:center;padding:2rem">Sin PQR</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Secciones genéricas para las demás opciones -->
+    <section class="view" data-view="inscripciones" hidden>
+      <div class="view-header"><h2>Inscripciones</h2></div>
+      <div class="card"><p style="color:#8a9bb0;padding:1rem">Sin inscripciones registradas.</p></div>
+    </section>
+    <section class="view" data-view="pagos" hidden>
+      <div class="view-header"><h2>Pagos</h2></div>
+      <div class="card"><p style="color:#8a9bb0;padding:1rem">Sin pagos registrados.</p></div>
+    </section>
+    <section class="view" data-view="kits" hidden>
+      <div class="view-header"><h2>Kits / Entregas</h2></div>
+      <div class="card"><p style="color:#8a9bb0;padding:1rem">Sin kits registrados.</p></div>
+    </section>
+    <section class="view" data-view="categorias" hidden>
+      <div class="view-header"><h2>Categorías</h2></div>
+      <div class="card"><p style="color:#8a9bb0;padding:1rem">Sin categorías registradas.</p></div>
+    </section>
+    <section class="view" data-view="patrocinadores" hidden>
+      <div class="view-header"><h2>Patrocinadores</h2></div>
+      <div class="card"><p style="color:#8a9bb0;padding:1rem">Sin patrocinadores registrados.</p></div>
+    </section>
+    <section class="view" data-view="resultados" hidden>
+      <div class="view-header"><h2>Resultados</h2></div>
+      <div class="card"><p style="color:#8a9bb0;padding:1rem">Sin resultados registrados.</p></div>
+    </section>
+    <section class="view" data-view="rutas" hidden>
+      <div class="view-header"><h2>Rutas</h2></div>
+      <div class="card"><p style="color:#8a9bb0;padding:1rem">Sin rutas registradas.</p></div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script>
+  const sidebar    = document.getElementById('sidebar');
+  const mainContent = document.getElementById('mainContent');
+  const btnToggle  = document.getElementById('btnToggle');
+  const overlay    = document.getElementById('sidebarOverlay');
+  const isMobile   = () => window.innerWidth <= 768;
+
+  let collapsed = false;
+
+  function toggleSidebar() {
+    if (isMobile()) {
+      sidebar.classList.toggle('mobile-open');
+      overlay.classList.toggle('active');
+    } else {
+      collapsed = !collapsed;
+      sidebar.classList.toggle('collapsed', collapsed);
+      mainContent.classList.toggle('sidebar-collapsed', collapsed);
+    }
+  }
+
+  btnToggle.addEventListener('click', toggleSidebar);
+  overlay.addEventListener('click', () => {
+    sidebar.classList.remove('mobile-open');
+    overlay.classList.remove('active');
+  });
+
+  // Navegación entre secciones
+  const navItems = document.querySelectorAll('.nav-item[data-section]');
+  const views    = document.querySelectorAll('.view[data-view]');
+  const titleEl  = document.getElementById('sectionTitle');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      const section = item.dataset.section;
+
+      navItems.forEach(n => n.classList.remove('active'));
+      item.classList.add('active');
+
+      views.forEach(v => {
+        v.hidden = v.dataset.view !== section;
+      });
+
+      titleEl.textContent = item.querySelector('.nav-label').textContent.trim();
+
+      if (isMobile()) {
+        sidebar.classList.remove('mobile-open');
+        overlay.classList.remove('active');
+      }
+    });
+  });
+
+
+  /* ═══════════════════════════════════════
+     CALENDARIO SKYED SOCIAL
+  ═══════════════════════════════════════ */
+  (function() {
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const y = today.getFullYear();
+    const m = today.getMonth();
+
+    // Colores por categoría
+    const eventColors = {
+      'Social':    { bg: '#ede9fe', border: '#7c3aed', text: '#4c1d95' },
+      'Música':    { bg: '#fce7f3', border: '#db2777', text: '#831843' },
+      'Deportivo': { bg: '#d1fae5', border: '#059669', text: '#064e3b' },
+      'Cultural':  { bg: '#fef3c7', border: '#c9a227', text: '#78350f' },
+      'Gala':      { bg: '#e0e7ff', border: '#4338ca', text: '#1e1b4b' },
+    };
+
+    const mkDate = (y,m,d) => { const dt = new Date(y,m,d); dt.setHours(0,0,0,0); return dt; };
+
+    // Eventos: pasados → realizados, futuros → pendientes
+    let calEvents = [
+      { id:1,  title:'Fiesta de Gala Rooftop',      date: mkDate(y,m-1,18), cat:'Gala',      desc:'Evento exclusivo de gala en terraza. Cupos limitados a 80 personas.',    hora:'8:00 PM' },
+      { id:2,  title:'Festival de Jazz & Vinos',     date: mkDate(y,m-1,24), cat:'Música',    desc:'Noche de jazz en vivo con cata de vinos premium.',                       hora:'7:00 PM' },
+      { id:3,  title:'Torneo de Tenis Social',       date: mkDate(y,m,14),   cat:'Deportivo', desc:'Torneo amistoso dobles mixtos. Club Campestre.',                          hora:'9:00 AM' },
+      { id:4,  title:'Noche de Cine al Aire Libre',  date: mkDate(y,m,18),   cat:'Cultural',  desc:'Proyección clásica bajo las estrellas. Traer cobija.',                    hora:'6:30 PM' },
+      { id:5,  title:'Coctelería Artesanal',         date: mkDate(y,m,20),   cat:'Social',    desc:'Taller y degustación de cócteles artesanales con bartender certificado.', hora:'5:00 PM' },
+      { id:6,  title:'Rumba 80s & 90s',              date: mkDate(y,m,25),   cat:'Música',    desc:'Noche retro con DJ invitado. Dress code: outfit de época.',                hora:'9:00 PM' },
+      { id:7,  title:'Brunch Dominical VIP',         date: mkDate(y,m+1,3),  cat:'Social',    desc:'Brunch exclusivo con música en vivo y showcooking.',                      hora:'11:00 AM' },
+      { id:8,  title:'Gala de Aniversario',          date: mkDate(y,m+1,8),  cat:'Gala',      desc:'Celebración del 5° aniversario de Skyed Social.',                        hora:'7:30 PM' },
+      { id:9,  title:'Tarde de Yoga & Bienestar',    date: mkDate(y,m+1,15), cat:'Deportivo', desc:'Sesión grupal de yoga al aire libre con instructor certificado.',          hora:'4:00 PM' },
+      { id:10, title:'Exposición Arte Colombiano',   date: mkDate(y,m+1,22), cat:'Cultural',  desc:'Inauguración de galería con artistas locales emergentes.',                hora:'6:00 PM' },
+    ];
+
+    // Estado automático: pasados = realizado, futuros = pendiente, hoy = en curso
+    calEvents = calEvents.map(e => {
+      const d = new Date(e.date); d.setHours(0,0,0,0);
+      let status;
+      if (d < today) status = 'realizado';
+      else if (d.getTime() === today.getTime()) status = 'en_curso';
+      else status = 'pendiente';
+      return { ...e, status };
+    });
+
+    const statusInfo = {
+      realizado: { label: '✓ Realizado', bg: '#d1fae5', color: '#065f46', dot: '#059669' },
+      pendiente:  { label: '◷ Pendiente', bg: '#eff6ff', color: '#1e40af', dot: '#3b82f6' },
+      en_curso:   { label: '● En curso',  bg: '#fef9c3', color: '#854d0e', dot: '#f59e0b' },
+    };
+
+    let currentDate = new Date(today);
+    let currentView = 'month';
+
+    const calGrid     = document.getElementById('calGrid');
+    const calTitle    = document.getElementById('calTitle');
+    const calMonthV   = document.getElementById('calMonthView');
+    const calWeekV    = document.getElementById('calWeekView');
+    const calWeekWrap = document.getElementById('calWeekWrap');
+    const detailPanel = document.getElementById('calEventDetail');
+
+    const sameDay = (a,b) => a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
+    const months  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    const days    = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+
+    function eventsOnDay(date) {
+      return calEvents.filter(e => sameDay(e.date, date));
+    }
+
+    // ── RENDER MES ──────────────────────────
+    function renderMonth() {
+      const cy = currentDate.getFullYear();
+      const cm = currentDate.getMonth();
+      calTitle.textContent = months[cm] + ' ' + cy;
+      calGrid.innerHTML = '';
+
+      const firstDay    = new Date(cy, cm, 1).getDay();
+      const daysInMonth = new Date(cy, cm+1, 0).getDate();
+      const daysInPrev  = new Date(cy, cm, 0).getDate();
+
+      let cells = [];
+      for (let i = firstDay - 1; i >= 0; i--)
+        cells.push({ date: new Date(cy, cm-1, daysInPrev - i), otherMonth: true });
+      for (let d = 1; d <= daysInMonth; d++)
+        cells.push({ date: new Date(cy, cm, d), otherMonth: false });
+      let next = 1;
+      while (cells.length < 42)
+        cells.push({ date: new Date(cy, cm+1, next++), otherMonth: true });
+
+      cells.forEach(({ date, otherMonth }) => {
+        const isToday   = sameDay(date, today);
+        const isWeekend = [0,6].includes(date.getDay());
+        const isPast    = date < today && !isToday;
+        const cell = document.createElement('div');
+        cell.className = 'cal-cell' +
+          (otherMonth ? ' other-month' : '') +
+          (isToday    ? ' today' : '') +
+          (isWeekend  ? ' weekend' : '') +
+          (isPast && !otherMonth ? ' past-day' : '');
+
+        const num = document.createElement('div');
+        num.className = 'cal-day-num';
+        num.textContent = date.getDate();
+        cell.appendChild(num);
+
+        const dayEvts = eventsOnDay(date);
+        dayEvts.slice(0, 3).forEach(ev => {
+          const c  = eventColors[ev.cat] || eventColors['Social'];
+          const si = statusInfo[ev.status];
+          const pill = document.createElement('span');
+          pill.className = 'cal-event-pill';
+          // Pasados: más apagados con tachado visual + check
+          const prefix = ev.status === 'realizado' ? '✓ ' : ev.status === 'en_curso' ? '● ' : '';
+          pill.textContent = prefix + ev.title;
+          pill.style.cssText =
+            'background:' + (ev.status === 'realizado' ? '#f1f5f9' : c.bg) + ';' +
+            'color:' + (ev.status === 'realizado' ? '#64748b' : c.text) + ';' +
+            'border-left:3px solid ' + (ev.status === 'realizado' ? '#94a3b8' : c.border) + ';' +
+            (ev.status === 'realizado' ? 'opacity:.7;' : '');
+          pill.addEventListener('click', e => { e.stopPropagation(); showDetail(ev); });
+          cell.appendChild(pill);
+        });
+
+        if (dayEvts.length > 3) {
+          const more = document.createElement('span');
+          more.style.cssText = 'font-size:.68rem;color:#8a9bb0;font-weight:600;padding-left:4px;cursor:pointer;';
+          more.textContent = '+' + (dayEvts.length - 3) + ' más';
+          cell.appendChild(more);
+        }
+
+        calGrid.appendChild(cell);
+      });
+    }
+
+    // ── RENDER SEMANA ────────────────────────
+    function renderWeek() {
+      const start = new Date(currentDate);
+      start.setDate(currentDate.getDate() - currentDate.getDay());
+      const end = new Date(start); end.setDate(start.getDate() + 6);
+
+      calTitle.textContent = days[start.getDay()] + ' ' + start.getDate() + ' ' + months[start.getMonth()] +
+        ' – ' + days[end.getDay()] + ' ' + end.getDate() + ' ' + months[end.getMonth()];
+
+      const hours = [];
+      for (let h = 6; h <= 22; h++) hours.push(h);
+
+      let html = '<div class="cal-week-grid">';
+      html += '<div class="cal-week-day-header"></div>';
+      for (let d = 0; d < 7; d++) {
+        const date = new Date(start); date.setDate(start.getDate() + d);
+        const isToday = sameDay(date, today);
+        html += '<div class="cal-week-day-header'+(isToday?' today-col':'')+'">' +
+          days[d] + '<span style="font-size:1.15rem">' + date.getDate() + '</span></div>';
+      }
+
+      hours.forEach(h => {
+        const label = h === 12 ? '12 PM' : h < 12 ? h+' AM' : (h-12)+' PM';
+        html += '<div class="cal-week-time-label">' + label + '</div>';
+        for (let d = 0; d < 7; d++) {
+          const date = new Date(start); date.setDate(start.getDate() + d);
+          const isToday = sameDay(date, today);
+          const dayEvts = eventsOnDay(date).filter(ev => {
+            const evHour = parseInt((ev.hora || '10:00').split(':')[0]);
+            const isPM   = (ev.hora || '').includes('PM') && evHour !== 12;
+            const h24    = isPM ? evHour + 12 : evHour;
+            return h24 === h;
+          });
+
+          html += '<div class="cal-week-cell' + (isToday ? ' today-col' : '') + '">';
+          dayEvts.forEach(ev => {
+            const c  = eventColors[ev.cat] || eventColors['Social'];
+            const si = statusInfo[ev.status];
+            const prefix = ev.status === 'realizado' ? '✓ ' : ev.status === 'en_curso' ? '● ' : '';
+            html += '<div class="cal-week-event" style="' +
+              'background:' + (ev.status === 'realizado' ? '#f1f5f9' : c.bg) + ';' +
+              'color:' + (ev.status === 'realizado' ? '#64748b' : c.text) + ';' +
+              'border-left:3px solid ' + (ev.status === 'realizado' ? '#94a3b8' : c.border) + ';' +
+              (ev.status === 'realizado' ? 'opacity:.75;' : '') +
+              '" onclick="window.__calShowDetail(' + ev.id + ')">' + prefix + ev.title + '</div>';
+          });
+          html += '</div>';
+        }
+      });
+      html += '</div>';
+      calWeekWrap.innerHTML = html;
+    }
+
+    // ── DETALLE ─────────────────────────────
+    function showDetail(ev) {
+      const c  = eventColors[ev.cat] || eventColors['Social'];
+      const si = statusInfo[ev.status];
+      document.getElementById('detailTitle').textContent = ev.title;
+      document.getElementById('detailDate').innerHTML =
+        '<i class="ti ti-calendar" style="vertical-align:-2px;margin-right:4px"></i>' +
+        ev.date.toLocaleDateString('es-CO', {weekday:'long', year:'numeric', month:'long', day:'numeric'}) +
+        ' &nbsp;·&nbsp; <i class="ti ti-clock" style="vertical-align:-2px;margin-right:2px"></i>' + (ev.hora || '');
+      document.getElementById('detailDesc').textContent = ev.desc;
+      document.getElementById('detailCat').innerHTML =
+        '<span class="event-cat-badge" style="background:' + c.bg + ';color:' + c.text + ';border:1px solid ' + c.border + '">' + ev.cat + '</span>' +
+        '&nbsp;&nbsp;<span class="event-cat-badge" style="background:' + si.bg + ';color:' + si.color + ';border:1px solid ' + si.dot + '">' + si.label + '</span>';
+      detailPanel.style.display = 'block';
+      detailPanel.style.borderLeftColor = c.border;
+      detailPanel.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+
+  window.__calShowDetail = id => showDetail(calEvents.find(e => e.id === id));
+
+    // ── NAVEGACIÓN ───────────────────────────
+    function navigate(dir) {
+      if (currentView === 'month') {
+        currentDate.setMonth(currentDate.getMonth() + dir);
+      } else {
+        currentDate.setDate(currentDate.getDate() + dir * 7);
+      }
+      render();
+    }
+
+    function setView(v) {
+      currentView = v;
+      document.querySelectorAll('.cal-view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === v));
+      calMonthV.style.display = v === 'month' ? '' : 'none';
+      calWeekV.style.display  = v === 'week'  ? '' : 'none';
+      render();
+    }
+
+    function render() {
+      if (currentView === 'month') renderMonth();
+      else renderWeek();
+    }
+
+    document.getElementById('calPrev').addEventListener('click', () => navigate(-1));
+    document.getElementById('calNext').addEventListener('click', () => navigate(1));
+    document.getElementById('calToday').addEventListener('click', () => {
+      currentDate = new Date(today);
+      render();
+    });
+    document.querySelectorAll('.cal-view-btn').forEach(b => {
+      b.addEventListener('click', () => setView(b.dataset.view));
+    });
+
+    render();
+  })();
+
+  // Logout placeholder
+  document.getElementById('btnLogout').addEventListener('click', () => {
+    const t = document.getElementById('toast');
+    t.textContent = 'Sesión cerrada';
+    t.hidden = false;
+    setTimeout(() => t.hidden = true, 2500);
+  });
+</script>
+</body>
+</html>
