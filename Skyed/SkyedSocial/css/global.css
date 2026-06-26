@@ -27,8 +27,7 @@ nav {
   top: 0; left: 0; right: 0;
   z-index: 1000;
   transition: all .4s ease;
-  padding: 1rem 0;
-  background: transparent;
+  padding: 1rem 0 1rem 0;
 }
 
 nav.scrolled {
