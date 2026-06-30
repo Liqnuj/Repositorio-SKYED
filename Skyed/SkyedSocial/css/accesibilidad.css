@@ -499,7 +499,7 @@ body.dark-mode input {
   color: #dadada;
 }
 body.dark-mode select {
-  background: #0f0f0f !important;
+  background:var(--plum) !important;
   border-color: var(--accent);
   color: #f0ebe5;
 }

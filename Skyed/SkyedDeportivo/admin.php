@@ -63,7 +63,7 @@ try {
 
 $categoriaNueva = [];
 try {
-  $stmt = $pdo->query("SELECT c.*, e.nombre_e as nombre_evento FROM categoria_competencia c LEFT JOIN eventoDeportivo e ON c.id_e = e.id_e ORDER BY c.nombre_cc ASC");
+  $stmt = $pdo->query("SELECT * FROM categoria_competencia ORDER BY nombre_cc ASC");
   $categoriaNueva = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error al conectar con la base de datos: " . $e->getMessage());

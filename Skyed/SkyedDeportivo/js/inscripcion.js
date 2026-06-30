@@ -276,7 +276,12 @@
         guestMode = false;
         [guestTipoDocInput, guestDocInput, guestNameInput, guestApellidoInput,
          guestTelInput, guestRhInput, guestFechaInput, guestCorreoInput]
-          .forEach(inp => { if (inp) inp.value = ''; });
+          .forEach(inp => { if (inp) { inp.value = ''; inp.classList.remove('invalid'); } });
+        ['err-inv-tipo-doc','err-inv-doc','err-inv-nombre','err-inv-apellido',
+         'err-inv-rh','err-inv-tel','err-inv-fecha','err-inv-correo'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.classList.remove('show');
+        });
       });
     }
     [guestNameInput, guestDocInput, guestTelInput, guestRhInput, guestFechaInput,
@@ -306,6 +311,57 @@
         inp.value = text.replace(/[^0-9]/g,'').slice(0,10);
       });
     });
+
+    // Filtro numérico para documento y teléfono del invitado
+    [guestDocInput, guestTelInput].forEach(inp => {
+      if (!inp) return;
+      inp.addEventListener('input', () => {
+        inp.value = inp.value.replace(/[^0-9]/g,'').slice(0,15);
+      });
+      inp.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+        inp.value = text.replace(/[^0-9]/g,'').slice(0,15);
+      });
+    });
+
+    // Bloquear números y caracteres especiales en nombre/apellido del invitado
+    [guestNameInput, guestApellidoInput].forEach(inp => {
+      if (!inp) return;
+      inp.addEventListener('input', () => {
+        inp.value = inp.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, '').slice(0, 50);
+      });
+      inp.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+        inp.value = text.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, '').slice(0, 50);
+      });
+    });
+
+    // Auto-capitalizar primera letra de nombre y apellido del invitado
+    [guestNameInput, guestApellidoInput].forEach(inp => {
+      if (!inp) return;
+      inp.addEventListener('blur', () => {
+        const v = inp.value.trim();
+        if (v) inp.value = v.charAt(0).toUpperCase() + v.slice(1);
+      });
+    });
+
+    // Limitar fecha de nacimiento del invitado: no permitir fechas futuras
+    if (guestFechaInput) {
+      const hoyISO = new Date().toISOString().split('T')[0];
+      guestFechaInput.setAttribute('max', hoyISO);
+      guestFechaInput.addEventListener('input', () => {
+        if (guestFechaInput.value && guestFechaInput.value > hoyISO) {
+          guestFechaInput.value = hoyISO;
+        }
+      });
+      guestFechaInput.addEventListener('change', () => {
+        if (guestFechaInput.value && guestFechaInput.value > hoyISO) {
+          guestFechaInput.value = hoyISO;
+        }
+      });
+    }
 
     // Dorsal
     if (dorsalInput) {
@@ -552,6 +608,7 @@
       const tel = document.getElementById('p1-tel');
       const contacto = document.getElementById('p1-contacto-nombre');
       const contactoTel = document.getElementById('p1-contacto-tel');
+      const parentesco = document.getElementById('p1-contacto-parentesco');
       const fecha = document.getElementById('p1-fecha-nac');
 
       // Documento
@@ -585,6 +642,95 @@
       if (!/^\d{7,15}$/.test((contactoTel.value || '').trim())) {
         document.getElementById('err-contacto-tel').classList.add('show'); contactoTel.classList.add('invalid'); ok = false;
       } else { document.getElementById('err-contacto-tel').classList.remove('show'); contactoTel.classList.remove('invalid'); }
+
+      // Parentesco
+      if (parentesco) {
+        const pval = (parentesco.value || '').trim();
+        if (!/^[A-Za-zÁÉÍÓÚáéíóúÑñ/ ]+$/.test(pval) || pval.length < 2 || pval.length > 50) {
+          document.getElementById('err-parentesco').classList.add('show'); parentesco.classList.add('invalid'); ok = false;
+        } else {
+          document.getElementById('err-parentesco').classList.remove('show'); parentesco.classList.remove('invalid');
+        }
+      }
+
+      // ── Validación del invitado (solo si está activo) ──
+      if (guestMode) {
+        const gTipoDoc  = guestTipoDocInput;
+        const gDoc      = guestDocInput;
+        const gNombre   = guestNameInput;
+        const gApellido = guestApellidoInput;
+        const gRh       = guestRhInput;
+        const gTel      = guestTelInput;
+        const gFecha    = guestFechaInput;
+        const gCorreo   = guestCorreoInput;
+
+        const setErr = (input, errId, fail) => {
+          const errEl = document.getElementById(errId);
+          if (fail) {
+            if (errEl) errEl.classList.add('show');
+            if (input) input.classList.add('invalid');
+            ok = false;
+          } else {
+            if (errEl) errEl.classList.remove('show');
+            if (input) input.classList.remove('invalid');
+          }
+        };
+
+        // Tipo de documento
+        setErr(gTipoDoc, 'err-inv-tipo-doc', !gTipoDoc || !gTipoDoc.value);
+
+        // N.º de documento
+        const docVal = gDoc ? gDoc.value.trim() : '';
+        setErr(gDoc, 'err-inv-doc', !/^\d{5,10}$/.test(docVal));
+
+        // Nombre
+        const nomVal = gNombre ? gNombre.value.trim() : '';
+        if (gNombre && nomVal && nomVal.charAt(0) !== nomVal.charAt(0).toUpperCase()) {
+          gNombre.value = nomVal.charAt(0).toUpperCase() + nomVal.slice(1);
+        }
+        setErr(gNombre, 'err-inv-nombre', !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(nomVal) || nomVal.length < 2 || nomVal.length > 50);
+
+        // Apellido
+        const apeVal = gApellido ? gApellido.value.trim() : '';
+        if (gApellido && apeVal && apeVal.charAt(0) !== apeVal.charAt(0).toUpperCase()) {
+          gApellido.value = apeVal.charAt(0).toUpperCase() + apeVal.slice(1);
+        }
+        setErr(gApellido, 'err-inv-apellido', !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(apeVal) || apeVal.length < 2 || apeVal.length > 50);
+
+        // RH
+        setErr(gRh, 'err-inv-rh', !gRh || !gRh.value);
+
+        // Teléfono
+        const telVal = gTel ? gTel.value.replace(/[^0-9]/g, '') : '';
+        setErr(gTel, 'err-inv-tel', !/^\d{7,15}$/.test(telVal));
+
+        // Fecha de nacimiento (obligatoria, no futura, mayor a 1900, y al menos 1 año de edad)
+        if (gFecha) {
+          if (!gFecha.value) {
+            setErr(gFecha, 'err-inv-fecha', true);
+          } else {
+            const fd = new Date(gFecha.value);
+            const hoy = new Date();
+            const edadMs = hoy - fd;
+            const edadAnios = edadMs / (1000 * 60 * 60 * 24 * 365.25);
+            setErr(gFecha, 'err-inv-fecha', isNaN(fd.getTime()) || fd > hoy || fd.getFullYear() < 1900 || edadAnios < 0);
+          }
+        }
+
+        // Correo (opcional, pero si se llena debe ser válido)
+        if (gCorreo) {
+          const correoVal = gCorreo.value.trim();
+          const correoInvalido = correoVal !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoVal);
+          setErr(gCorreo, 'err-inv-correo', correoInvalido);
+        }
+
+        // El documento del invitado no puede ser igual al del participante principal
+        if (doc && gDoc && docVal && doc.value.trim() && docVal === doc.value.trim()) {
+          setErr(gDoc, 'err-inv-doc', true);
+          const errEl = document.getElementById('err-inv-doc');
+          if (errEl) errEl.textContent = 'El documento del invitado no puede ser igual al tuyo';
+        }
+      }
 
       // Fecha
       if (!fecha.value) {

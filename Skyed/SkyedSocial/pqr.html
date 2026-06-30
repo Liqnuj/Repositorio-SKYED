@@ -40,6 +40,12 @@
   border-color: var(--accent);
   color: var(--accent);
 }
+
+.dark-mode .home-btn:hover {
+  background:none;
+  border-color: var(--accent);
+  color: var(--accent);
+}
 </style>
 
 </head>
@@ -67,10 +73,10 @@
       <a href="eventos.html" onclick="closeNav()">Eventos</a>
       <a href="servicios.html" onclick="closeNav()">Servicios</a>
       <a href="lugares.html" onclick="closeNav()">Lugares</a>
-      <a href="pqr.html" class="active" onclick="closeNav()">PQR</a>
+      <a href="pqr.html" class="active" onclick="closeNav()">PQRS</a>
       <a href="#contacto" onclick="closeNav()">Contacto</a>
     </div>
-    <a href="contacto.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>  
+    <a href="reservar.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>  
 
     <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menú">
       <span></span><span></span><span></span>
@@ -220,8 +226,10 @@
             <input type="file" id="pqrFile" accept="image/*,video/*,.pdf,.doc,.docx" onchange="showFile(this)">
           </label>
 
-          <div style="background:var(--gold-pale);border-radius:10px;padding:1rem;margin-bottom:1.25rem;font-size:.8rem;color:var(--text-mid);line-height:1.6">
-            🔒 Tu información es tratada con confidencialidad conforme a nuestra <a href="#" style="color:var(--plum);font-weight:600">Política de privacidad</a>. No compartimos tus datos con terceros.
+          <div class="privacy-notice">
+            🔒 Tu información es tratada con confidencialidad conforme a nuestra
+            <a href="#" class="privacy-link">Política de privacidad</a>.
+            No compartimos tus datos con terceros.
           </div>
 
           <button class="pf-submit" id="pqrSubmitBtn" onclick="submitPQR()">✦ Radicar solicitud</button>
