@@ -1,0 +1,17 @@
+.gallery-label {
+    background: var(--accent);
+    color: #ffffff;
+}
+
+.gallery-title {
+    color: var(--white);
+}
+
+.gallery-title-highlight {
+    color: var(--gold-light);
+}
+
+.gallery-wrapper {
+    overflow: hidden;
+    margin-top: 3.5rem;
+}
