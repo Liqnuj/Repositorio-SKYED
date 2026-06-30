@@ -29,6 +29,8 @@ try {
     
 
     $kits = $pdo->query("SELECT * FROM kit ORDER BY fecha_entrega_k ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+    $categorias = $pdo->query("SELECT c.*, e.nombre_e as nombre_evento FROM categoria_competencia c LEFT JOIN eventoDeportivo e ON c.id_e = e.id_e ORDER BY c.nombre_cc ASC ")->fetchAll(PDO::FETCH_ASSOC);
     
     $totalUsuarios     = count($usuarios);
     $totalEventos      = count($eventos);
@@ -51,7 +53,7 @@ try {
             'pagos'         => $pagos,
             'kits'          => $kits,
             'entregas'      => [],
-            'categorias'    => [],
+            'categorias'    => $categorias,
             'patrocinadores'=> [],
             'resultados'    => [],
             'rutas'         => [],
