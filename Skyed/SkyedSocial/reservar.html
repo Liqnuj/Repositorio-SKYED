@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Testimonios — SkyedSocial</title>
+<title>Contacto — SkyedSocial</title>
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/accesibilidad.css">
 <link rel="icon" href="img/logo_social.png" />
@@ -28,15 +28,10 @@
   transform: translateY(-50%);
 }
 
-.dark-mode .home-btn{
-  color:rgba(255, 255, 255, 0.842);
-  border: 1px solid rgba(255, 255, 255, 0.632);
-}
-
 .home-btn:hover {
   background: #f3eeff;
-  border-color: var(--accent);
-  color: var(--accent);
+  border-color: #7c3aed;
+  color: #7c3aed;
 }
 </style>
 </head>
@@ -65,10 +60,11 @@
       <a href="eventos.html" onclick="closeNav()">Eventos</a>
       <a href="servicios.html" onclick="closeNav()">Servicios</a>
       <a href="lugares.html" onclick="closeNav()">Lugares</a>
-      <a href="precios.html" onclick="closeNav()">Precios</a>
       <a href="pqr.html" onclick="closeNav()">PQRS</a>
-      <a href="contacto.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>
+      <a href="#contacto" onclick="closeNav()">Contacto</a>
     </div>
+    <a href="contacto.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>  
+
     <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menú">
       <span></span><span></span><span></span>
     </button>
@@ -77,17 +73,101 @@
 
 <div class="page-hero">
   <div class="container">
-    <h1 class="page-hero-title">Lo que dicen<br>nuestros <em>clientes</em></h1>
-    <p class="page-hero-sub">Las mejores palabras vienen de quienes vivieron la experiencia.</p>
+    <div class="breadcrumb">
+      <a href="index.html">Inicio</a><span>/</span><span>Contacto</span>
+    </div>
+    <h1 class="page-hero-title">Hagamos realidad<br><em>tu evento soñado</em></h1>
+    <p class="page-hero-sub">Cuéntanos tu idea y te enviamos una propuesta personalizada en menos de 24 horas.</p>
   </div>
 </div>
 
-<!-- TESTIMONIALS -->
-<section class="testimonials-section">
+<!-- CONTACT -->
+<section class="booking-section" id="contacto">
   <div class="container">
-    <div class="testimonials-grid" id="testimonialsGrid"></div>
+    <div class="booking-grid">
+      <div class="booking-info reveal">
+        <span class="section-label" style="background:rgba(201,168,76,.15);color:var(--gold-light)">Contáctanos</span>
+        <h2 class="section-title" style="color:var(--white)">Estamos listos<br><em style="color:var(--gold-light)">para ayudarte</em></h2>
+        <p class="section-sub" style="color:rgba(255,255,255,.6)">Cuéntanos tu idea y nuestro equipo de expertos te enviará una propuesta personalizada en menos de 24 horas.</p>
+        <ul class="booking-features">
+          <li class="booking-feat">
+            <div class="booking-feat-icon">📍</div>
+            <div class="booking-feat-text"><strong>Bogotá, Colombia</strong><span>Servicio en toda Colombia y el exterior</span></div>
+          </li>
+          <li class="booking-feat">
+            <div class="booking-feat-icon">📞</div>
+            <div class="booking-feat-text"><strong>+57 300 123 4567</strong><span>Lunes a sábado, 8am – 8pm</span></div>
+          </li>
+          <li class="booking-feat">
+            <div class="booking-feat-icon">✉️</div>
+            <div class="booking-feat-text"><strong>hola@skyedsocial.co</strong><span>Respuesta en menos de 24 horas</span></div>
+          </li>
+          <li class="booking-feat">
+            <div class="booking-feat-icon">💬</div>
+            <div class="booking-feat-text"><strong>WhatsApp directo</strong><span>Consultas rápidas por chat</span></div>
+          </li>
+        </ul>
+      </div>
+      <div class="booking-form reveal" id="contactForm">
+        <div class="form-title">Solicita tu cotización gratuita</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tu nombre</label>
+            <input type="text" id="fname" placeholder="Ej: María García">
+          </div>
+          <div class="form-group">
+            <label>Teléfono / WhatsApp</label>
+            <input type="tel" id="fphone" placeholder="+57 300 000 0000">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Correo electrónico</label>
+          <input type="email" id="femail" placeholder="tu@correo.com">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de evento</label>
+            <select id="ftype">
+              <option value="">Seleccionar...</option>
+              <option>Boda</option>
+              <option>Quinceañera</option>
+              <option>Cumpleaños</option>
+              <option>Corporativo</option>
+              <option>Baby shower</option>
+              <option>Otro</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Fecha estimada</label>
+            <input type="date" id="fdate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>N° de invitados</label>
+            <input type="number" id="fguests" placeholder="Ej: 150">
+          </div>
+          <div class="form-group">
+            <label>Presupuesto aprox.</label>
+            <select id="fbudget">
+              <option value="">Seleccionar...</option>
+              <option>Menos de $10M COP</option>
+              <option>$10M – $20M COP</option>
+              <option>$20M – $40M COP</option>
+              <option>Más de $40M COP</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Cuéntanos tu visión</label>
+          <textarea id="fmessage" placeholder="¿Qué imaginas para tu evento? Tema, estilo, detalles especiales..."></textarea>
+        </div>
+        <button class="form-submit" onclick="submitForm()">✦ Enviar solicitud</button>
+      </div>
+    </div>
   </div>
 </section>
+
 
 <!-- FOOTER -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -98,7 +178,7 @@
     <!-- Columna SKYED -->
     <div class="sky-footer-col">
       <div class="sky-logo-row">
-        <img src="img/logo.png" alt="SKYED" class="sky-logo-icon">
+        <img src="img/logo_social.png" alt="SKYED" class="sky-logo-icon">
         <div class="sky-logo-text">SKY<span>ED</span></div>
       </div>
       <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
@@ -148,15 +228,10 @@
   </div>
 </footer>
 
-
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg"></span></div>
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script src="js/shared.js"></script>
-<script>
-  renderTestimonials();
-  initReveal();
-  setTimeout(()=>document.querySelectorAll('.reveal').forEach(el=>observer.observe(el)),500);
-</script>
+<script>initReveal();</script>
 </body>
 </html>
