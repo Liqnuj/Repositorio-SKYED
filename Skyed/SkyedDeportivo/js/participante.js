@@ -542,41 +542,120 @@
 
   const formDatos = $('#form-datos');
   if (formDatos) {
-    /* Rellenar con datos actuales */
-    formDatos.nombre.value    = user.nombre    || '';
-    formDatos.apellido.value  = user.apellido  || '';
-    formDatos.email.value     = user.email     || '';
-    formDatos.telefono.value  = user.telefono  || '';
-    formDatos.ciudad.value    = user.ciudad    || '';
-    formDatos.categoria.value = user.categoria || '';
+    // ── Poblar con datos actuales ──────────────────────────────────────────
+    formDatos.nombre.value         = user.nombre         || '';
+    formDatos.apellido.value       = user.apellido       || '';
+    formDatos.email.value          = user.email          || '';
+    formDatos.telefono.value       = user.telefono       || '';
+    formDatos.ciudad.value         = user.ciudad         || '';
+    formDatos.categoria.value      = user.categoria      || '';
+    if (formDatos.rh)              formDatos.rh.value              = user.rh              || '';
+    if (formDatos.fecha_nacimiento)formDatos.fecha_nacimiento.value= user.fecha_nacimiento|| '';
 
+    // ── Limitar fecha de nacimiento: no futura ─────────────────────────────
+    const fFecha = document.getElementById('f-fecha-nac');
+    if (fFecha) {
+      const hoyISO = new Date().toISOString().split('T')[0];
+      fFecha.setAttribute('max', hoyISO);
+      fFecha.addEventListener('change', () => {
+        if (fFecha.value > hoyISO) fFecha.value = hoyISO;
+      });
+    }
+
+    // ── Filtros en tiempo real ─────────────────────────────────────────────
+    const fTel = document.getElementById('f-telefono');
+    if (fTel) {
+      fTel.addEventListener('input', () => {
+        fTel.value = fTel.value.replace(/[^0-9]/g, '').slice(0, 15);
+      });
+      fTel.addEventListener('paste', e => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+        fTel.value = text.replace(/[^0-9]/g, '').slice(0, 15);
+      });
+    }
+
+    const fNombre   = document.getElementById('f-nombre');
+    const fApellido = document.getElementById('f-apellido');
+    [fNombre, fApellido].forEach(inp => {
+      if (!inp) return;
+      inp.addEventListener('input', () => {
+        inp.value = inp.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, '').slice(0, 50);
+      });
+      inp.addEventListener('paste', e => {
+        e.preventDefault();
+        const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+        inp.value = text.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, '').slice(0, 50);
+      });
+      inp.addEventListener('blur', () => {
+        const v = inp.value.trim();
+        if (v) inp.value = v.charAt(0).toUpperCase() + v.slice(1);
+      });
+    });
+
+    // ── Helper para mostrar/ocultar errores ────────────────────────────────
+    const setErrF = (errId, inp, fail) => {
+      const el = document.getElementById(errId);
+      if (fail) { if (el) el.classList.add('show'); if (inp) inp.classList.add('invalid'); }
+      else       { if (el) el.classList.remove('show'); if (inp) inp.classList.remove('invalid'); }
+      return fail;
+    };
+
+    // ── Submit ─────────────────────────────────────────────────────────────
     formDatos.addEventListener('submit', e => {
       e.preventDefault();
-      const nombre = formDatos.nombre.value.trim();
-      const ap     = formDatos.apellido.value.trim();
-      const email  = formDatos.email.value.trim();
+      let ok = true;
 
-      if (!nombre) return toast('El nombre es obligatorio', 'error');
-      if (!/^\S+@\S+\.\S+$/.test(email)) return toast('Correo no válido', 'error');
+      const nombre  = (fNombre   ? fNombre.value.trim()   : '');
+      const ap      = (fApellido ? fApellido.value.trim() : '');
+      const email   = formDatos.email.value.trim();
+      const tel     = fTel ? fTel.value.trim() : '';
+      const fecha   = fFecha ? fFecha.value : '';
 
-      /* Guardar en objeto y localStorage */
-      user.nombre    = nombre;
-      user.apellido  = ap;
-      user.email     = email;
-      user.telefono  = formDatos.telefono.value.trim();
-      user.ciudad    = formDatos.ciudad.value.trim();
-      user.categoria = formDatos.categoria.value;
+      // Nombre: obligatorio, solo letras
+      if (nombre.length < 2 || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(nombre)) ok = setErrF('err-f-nombre', fNombre, true) && false;
+      else { setErrF('err-f-nombre', fNombre, false); if (fNombre && nombre[0] !== nombre[0].toUpperCase()) fNombre.value = nombre.charAt(0).toUpperCase() + nombre.slice(1); }
+
+      // Apellido: opcional pero si se llena solo letras
+      if (ap && (ap.length < 2 || !/^[A-Za-zÁÉÍÓÚáéíóúÑñ ]+$/.test(ap))) ok = setErrF('err-f-apellido', fApellido, true) && false;
+      else { setErrF('err-f-apellido', fApellido, false); if (fApellido && ap && ap[0] !== ap[0].toUpperCase()) fApellido.value = ap.charAt(0).toUpperCase() + ap.slice(1); }
+
+      // Email: obligatorio y válido
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) ok = setErrF('err-f-email', document.getElementById('f-email'), true) && false;
+      else setErrF('err-f-email', document.getElementById('f-email'), false);
+
+      // Teléfono: opcional pero si se llena 7-15 dígitos
+      if (tel && !/^\d{7,15}$/.test(tel)) ok = setErrF('err-f-telefono', fTel, true) && false;
+      else setErrF('err-f-telefono', fTel, false);
+
+      // Fecha nacimiento: opcional pero si se llena no puede ser futura
+      if (fecha) {
+        const fd  = new Date(fecha);
+        const hoy = new Date();
+        hoy.setHours(23, 59, 59, 999);
+        const invalida = isNaN(fd.getTime()) || fd > hoy || fd.getFullYear() < 1900;
+        if (invalida) ok = setErrF('err-f-fecha', fFecha, true) && false;
+        else setErrF('err-f-fecha', fFecha, false);
+      } else setErrF('err-f-fecha', fFecha, false);
+
+      if (!ok) return;
+
+      // ── Guardar ──────────────────────────────────────────────────────────
+      user.nombre          = fNombre   ? fNombre.value.trim()   : nombre;
+      user.apellido        = fApellido ? fApellido.value.trim() : ap;
+      user.email           = email;
+      user.telefono        = tel;
+      user.ciudad          = formDatos.ciudad.value.trim();
+      user.categoria       = formDatos.categoria.value;
+      if (formDatos.rh)              user.rh              = formDatos.rh.value;
+      if (formDatos.fecha_nacimiento)user.fecha_nacimiento = formDatos.fecha_nacimiento.value;
       saveUser();
 
-      /* Refrescar toda la UI */
       renderHero();
       renderSidebar();
-
-      /* Actualizar preview de foto (iniciales pueden cambiar) */
       if (preview && !user.foto) {
-        preview.textContent = ((nombre[0] || 'S') + (ap[0] || 'K')).toUpperCase();
+        preview.textContent = ((user.nombre[0] || 'S') + (user.apellido?.[0] || 'K')).toUpperCase();
       }
-
       toast('Cambios guardados correctamente ✓', 'ok');
     });
   }
