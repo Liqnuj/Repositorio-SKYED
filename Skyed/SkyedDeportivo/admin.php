@@ -61,6 +61,14 @@ try {
     die("Error al conectar con la base de datos: " . $e->getMessage());
 }
 
+$categoriaNueva = [];
+try {
+  $stmt = $pdo->query("SELECT * FROM categoria_competencia ORDER BY nombre_cc ASC");
+  $categoriaNueva = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error al conectar con la base de datos: " . $e->getMessage());
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">

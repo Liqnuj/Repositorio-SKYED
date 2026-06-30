@@ -38,6 +38,13 @@
   border-color: var(--accent);
   color: var(--accent);
 }
+
+.dark-mode .home-btn:hover {
+  background:none;
+    border-color: var(--accent);
+  color: var(--accent);;
+}
+
 </style>
 </head>
 <body>
@@ -97,11 +104,18 @@
 <section class="gallery-section">
   <div class="container">
     <div class="text-center reveal">
-      <span class="section-label" style="background:rgba(201,168,76,.15);color:var(--gold-light)">Galería de espacios</span>
-      <h2 class="section-title" style="color:var(--white)">Ambientes que<br><em style="color:var(--gold-light)">inspiran</em></h2>
+      <span class="section-label gallery-label">
+        Galería de espacios
+      </span>
+
+      <h2 class="section-title gallery-title">
+        Ambientes que<br>
+        <em class="gallery-title-highlight">inspiran</em>
+      </h2>
     </div>
   </div>
-  <div style="overflow:hidden;margin-top:3.5rem">
+
+  <div class="gallery-wrapper">
     <div class="gallery-track" id="galleryTrack"></div>
   </div>
 </section>

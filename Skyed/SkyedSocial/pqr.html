@@ -40,6 +40,12 @@
   border-color: var(--accent);
   color: var(--accent);
 }
+
+.dark-mode .home-btn:hover {
+  background:none;
+  border-color: var(--accent);
+  color: var(--accent);
+}
 </style>
 
 </head>
@@ -220,8 +226,10 @@
             <input type="file" id="pqrFile" accept="image/*,video/*,.pdf,.doc,.docx" onchange="showFile(this)">
           </label>
 
-          <div style="background:var(--gold-pale);border-radius:10px;padding:1rem;margin-bottom:1.25rem;font-size:.8rem;color:var(--text-mid);line-height:1.6">
-            🔒 Tu información es tratada con confidencialidad conforme a nuestra <a href="#" style="color:var(--plum);font-weight:600">Política de privacidad</a>. No compartimos tus datos con terceros.
+          <div class="privacy-notice">
+            🔒 Tu información es tratada con confidencialidad conforme a nuestra
+            <a href="#" class="privacy-link">Política de privacidad</a>.
+            No compartimos tus datos con terceros.
           </div>
 
           <button class="pf-submit" id="pqrSubmitBtn" onclick="submitPQR()">✦ Radicar solicitud</button>
