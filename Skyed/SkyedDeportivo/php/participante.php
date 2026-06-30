@@ -207,19 +207,38 @@ if (isset($_SESSION['email'])) {
                   <form id="form-datos" novalidate>
                     <div class="form-group">
                       <label for="f-nombre">Nombre</label>
-                      <input type="text" id="f-nombre" name="nombre" required />
+                      <input type="text" id="f-nombre" name="nombre" required maxlength="50" placeholder="Tu nombre" />
+                      <span class="error" id="err-f-nombre">Solo letras, mínimo 2 caracteres</span>
                     </div>
                     <div class="form-group">
                       <label for="f-apellido">Apellido</label>
-                      <input type="text" id="f-apellido" name="apellido" />
+                      <input type="text" id="f-apellido" name="apellido" maxlength="50" placeholder="Tu apellido" />
+                      <span class="error" id="err-f-apellido">Solo letras, mínimo 2 caracteres</span>
                     </div>
                     <div class="form-group">
                       <label for="f-email">Correo electrónico</label>
-                      <input type="email" id="f-email" name="email" required />
+                      <input type="email" id="f-email" name="email" required placeholder="correo@ejemplo.com" />
+                      <span class="error" id="err-f-email">Ingresa un correo válido</span>
                     </div>
                     <div class="form-group">
                       <label for="f-telefono">Teléfono</label>
-                      <input type="tel" id="f-telefono" name="telefono" />
+                      <input type="tel" id="f-telefono" name="telefono" maxlength="15" placeholder="3001234567" />
+                      <span class="error" id="err-f-telefono">7 a 15 dígitos numéricos</span>
+                    </div>
+                    <div class="form-group">
+                      <label for="f-rh">Tipo de sangre (RH)</label>
+                      <select id="f-rh" name="rh">
+                        <option value="">Seleccionar…</option>
+                        <option>O+</option><option>O-</option>
+                        <option>A+</option><option>A-</option>
+                        <option>B+</option><option>B-</option>
+                        <option>AB+</option><option>AB-</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="f-fecha-nac">Fecha de nacimiento</label>
+                      <input type="date" id="f-fecha-nac" name="fecha_nacimiento" />
+                      <span class="error" id="err-f-fecha">Fecha inválida</span>
                     </div>
                     <div class="form-group">
                       <label for="f-ciudad">Ciudad</label>
