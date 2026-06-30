@@ -7,8 +7,8 @@
 
 /* Tarjetas tipo */
 .pqr-types{display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem}
-.pqr-type-card{display:flex;align-items:flex-start;gap:1rem;padding:1.25rem 1.5rem;border-radius:16px;border:1.5px solid var(--border);background:var(--white);cursor:pointer;transition:all .25s;user-select:none}
-.pqr-type-card.selected,.pqr-type-card:hover{border-color:var(--plum);background:var(--plum);color:var(--white)}
+.pqr-type-card{display:flex;align-items:flex-start;gap:1rem;padding:1.25rem 1.5rem;border-radius:16px;border:1.5px solid var(--accent);background:var(--white);cursor:pointer;transition:all .25s;user-select:none}
+.pqr-type-card.selected,.pqr-type-card:hover{border-color:var(--plum);background:var(--accent);color:var(--white)}
 .pqr-type-card.selected .pqr-type-icon,.pqr-type-card:hover .pqr-type-icon{background:rgba(255,255,255,.15)}
 .pqr-type-card.selected .pqr-type-name,.pqr-type-card:hover .pqr-type-name{color:var(--white)}
 .pqr-type-card.selected .pqr-type-desc,.pqr-type-card:hover .pqr-type-desc{color:rgba(255,255,255,.65)}
@@ -17,22 +17,22 @@
 .pqr-type-desc{font-size:.78rem;color:var(--text-muted);line-height:1.4;transition:color .25s}
 
 /* Info extra */
-.pqr-info-box{background:var(--plum);border-radius:20px;padding:2rem;color:var(--white)}
-.pqr-info-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:700;margin-bottom:1.25rem;color:var(--gold-light)}
+.pqr-info-box{background:var(--accent);border-radius:20px;padding:2rem;color:var(--white)}
+.pqr-info-title{font-family:'arial',serif;font-size:1.15rem;font-weight:700;margin-bottom:1.25rem;color:#ffff}
 .pqr-info-list{list-style:none;display:flex;flex-direction:column;gap:.85rem}
-.pqr-info-list li{font-size:.85rem;color:rgba(255,255,255,.7);display:flex;align-items:flex-start;gap:.7rem;line-height:1.5}
-.pqr-info-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:.1rem;font-size:.75rem}
+.pqr-info-list li{font-size:.85rem;color:rgb(201, 201, 201);display:flex;align-items:flex-start;gap:.7rem;line-height:1.5}
+/* .pqr-info-list li::before{content:'✦';color:var(--gold);flex-shrink:0;margin-top:.1rem;font-size:.75rem} */
 
 /* Formulario PQR */
-.pqr-form-wrap{background:var(--white);border-radius:24px;padding:2.5rem;border:1px solid var(--border);box-shadow:0 8px 40px rgba(26,10,46,.07)}
-.pqr-form-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--plum);margin-bottom:.4rem}
+.pqr-form-wrap{background:var(--white);border-radius:24px;padding:2.5rem;border:1px solid var(--accent);box-shadow:0 8px 40px rgba(26,10,46,.07)}
+.pqr-form-title{font-family:'arial',serif;font-size:1.5rem;font-weight:700;color:var(--plum);margin-bottom:.4rem}
 .pqr-form-subtitle{font-size:.85rem;color:var(--text-muted);margin-bottom:2rem;line-height:1.5}
 
 /* Campos del formulario (sobre fondo blanco) */
 .pf-group{margin-bottom:1.1rem}
 .pf-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.1rem}
 .pf-group label{display:block;font-size:.78rem;font-weight:600;color:var(--text-mid);margin-bottom:.4rem;letter-spacing:.04em}
-.pf-group input,.pf-group select,.pf-group textarea{width:100%;padding:.78rem 1rem;background:var(--cream);border:1.5px solid var(--border);border-radius:10px;color:var(--text-dark);font-size:.88rem;font-family:'Inter',sans-serif;transition:all .25s;outline:none}
+.pf-group input,.pf-group select,.pf-group textarea{width:100%;padding:.78rem 1rem;background:var(--cream);border:1.5px solid var(--);border-radius:10px;color:var(--text-dark);font-size:.88rem;font-family:'Inter',sans-serif;transition:all .25s;outline:none}
 .pf-group input::placeholder,.pf-group textarea::placeholder{color:var(--text-muted)}
 .pf-group input:focus,.pf-group select:focus,.pf-group textarea:focus{border-color:var(--plum);background:var(--white);box-shadow:0 0 0 3px rgba(26,10,46,.06)}
 .pf-group select{color:var(--text-mid)}
@@ -81,4 +81,42 @@
 @media(max-width:900px){
   .pqr-grid{grid-template-columns:1fr}
   .pf-row{grid-template-columns:1fr}
+}
+
+.pf-upload {
+  border: 2px dashed color-mix(in srgb, var(--accent) 50%, transparent);
+  border-radius: 14px;
+  padding: 1.75rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all .25s;
+  background: color-mix(in srgb, var(--accent) 5%, white);
+  margin-bottom: 1.1rem;
+  display: block;
+}
+
+.pf-upload:hover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, white);
+}
+
+.pf-upload-icon {
+  font-size: 2rem;
+  margin-bottom: .5rem;
+  display: block;
+}
+
+.pf-upload-text {
+  font-size: .82rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.pf-upload-text strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.pf-upload input[type="file"] {
+  display: none;
 }

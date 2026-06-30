@@ -1,6 +1,6 @@
 (function () {
   let currentFont = localStorage.getItem("lumara-font") || "'DM Sans', sans-serif";
-  let currentAccent = localStorage.getItem("lumara-accent-social") || "#692caf";
+  let currentAccent = localStorage.getItem("lumara-accent-social") || "#9c02ae";
   let darkMode = localStorage.getItem("lumara-dark") === "true";
 
   function applyAll() {
@@ -106,7 +106,7 @@
     /* Restablecer todo */
     document.getElementById("accReset").addEventListener("click", () => {
       currentFont = "'DM Sans', sans-serif";
-      currentAccent = "#692caf";
+      currentAccent = "#9c02ae";
       darkMode = false;
       localStorage.removeItem("lumara-font");
       localStorage.removeItem("lumara-accent-social");
@@ -118,7 +118,7 @@
       document.querySelectorAll(".font-option").forEach((o) => o.classList.remove("active"));
       document.querySelector("[data-font=\"'DM Sans', sans-serif\"]")?.classList.add("active");
       document.querySelectorAll(".color-swatch").forEach((s) => s.classList.remove("active"));
-      document.querySelector('[data-color="#692caf"]')?.classList.add("active");
+      document.querySelector('[data-color="#9c02ae"]')?.classList.add("active");
       document.getElementById("modeLight").classList.add("active");
       document.getElementById("modeDark").classList.remove("active");
 

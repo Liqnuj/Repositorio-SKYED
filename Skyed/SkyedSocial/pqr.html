@@ -30,10 +30,15 @@
   transform: translateY(-50%);
 }
 
+.dark-mode .home-btn{
+  color:rgba(255, 255, 255, 0.842);
+  border: 1px solid rgba(255, 255, 255, 0.632);
+}
+
 .home-btn:hover {
   background: #f3eeff;
-  border-color: #7c3aed;
-  color: #7c3aed;
+  border-color: var(--accent);
+  color: var(--accent);
 }
 </style>
 
@@ -74,15 +79,14 @@
 </nav>
 
 <!-- PAGE HERO -->
-<div class="page-hero">
-  <div class="container">
-    <div class="breadcrumb">
-      <a href="index.html">Inicio</a><span>/</span><span>PQR</span>
-    </div>
+<section class="page-hero" id="pHero">
+  <canvas id="pageParticles"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="container" style="position:relative;z-index:2;">
     <h1 class="page-hero-title">Peticiones, Quejas<br>y <em>Reclamaciones</em></h1>
     <p class="page-hero-sub">Tu experiencia importa. Cada solicitud es atendida por nuestro equipo en un plazo máximo de 5 días hábiles.</p>
   </div>
-</div>
+</section>
 
 <!-- PQR SECTION -->
 <section class="pqr-section">
@@ -482,6 +486,45 @@ function resetPQR(){
 }
 
 initReveal();
+
+
+
+(function(){
+  const canvas = document.getElementById('pageParticles');
+  const ctx = canvas.getContext('2d');
+  const hero = document.getElementById('pHero');
+  function resize(){
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  const particles = [];
+  for(let i = 0; i < 40; i++){
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3.5 + 1,
+      speedY: Math.random() * 0.5 + 0.25,
+      opacity: Math.random() * 0.7 + 0.2,
+      color: Math.random() > 0.5 ? '201,168,76' : '245,230,239'
+    });
+  }
+  function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.y -= p.speedY;
+      if(p.y < -10) p.y = canvas.height + 10;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${p.opacity})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+
 </script>
 </body>
 </html>
