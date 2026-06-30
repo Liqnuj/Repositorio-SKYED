@@ -59,7 +59,6 @@ try {
     ");
     $ok = $stmt->execute([$nombre, $categoria, $fecha, $hora, $ubicacion, $descripcion, $requisitos, $imagen, $cupos, $estado]);
     $lastId = $pdo->lastInsertId();
-    // Devolver información del evento creada para uso en el frontend
     echo json_encode([
         'ok' => (bool)$ok,
         'id' => $lastId,
