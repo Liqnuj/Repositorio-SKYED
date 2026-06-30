@@ -32,7 +32,15 @@
 .pf-group{margin-bottom:1.1rem}
 .pf-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.1rem}
 .pf-group label{display:block;font-size:.78rem;font-weight:600;color:var(--text-mid);margin-bottom:.4rem;letter-spacing:.04em}
-.pf-group input,.pf-group select,.pf-group textarea{width:100%;padding:.78rem 1rem;background:var(--cream);border:1.5px solid var(--);border-radius:10px;color:var(--text-dark);font-size:.88rem;font-family:'Inter',sans-serif;transition:all .25s;outline:none}
+.dark-mode .pf-group label{color:#c4c4c4}
+.pf-group input,.pf-group select,.pf-group textarea{width:100%;padding:.78rem 1rem;background:#ffffff;border:1.5px solid var(--accent);border-radius:10px;color:var(--text-dark);font-size:.88rem;font-family:'Inter',sans-serif;transition:all .25s;outline:none}
+
+.dark-mode .pf-group input{
+  background:var(--plum);
+}
+.dark-mode .pf-group textarea{
+  background: var(--plum);
+}
 .pf-group input::placeholder,.pf-group textarea::placeholder{color:var(--text-muted)}
 .pf-group input:focus,.pf-group select:focus,.pf-group textarea:focus{border-color:var(--plum);background:var(--white);box-shadow:0 0 0 3px rgba(26,10,46,.06)}
 .pf-group select{color:var(--text-mid)}
