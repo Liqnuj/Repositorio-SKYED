@@ -140,6 +140,7 @@ try {
     </button>
     <button class="nav-item" data-page="categorias">
       <span class="icon">🏷️</span> Categorías
+      <span class="badge-count"><?= count($categoriaNueva); ?></span>
     </button>
     <button class="nav-item" data-page="patrocinadores">
       <span class="icon">🤝</span> Patrocinadores
@@ -582,7 +583,7 @@ try {
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Nombre del kit</th><th>Stock</th><th>Fecha de Entrega</th><th>Lugar y dirección de entrega</th><th>Contenido</th><th>Talla camiseta</th><th>Numero Dorsal</th><th>Acciones</th></tr>
+            <tr><th>Nombre</th><th>Stock</th><th>Talla</th><th>Dorsal</th><th>Fecha de Entrega</th><th></th></tr>
           </thead>
           <tbody id="kitsBody">
             <tr>
@@ -590,11 +591,9 @@ try {
                 <tr>
                   <td><?= htmlspecialchars($kit['nombre_k']) ?></td>
                   <td><?= htmlspecialchars($kit['stock_k']) ?></td>
-                  <td><?= htmlspecialchars($kit['fecha_entrega_k']) ?></td>
-                  <td><?= htmlspecialchars($kit['lugar_entrega_k']) ?></td>
-                  <td><?= htmlspecialchars($kit['contenido_k']) ?></td>
                   <td><?= htmlspecialchars($kit['talla_camiseta_k']) ?></td>
-                  <td><?= htmlspecialchars($kit['dorsal_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['numero_dorsal_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['fecha_entrega_k']) ?></td>
                   <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-kit')">✏️</button></td>
                 </tr>
               <?php endforeach; ?>
@@ -668,7 +667,7 @@ try {
   </div>
 </div>
   
-  <!-- ===== CATEGORÍAS ===== -->
+<!-- ===== CATEGORÍAS ===== -->
   <div class="page" id="page-categorias">
     <div class="page-header">
       <div>
@@ -682,26 +681,27 @@ try {
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Nombre</th><th>Evento</th><th>Edad mín.</th><th>Edad máx.</th><th>Género</th><th>Distancia</th><th>Descripción</th><th></th></tr>
+            <tr><th>Nombre</th><th>Evento</th><th>Edad mín.</th><th>Edad máx.</th><th>Género</th><th>Distancia</th><th>Descripción</th><th>Acciones</th></tr>
           </thead>
           <tbody id="categoriasBody">
             <tr>
-              <td>
-                <button class="btn btn-outline btn-sm" onclick="openModal('modal-categoria')">✏️</button>
-                <button class="btn btn-danger btn-sm">🗑️</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button class="btn btn-outline btn-sm" onclick="openModal('modal-categoria')">✏️</button>
-                <button class="btn btn-danger btn-sm">🗑️</button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <button class="btn btn-outline btn-sm" onclick="openModal('modal-categoria')">✏️</button>
-                <button class="btn btn-danger btn-sm">🗑️</button>
-              </td>
+              <?php foreach ($categoriaNueva as $categoria): ?>
+                <tr>
+                  <td><?= htmlspecialchars($categoria['nombre_cc']) ?></td>
+                  <td><?= htmlspecialchars($categoria['nombre_evento']) ?></td>
+                  <td><?= htmlspecialchars($categoria['edad_minima_cc']) ?></td>
+                  <td><?= htmlspecialchars($categoria['edad_maxima_cc']) ?></td>
+                  <td><?= htmlspecialchars($categoria['genero_cc']) ?></td>
+                  <td><?= htmlspecialchars($categoria['distancia_cc']) ?></td>
+                  <td><?= htmlspecialchars($categoria['descripcion_cc']) ?></td>
+                    <td>
+                      <div style="display:flex;gap:.4rem">
+                        <button class="btn btn-outline btn-sm" onclick="abrirModalCategoria(<?= $u['id_cc'] ?>)" >✏️</button>
+                        <button class="btn btn-danger btn-sm">🗑️</button>
+                      </div>
+                    </td>
+                </tr>
+              <?php endforeach; ?>
             </tr>
           </tbody>
         </table>
@@ -1370,35 +1370,43 @@ try {
  
         <div class="cat-group">
           <label for="cat-nombre">Nombre</label>
-          <input id="cat-nombre" type="text" placeholder="Elite Masculino" maxlength="60" />
+          <input id="cat-nombre" type="text" name="nombre_categoria" placeholder="Elite Masculino" maxlength="60" />
           <span class="cat-error" id="err-cat-nombre"></span>
         </div>
  
         <div class="cat-group">
           <label for="cat-evento">Evento</label>
-          <select id="cat-evento">
-            <option value="" disabled selected>Seleccionar evento</option>
-            <option>Gran Fondo Boyacá 2026</option>
-            <option>Trail del Páramo</option>
-          </select>
+            <select id="cat-evento" name="id_evento">
+              <option value="" disabled selected>Seleccionar evento</option>
+              <?php
+              try {
+                  $stmtEventos = $pdo->query("SELECT id_e, nombre_e FROM eventoDeportivo ORDER BY nombre_e ASC");
+                  while ($row = $stmtEventos->fetch()) {
+                      echo '<option value="' . htmlspecialchars($row['id_e']) . '">' . htmlspecialchars($row['nombre_e']) . '</option>';
+                  }
+              } catch (Exception $e) {
+                  echo '<option value="" disabled>Error al cargar los eventos</option>';
+              }
+              ?>
+            </select>
           <span class="cat-error" id="err-cat-evento"></span>
         </div>
  
         <div class="cat-group">
           <label for="cat-edad-min">Edad mínima</label>
-          <input id="cat-edad-min" type="number" placeholder="18" min="0" max="120" />
+          <input id="cat-edad-min" type="number" name= 'edad_min' placeholder="18" min="0" max="120" />
           <span class="cat-error" id="err-cat-edad-min"></span>
         </div>
  
         <div class="cat-group">
           <label for="cat-edad-max">Edad máxima</label>
-          <input id="cat-edad-max" type="number" placeholder="35" min="0" max="120" />
+          <input id="cat-edad-max" type="number" name= 'edad_max' placeholder="35" min="0" max="120" />
           <span class="cat-error" id="err-cat-edad-max"></span>
         </div>
  
         <div class="cat-group">
           <label for="cat-genero">Género</label>
-          <select id="cat-genero">
+          <select id="cat-genero" name= 'genero'>
             <option value="" disabled selected>Seleccionar género</option>
             <option value="masculino">Masculino</option>
             <option value="femenino">Femenino</option>
@@ -1409,13 +1417,13 @@ try {
  
         <div class="cat-group">
           <label for="cat-distancia">Distancia</label>
-          <input id="cat-distancia" type="text" placeholder="160 km" maxlength="20" />
+          <input id="cat-distancia" type="text" name= 'distancia' placeholder="160 km" maxlength="20" />
           <span class="cat-error" id="err-cat-distancia"></span>
         </div>
  
         <div class="cat-group cat-full">
           <label for="cat-descripcion">Descripción</label>
-          <textarea id="cat-descripcion"  name="descripcion-cat" rows="4"
+          <textarea id="cat-descripcion"  name="descripcion" rows="4"
             placeholder="Describe esta categoría..."></textarea>
         </div>
 
@@ -1424,7 +1432,7 @@ try {
  
     <div class="cat-footer">
       <button type="button" class="cat-btn cat-btn-cancel" onclick="catCerrar()">Cancelar</button>
-      <button type="button" class="cat-btn cat-btn-save" onclick="catGuardar()">
+      <button type="button" class="cat-btn cat-btn-save" onclick="guardarCategoria()">
         <i class="ti ti-device-floppy" aria-hidden="true"></i> Guardar
       </button>
     </div>
@@ -2448,6 +2456,80 @@ function guardarKit() {
   })
   .catch(() => showToast('Error de conexión ❌', 'error'));
 }
+
+
+// modal categoria
+function abrirModalCategoria(datos = null) {
+  const esEdicion = datos !== null;
+
+  document.querySelector('#modal-categoria .cat-header-title').textContent =
+    esEdicion ? 'Editar categoría' : 'Nueva categoría';
+
+  document.getElementById('cat-nombre').value       = datos?.nombre_cc       || '';
+  document.getElementById('cat-evento').value        = datos?.id_e            || '';
+  document.getElementById('cat-edad-min').value      = datos?.edad_minima_cc  || '';
+  document.getElementById('cat-edad-max').value      = datos?.edad_maxima_cc  || '';
+  document.getElementById('cat-genero').value        = datos?.genero_cc       || '';
+  document.getElementById('cat-distancia').value     = datos?.distancia_cc    || '';
+  document.getElementById('cat-descripcion').value   = datos?.descripcion_cc  || '';
+
+  const modal = document.getElementById('modal-categoria');
+  if (esEdicion && datos?.id_cc) {
+    modal.dataset.idCategoria = datos.id_cc;
+  } else {
+    delete modal.dataset.idCategoria;
+  }
+
+  openModal('modal-categoria');
+}
+
+//validación y guardado de categoria
+function guardarCategoria() {
+  const nombre      = document.getElementById('cat-nombre').value.trim();
+  const idEvento    = document.getElementById('cat-evento').value;
+  const edadMin     = document.getElementById('cat-edad-min').value;
+  const edadMax     = document.getElementById('cat-edad-max').value;
+  const genero      = document.getElementById('cat-genero').value;
+  const distancia   = document.getElementById('cat-distancia').value.trim();
+  const descripcion = document.getElementById('cat-descripcion').value.trim();
+  const idCategoria = document.getElementById('modal-categoria').dataset.idCategoria;
+
+  if (!nombre || !idEvento || !edadMin || !edadMax || !genero || !distancia || !descripcion) {
+    showToast('Por favor, completa todos los campos obligatorios ❌', 'error');
+    return;
+  }
+
+  const data = {
+    nombre_categoria: nombre,
+    id_evento:        idEvento,
+    edad_min:         edadMin,
+    edad_max:         edadMax,
+    genero:           genero,
+    distancia:        distancia,
+    descripcion:      descripcion,
+  };
+
+  if (idCategoria) data.id_cc = idCategoria;
+  const endpoint = idCategoria ? 'php/actualizar_categoria.php' : 'php/guardar_categoria.php';
+
+  fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(result => {
+    if (result.ok) {
+      showToast(idCategoria ? 'Categoría actualizada ✅' : 'Categoría guardada ✅', 'success');
+      catCerrar();
+      loadAdminData();
+    } else {
+      showToast('Error: ' + (result.error || 'No se pudo guardar') + ' ❌', 'error');
+    }
+  })
+  .catch(() => showToast('Error de conexión ❌', 'error'));
+}
+
 
 /* ===== SESSION MANAGEMENT ===== */
 function handleLogoutAdmin() {

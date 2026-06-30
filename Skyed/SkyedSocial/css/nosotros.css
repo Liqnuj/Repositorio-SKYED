@@ -1,0 +1,260 @@
+/* ===================================================
+   nosotros.css — Estilos exclusivos de la página "Nosotros"
+   Prefijo ns- para no afectar al resto del sitio
+=================================================== */
+
+.home-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.15);
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  text-decoration: none;
+  transition: all 0.15s;
+  font-size: 20px;
+  position: absolute;
+  left: 50px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.dark-mode .home-btn{
+  color: rgba(255, 255, 255, 0.842);
+  border: 1px solid rgba(255, 255, 255, 0.632);
+}
+
+.home-btn:hover {
+  background: #f3eeff;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.dark-mode .home-btn:hover {
+  background: none;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* ===== HERO ===== */
+
+.ns-hero {
+  position: relative;
+  padding: 9rem 0 5rem;
+  text-align: center;
+  overflow: hidden;
+}
+
+.ns-hero-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%),
+              radial-gradient(circle at 80% 80%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 55%);
+  z-index: -1;
+}
+
+.ns-hero h1 {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  margin: 0 auto 1.2rem;
+  max-width: 760px;
+  line-height: 1.15;
+}
+
+.ns-hero p {
+  max-width: 620px;
+  margin: 0 auto;
+  opacity: .8;
+  font-size: 1.05rem;
+}
+
+/* ===== TIMELINE (historia) ===== */
+
+.ns-timeline {
+  position: relative;
+  max-width: 760px;
+  margin: 3.5rem auto 0;
+  padding-left: 2.2rem;
+  border-left: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.ns-timeline-item {
+  position: relative;
+  padding-bottom: 2.6rem;
+}
+
+.ns-timeline-item:last-child { padding-bottom: 0; }
+
+.ns-timeline-item::before {
+  content: "";
+  position: absolute;
+  left: -2.41rem;
+  top: 4px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.ns-timeline-year {
+  font-weight: 700;
+  color: var(--accent);
+  font-size: .95rem;
+  letter-spacing: .04em;
+  display: block;
+  margin-bottom: .35rem;
+}
+
+.ns-timeline-item h3 {
+  margin: 0 0 .4rem;
+  font-size: 1.15rem;
+}
+
+.ns-timeline-item p {
+  margin: 0;
+  opacity: .75;
+  line-height: 1.55;
+}
+
+/* ===== MISION Y VISION ===== */
+
+.ns-mission-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.ns-mission-card {
+  padding: 2.4rem;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.ns-mission-card .ns-eyebrow {
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.ns-mission-card h3 {
+  margin: .6rem 0 .8rem;
+  font-size: 1.3rem;
+}
+
+.ns-mission-card p {
+  margin: 0;
+  opacity: .8;
+  line-height: 1.6;
+}
+
+/* ===== VALORES ===== */
+
+.ns-values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
+  margin-top: 3rem;
+}
+
+.ns-value-card {
+  padding: 2rem 1.6rem;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.08);
+  background: var(--card-bg, #fff);
+  transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+
+.dark-mode .ns-value-card {
+  border-color: rgba(255,255,255,0.12);
+}
+
+.ns-value-card:hover {
+  transform: translateY(-6px);
+  border-color: var(--accent);
+  box-shadow: 0 14px 30px -16px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.ns-value-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  margin-bottom: 1.1rem;
+}
+
+.ns-value-card h3 {
+  margin: 0 0 .5rem;
+  font-size: 1.1rem;
+}
+
+.ns-value-card p {
+  margin: 0;
+  opacity: .75;
+  font-size: .94rem;
+  line-height: 1.5;
+}
+
+/* ===== EQUIPO ===== */
+
+.ns-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.8rem;
+  margin-top: 3rem;
+}
+
+.ns-team-card {
+  text-align: center;
+}
+
+.ns-team-photo {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  margin: 0 auto 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  border: 3px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.ns-team-card h3 {
+  margin: 0 0 .2rem;
+  font-size: 1.05rem;
+}
+
+.ns-team-role {
+  font-size: .85rem;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0 0 .5rem;
+}
+
+.ns-team-card p {
+  margin: 0;
+  font-size: .88rem;
+  opacity: .7;
+  line-height: 1.5;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 640px) {
+  .ns-hero { padding: 7.5rem 0 3rem; }
+  .ns-timeline { padding-left: 1.6rem; }
+  .ns-timeline-item::before { left: -1.81rem; }
+}
