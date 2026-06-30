@@ -30,10 +30,15 @@
   transform: translateY(-50%);
 }
 
+.dark-mode .home-btn{
+  color:rgba(255, 255, 255, 0.842);
+  border: 1px solid rgba(255, 255, 255, 0.632);
+}
+
 .home-btn:hover {
   background: #f3eeff;
-  border-color: #7c3aed;
-  color: #7c3aed;
+  border-color: var(--accent);
+  color:var(--accent);
 }
 </style>
 </head>
@@ -79,9 +84,6 @@
   <canvas id="pageParticles"></canvas>
   <div class="hero-overlay"></div>
   <div class="container" style="position:relative;z-index:2;">
-    <div class="breadcrumb">
-      <a href="index.html">Inicio</a><span>/</span><span>Eventos</span>
-    </div>
     <h1 class="page-hero-title">Nuestros <em>eventos</em></h1>
     <p class="page-hero-sub">Desde bodas íntimas hasta recepciones espectaculares — personalizamos cada detalle a tu medida.</p>
   </div>
