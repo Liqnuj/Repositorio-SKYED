@@ -69,6 +69,22 @@ try {
     die("Error al conectar con la base de datos: " . $e->getMessage());
 }
 
+$nuevoPatrocinador = [];
+try{
+  $stmt = $pdo->query("SELECT * FROM patrocinador ORDER BY nombre_p ASC");
+  $nuevoPatrocinador = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error al conectar con la base de datos: " . $e->getMessage());
+}
+
+$eventoPatrocinador = [];
+try {
+  $stmt = $pdo->query("SELECT * FROM evento_patrocinador ORDER BY id_ep ASC");
+  $eventoPatrocinador = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error al conectar con la base de datos: " . $e->getMessage());
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -144,6 +160,7 @@ try {
     </button>
     <button class="nav-item" data-page="patrocinadores">
       <span class="icon">🤝</span> Patrocinadores
+      <span class="badge-count"><?= count($nuevoPatrocinador); ?></span>
     </button>
     <button class="nav-item" data-page="resultados">
       <span class="icon">🏆</span> Resultados
@@ -237,7 +254,7 @@ try {
       <div class="kpi-card">
         <div class="kpi-icon purple">🎽</div>
         <div>
-          <div class="kpi-val" id="kpiKits"><?= count($kitsRegistrados); ?></div>
+          <div class="kpi-val" id="kpiKits"></div>
           <div class="kpi-label">Kits entregados</div>
           <div class="kpi-delta up"></div>
         </div>
@@ -583,7 +600,7 @@ try {
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Nombre</th><th>Stock</th><th>Talla</th><th>Dorsal</th><th>Fecha de Entrega</th><th></th></tr>
+            <tr><th>Nombre</th><th>Stock</th><th>Fecha de Entrega</th><th>Lugar entrega</th><th>Contenido</th><th>Talla</th><th>Dorsal</th><th>Acciones</th></tr>
           </thead>
           <tbody id="kitsBody">
             <tr>
@@ -591,10 +608,13 @@ try {
                 <tr>
                   <td><?= htmlspecialchars($kit['nombre_k']) ?></td>
                   <td><?= htmlspecialchars($kit['stock_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['fecha_entrega_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['lugar_entrega_k']) ?></td>
+                  <td><?= htmlspecialchars($kit['contenido_k']) ?></td>
                   <td><?= htmlspecialchars($kit['talla_camiseta_k']) ?></td>
                   <td><?= htmlspecialchars($kit['numero_dorsal_k']) ?></td>
-                  <td><?= htmlspecialchars($kit['fecha_entrega_k']) ?></td>
-                  <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-kit')">✏️</button></td>
+                  <td>// Cambia el botón en admin.php:
+<button class="btn btn-outline btn-sm" onclick='abrirModalKit(<?= htmlspecialchars(json_encode($kit), ENT_QUOTES) ?>)'>✏️</button></td>
                 </tr>
               <?php endforeach; ?>
             </tr>
@@ -696,7 +716,7 @@ try {
                   <td><?= htmlspecialchars($categoria['descripcion_cc']) ?></td>
                     <td>
                       <div style="display:flex;gap:.4rem">
-                        <button class="btn btn-outline btn-sm" onclick="abrirModalCategoria(<?= $u['id_cc'] ?>)" >✏️</button>
+                        <button class="btn btn-outline btn-sm" onclick="abrirModalCategoria(<?= $categoria['id_cc'] ?>)" >✏️</button>
                         <button class="btn btn-danger btn-sm">🗑️</button>
                       </div>
                     </td>
@@ -723,26 +743,71 @@ try {
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Patrocinador</th><th>Tipo</th><th>Teléfono</th><th>Correo</th><th>Web</th><th>Aporte</th><th>Eventos</th><th></th></tr>
+            <tr><th>Patrocinador</th><th>Logo</th><th>Teléfono</th><th>Correo electrónico</th><th>Pagina Web</th><th>Aporte</th><th>Estado</th><th>Acciones</th></tr>
           </thead>
           <tbody id="patrocinadoresBody">
             <tr>
-              <td>
-                <button class="btn btn-outline btn-sm" onclick="openModal('modal-patrocinador')">✏️</button>
-                <button class="btn btn-danger btn-sm">🗑️</button>
-              </td>
+              <?php foreach ($nuevoPatrocinador as $patrocinador): ?>
+                <tr>
+                  <td><?= htmlspecialchars($patrocinador['nombre_p']) ?></td>
+                  <td><?= htmlspecialchars($patrocinador['logo_p']) ?></td>
+                  <td><?= htmlspecialchars($patrocinador['telefono_p']) ?></td>
+                  <td><?= htmlspecialchars($patrocinador['correo_electronico_p']) ?></td>
+                  <td><?= htmlspecialchars($patrocinador['pagina_web_p']) ?></td>
+                  <td><?= htmlspecialchars($patrocinador['aporte_p']) ?></td>
+                  <td><?= htmlspecialchars($patrocinador['estado_p']) ?></td>
+                  <td>
+                    <div style="display:flex;gap:.4rem">
+                        <button class="btn btn-outline btn-sm" onclick='abrirModalPatrocinador(<?= htmlspecialchars(json_encode($patrocinador), ENT_QUOTES) ?>)'>✏️</button>
+                        <button class="btn btn-danger btn-sm">🗑️</button>
+                      </div>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
             </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <br>
+    <br>
+        <div class="page-header">
+      <div>
+        <h1>Evento Patrocinador</h1>
+        <p>Gestión de patrocinadores y evento al que aportan</p>
+      </div>
+      <button class="btn btn-primary" onclick="abrirModalEp()">+ Agregar evento con patrocinador</button>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Nombre Patrocinador</th><th>Nombre evento</th><th>Detalle</th><th>Acciones</th></tr>
+          </thead>
+          <tbody id="eventoPatrocinadorBody">
             <tr>
-              <td>
-                <button class="btn btn-outline btn-sm" onclick="openModal('modal-patrocinador')">✏️</button>
-                <button class="btn btn-danger btn-sm">🗑️</button>
-              </td>
+              <?php foreach ($eventoPatrocinador as $ep): ?>
+                <tr>
+                  <td><?= htmlspecialchars($ep['nombre_p']) ?></td>
+                  <td><?= htmlspecialchars($ep['nombre_e']) ?></td>
+                  <td><?= htmlspecialchars($ep['detalle_p']) ?></td>
+                  <td>
+                    <div style="display:flex;gap:.4rem">
+                        <button class="btn btn-outline btn-sm" onclick='abrirModalEp(<?= htmlspecialchars(json_encode($ep), ENT_QUOTES) ?>)'>✏️</button>
+                        <button class="btn btn-danger btn-sm">🗑️</button>
+                      </div>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
+
+  
 
   <!-- ===== RESULTADOS ===== -->
   <div class="page" id="page-resultados">
@@ -1445,44 +1510,96 @@ try {
 <div class="modal-overlay" id="modal-patrocinador">
   <div class="modal">
     <div class="modal-header">
-      <span class="modal-title">🤝 Patrocinador</span>
+      <span class="modal-title" id="modal-pat-titulo">🤝 Nuevo patrocinador</span>
       <button class="modal-close" onclick="closeModal('modal-patrocinador')">✕</button>
     </div>
     <div class="modal-body">
       <div class="form-grid form-grid-2">
         <div class="form-group">
-          <label>Nombre</label>
-          <input type="text" placeholder="CicloDep Colombia" />
+          <label>Nombre *</label>
+          <input type="text" id="pat-nombre" placeholder="CicloDep Colombia" />
         </div>
         <div class="form-group">
-          <label>Tipo</label>
-          <input type="text" placeholder="Oro / Plata / Bronce" />
+          <label>Logo</label>
+          <div id="pat-logo-drop" style="border:2px dashed var(--border);border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;margin-bottom:.5rem" onclick="document.getElementById('pat-logo-file').click()">
+            <i class="ti ti-cloud-upload" style="font-size:1.5rem;color:var(--muted)"></i>
+            <p style="font-size:.82rem;color:var(--muted);margin:.3rem 0">Haz clic o arrastra una imagen</p>
+            <p style="font-size:.75rem;color:var(--muted)">JPG, PNG, WEBP — máx. 1 MB</p>
+          </div>
+          <input type="file" id="pat-logo-file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="previewLogoPatrocinador(this)">
+          <img id="pat-logo-preview" src="" alt="Preview logo" style="display:none;max-height:80px;max-width:150px;object-fit:contain;border-radius:6px;margin-top:.5rem">
+          <input type="hidden" id="pat-logo-base64">
+          <input type="text" id="pat-logo" placeholder="O pega una URL del logo" style="margin-top:.5rem">
         </div>
         <div class="form-group">
           <label>Teléfono</label>
-          <input type="tel" placeholder="+57 1 234 5678" />
+          <input type="tel" id="pat-telefono" placeholder="+57 1 234 5678" />
         </div>
         <div class="form-group">
           <label>Correo</label>
-          <input type="email" placeholder="sponsors@empresa.co" />
+          <input type="email" id="pat-correo" placeholder="sponsors@empresa.co" />
         </div>
         <div class="form-group">
           <label>Página web</label>
-          <input type="url" placeholder="https://empresa.co" />
+          <input type="url" id="pat-web" placeholder="https://empresa.co" />
         </div>
         <div class="form-group">
-          <label>Aporte ($)</label>
-          <input type="number" placeholder="5000000" />
+          <label>Aporte</label>
+          <input type="text" id="pat-aporte" placeholder="$5.000.000" />
         </div>
-      </div>
-      <div class="form-group" style="margin-top:1rem">
-        <label>Logo (URL)</label>
-        <input type="text" placeholder="img/sponsors/empresa.png" />
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="pat-estado">
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+            <option value="inhabilitado">Inhabilitado</option>
+          </select>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeModal('modal-patrocinador')">Cancelar</button>
-      <button class="btn btn-primary" onclick="closeModal('modal-patrocinador');showToast('Patrocinador guardado ✅','success')">💾 Guardar</button>
+      <button class="btn btn-primary" onclick="guardarPatrocinador()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Evento Patrocinador -->
+<div class="modal-overlay" id="modal-evento-patrocinador">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-ep-titulo">🤝 Vincular patrocinador a evento</span>
+      <button class="modal-close" onclick="closeModal('modal-evento-patrocinador')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid form-grid-2">
+        <div class="form-group">
+          <label>Patrocinador *</label>
+          <select id="ep-patrocinador">
+            <option value="" disabled selected>Seleccionar patrocinador</option>
+            <?php foreach ($nuevoPatrocinador as $p): ?>
+              <option value="<?= $p['id_p'] ?>"><?= htmlspecialchars($p['nombre_p']) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Evento *</label>
+          <select id="ep-evento">
+            <option value="" disabled selected>Seleccionar evento</option>
+            <?php foreach ($eventosRegistrados as $e): ?>
+              <option value="<?= $e['id_e'] ?>"><?= htmlspecialchars($e['nombre_e']) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label>Detalle</label>
+          <textarea id="ep-detalle" rows="3" placeholder="Descripción del aporte al evento..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-evento-patrocinador')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarEventoPatrocinador()">Guardar</button>
     </div>
   </div>
 </div>
@@ -2328,7 +2445,6 @@ window.muSelEst = function(el, cls) {
 
 // ===== MODAL KIT =====
 
-// Cierra al hacer clic fuera del modal
 document.getElementById('modal-kit').addEventListener('click', function(e) {
   if (e.target === this) closeModal('modal-kit');
 });
@@ -2339,13 +2455,20 @@ function abrirModalKit(datos = null) {
   document.querySelector('#modal-kit .kit-modal-header-left span').textContent =
     esEdicion ? 'Editar kit' : 'Nuevo kit';
 
-  document.getElementById('kit-nombre').value   = datos?.nombre_kit     || '';
-  document.getElementById('kit-stock').value    = datos?.stock          || '';
-  document.getElementById('kit-fecha').value    = datos?.fecha_entrega  || '';
-  document.getElementById('kit-lugar').value    = datos?.lugar_entrega  || '';
-  document.getElementById('kit-talla').value    = datos?.talla_camiseta || '';
-  document.getElementById('kit-dorsal').value   = datos?.numero_dorsal  || '';
-  document.getElementById('kit-contenido').value= datos?.contenido_kit  || '';
+  const modal = document.getElementById('modal-kit');
+  if (esEdicion && datos?.id_k) {
+    modal.dataset.idKit = datos.id_k;
+  } else {
+    delete modal.dataset.idKit;
+  }
+
+  document.getElementById('kit-nombre').value    = datos?.nombre_k         || '';
+  document.getElementById('kit-stock').value     = datos?.stock_k          || '';
+  document.getElementById('kit-fecha').value     = datos?.fecha_entrega_k  || '';
+  document.getElementById('kit-lugar').value     = datos?.lugar_entrega_k  || '';
+  document.getElementById('kit-talla').value     = datos?.talla_camiseta_k || '';
+  document.getElementById('kit-dorsal').value    = datos?.numero_dorsal_k  || '';
+  document.getElementById('kit-contenido').value = datos?.contenido_k      || '';
 
   openModal('modal-kit');
 }
@@ -2359,6 +2482,7 @@ function guardarKit() {
   const talla     = document.getElementById('kit-talla').value;
   const dorsal    = document.getElementById('kit-dorsal').value.trim();
   const contenido = document.getElementById('kit-contenido').value.trim();
+  const idKit     = document.getElementById('modal-kit').dataset.idKit;
 
   let hayError = false;
   let primerCampo = null;
@@ -2367,18 +2491,10 @@ function guardarKit() {
     mostrarErrorKit('kit-nombre', 'El nombre del kit es obligatorio');
     if (!primerCampo) primerCampo = 'kit-nombre';
     hayError = true;
-  } else if (/[0-9]/.test(nombre)) {
-    mostrarErrorKit('kit-nombre', 'El nombre no puede contener números');
-    if (!primerCampo) primerCampo = 'kit-nombre';
-    hayError = true;
   }
 
   const stockNum = parseInt(stock);
-  if (!stock) {
-    mostrarErrorKit('kit-stock', 'El stock es obligatorio');
-    if (!primerCampo) primerCampo = 'kit-stock';
-    hayError = true;
-  } else if (isNaN(stockNum) || stockNum < 1) {
+  if (!stock || isNaN(stockNum) || stockNum < 1) {
     mostrarErrorKit('kit-stock', 'El stock mínimo es 1');
     if (!primerCampo) primerCampo = 'kit-stock';
     hayError = true;
@@ -2388,13 +2504,6 @@ function guardarKit() {
     mostrarErrorKit('kit-fecha', 'La fecha de entrega es obligatoria');
     if (!primerCampo) primerCampo = 'kit-fecha';
     hayError = true;
-  } else {
-    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
-    if (new Date(fecha + 'T00:00:00') < hoy) {
-      mostrarErrorKit('kit-fecha', 'La fecha no puede ser anterior a hoy');
-      if (!primerCampo) primerCampo = 'kit-fecha';
-      hayError = true;
-    }
   }
 
   if (!lugar) {
@@ -2409,11 +2518,7 @@ function guardarKit() {
     hayError = true;
   }
 
-  if (!dorsal) {
-    mostrarErrorKit('kit-dorsal', 'El número dorsal es obligatorio');
-    if (!primerCampo) primerCampo = 'kit-dorsal';
-    hayError = true;
-  } else if (/[^0-9]/.test(dorsal)) {
+  if (!dorsal || /[^0-9]/.test(dorsal)) {
     mostrarErrorKit('kit-dorsal', 'El dorsal solo puede contener números');
     if (!primerCampo) primerCampo = 'kit-dorsal';
     hayError = true;
@@ -2429,27 +2534,33 @@ function guardarKit() {
     if (primerCampo) document.getElementById(primerCampo).focus();
     return;
   }
+
   limpiarErroresKit();
 
-  fetch('php/guardar_kit.php', {
+  const payload = {
+    nombre_kit:     nombre,
+    stock:          parseInt(stock),
+    fecha_entrega:  fecha,
+    lugar_entrega:  lugar,
+    contenido_kit:  contenido,
+    talla_camiseta: talla,
+    numero_dorsal:  parseInt(dorsal) || 0,
+  };
+
+  if (idKit) payload.id_k = idKit;
+  const endpoint = idKit ? 'php/actualizar_kit.php' : 'php/guardar_kit.php';
+
+  fetch(endpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      nombre_kit:     nombre,
-      stock:          parseInt(stock),
-      fecha_entrega:  fecha,
-      lugar_entrega:  lugar,
-      contenido_kit:  contenido,
-      talla_camiseta: talla,
-      numero_dorsal:  parseInt(dorsal) || 0,
-    })
+    body: JSON.stringify(payload)
   })
   .then(r => r.json())
   .then(data => {
     if (data.ok) {
       closeModal('modal-kit');
-      showToast('Kit guardado ✅', 'success');
-      loadAdminData(); 
+      showToast(idKit ? 'Kit actualizado ✅' : 'Kit guardado ✅', 'success');
+      loadAdminData();
     } else {
       showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
     }
@@ -2525,6 +2636,140 @@ function guardarCategoria() {
       loadAdminData();
     } else {
       showToast('Error: ' + (result.error || 'No se pudo guardar') + ' ❌', 'error');
+    }
+  })
+  .catch(() => showToast('Error de conexión ❌', 'error'));
+}
+
+//modal patrocinador
+function abrirModalPatrocinador(datos = null) {
+  const esEdicion = datos !== null;
+  document.getElementById('modal-pat-titulo').textContent = esEdicion ? '🤝 Editar patrocinador' : '🤝 Nuevo patrocinador';
+  const modal = document.getElementById('modal-patrocinador');
+  esEdicion && datos?.id_p ? modal.dataset.idPat = datos.id_p : delete modal.dataset.idPat;
+
+  document.getElementById('pat-nombre').value       = datos?.nombre_p     || '';
+  document.getElementById('pat-telefono').value     = datos?.telefono_p   || '';
+  document.getElementById('pat-correo').value       = datos?.correo_p     || '';
+  document.getElementById('pat-web').value          = datos?.pagina_web_p || '';
+  document.getElementById('pat-aporte').value       = datos?.aporte_p     || '';
+  document.getElementById('pat-estado').value       = datos?.estado_p     || 'activo';
+  document.getElementById('pat-logo-base64').value    = '';
+  document.getElementById('pat-logo-file').value       = '';
+  document.getElementById('pat-logo').value            = datos?.logo_p || '';
+
+  const preview = document.getElementById('pat-logo-preview');
+  const drop    = document.getElementById('pat-logo-drop');
+
+  if (datos?.logo_p) {
+    preview.src          = datos.logo_p;
+    preview.style.display = 'block';
+    drop.style.display    = 'none';
+  } else {
+    preview.style.display = 'none';
+    drop.style.display    = 'block';
+  }
+
+  openModal('modal-patrocinador');
+}
+
+//validación y guardado de patrocinador
+function guardarPatrocinador() {
+  const nombre = document.getElementById('pat-nombre').value.trim();
+  if (!nombre) { showToast('El nombre es obligatorio ❌', 'error'); return; }
+
+  const idPat   = document.getElementById('modal-patrocinador').dataset.idPat;
+  const base64  = document.getElementById('pat-logo-base64').value;
+  const urlLogo = document.getElementById('pat-logo').value.trim();
+
+  const payload = {
+    nombre_p:     nombre,
+    logo_p:       base64 || urlLogo,  // base64 tiene prioridad
+    telefono_p:   document.getElementById('pat-telefono').value.trim(),
+    correo_p:     document.getElementById('pat-correo').value.trim(),
+    pagina_web_p: document.getElementById('pat-web').value.trim(),
+    aporte_p:     document.getElementById('pat-aporte').value.trim(),
+    estado_p:     document.getElementById('pat-estado').value,
+  };
+  if (idPat) payload.id_p = idPat;
+
+  fetch('php/guardar_patrocinador.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      closeModal('modal-patrocinador');
+      showToast(idPat ? 'Patrocinador actualizado ✅' : 'Patrocinador guardado ✅', 'success');
+      loadAdminData();
+    } else {
+      showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
+    }
+  })
+  .catch(() => showToast('Error de conexión ❌', 'error'));
+}
+
+function previewLogoPatrocinador(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  if (file.size > 1 * 1024 * 1024) {
+    showToast('La imagen supera 1 MB ❌', 'error');
+    input.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('pat-logo-base64').value = e.target.result;
+    document.getElementById('pat-logo-preview').src = e.target.result;
+    document.getElementById('pat-logo-preview').style.display = 'block';
+    document.getElementById('pat-logo-drop').style.display = 'none';
+    document.getElementById('pat-logo').value = '';
+  };
+  reader.readAsDataURL(file);
+}
+// modal evento patrocinador
+function abrirModalEp(datos = null) {
+  const esEdicion = datos !== null;
+  document.getElementById('modal-ep-titulo').textContent = esEdicion ? '🤝 Editar vínculo' : '🤝 Vincular patrocinador a evento';
+  const modal = document.getElementById('modal-evento-patrocinador');
+  esEdicion && datos?.id_ep ? modal.dataset.idEp = datos.id_ep : delete modal.dataset.idEp;
+
+  document.getElementById('ep-patrocinador').value = datos?.patrocinador_id_p || '';
+  document.getElementById('ep-evento').value        = datos?.evento_id_e       || '';
+  document.getElementById('ep-detalle').value       = datos?.detalle           || '';
+  openModal('modal-evento-patrocinador');
+}
+//validación y guardado de evento patrocinador
+function guardarEventoPatrocinador() {
+  const patrocinador = document.getElementById('ep-patrocinador').value;
+  const evento       = document.getElementById('ep-evento').value;
+  if (!patrocinador || !evento) { showToast('Selecciona patrocinador y evento ❌', 'error'); return; }
+
+  const idEp = document.getElementById('modal-evento-patrocinador').dataset.idEp;
+  const payload = {
+    patrocinador_id_p: patrocinador,
+    evento_id_e:       evento,
+    detalle:           document.getElementById('ep-detalle').value.trim(),
+  };
+  if (idEp) payload.id_ep = idEp;
+
+  fetch('php/guardar_evento_patrocinador.php', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.ok) {
+      closeModal('modal-evento-patrocinador');
+      showToast(idEp ? 'Vínculo actualizado ✅' : 'Vínculo guardado ✅', 'success');
+      loadAdminData();
+    } else {
+      showToast('Error: ' + (data.error || 'No se pudo guardar') + ' ❌', 'error');
     }
   })
   .catch(() => showToast('Error de conexión ❌', 'error'));

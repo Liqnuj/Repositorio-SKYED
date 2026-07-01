@@ -24,13 +24,17 @@ try {
     
     $eventos = $pdo->query("SELECT * FROM eventoDeportivo ORDER BY fecha_e ASC")->fetchAll(PDO::FETCH_ASSOC);
 
-    
     $pagos = $pdo->query("SELECT * FROM pago ORDER BY fecha_p DESC")->fetchAll(PDO::FETCH_ASSOC);
     
-
     $kits = $pdo->query("SELECT * FROM kit ORDER BY fecha_entrega_k ASC")->fetchAll(PDO::FETCH_ASSOC);
 
     $categorias = $pdo->query("SELECT c.*, e.nombre_e as nombre_evento FROM categoria_competencia c LEFT JOIN eventoDeportivo e ON c.id_e = e.id_e ORDER BY c.nombre_cc ASC ")->fetchAll(PDO::FETCH_ASSOC);
+
+    $patrocinadores = $pdo->query("SELECT * FROM patrocinador ORDER BY nombre_p ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+    $patrocinadores = $pdo->query("SELECT * FROM patrocinador ORDER BY nombre_p ASC")->fetchAll(PDO::FETCH_ASSOC);
+
+    $eventoPatrocinador = $pdo->query("SELECT ep.*, p.nombre_p, e.nombre_e FROM evento_patrocinador ep JOIN patrocinador p ON ep.patrocinador_id_p = p.id_p JOIN eventoDeportivo e ON ep.evento_id_e = e.id_e ORDER BY ep.id_ep ASC")->fetchAll(PDO::FETCH_ASSOC);
     
     $totalUsuarios     = count($usuarios);
     $totalEventos      = count($eventos);
@@ -54,7 +58,8 @@ try {
             'kits'          => $kits,
             'entregas'      => [],
             'categorias'    => $categorias,
-            'patrocinadores'=> [],
+            'patrocinadores'=> $patrocinadores,
+            'eventoPatrocinador' => $eventoPatrocinador,
             'resultados'    => [],
             'rutas'         => [],
             'hidratacion'   => [],
