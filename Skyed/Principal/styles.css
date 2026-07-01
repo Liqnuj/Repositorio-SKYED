@@ -243,12 +243,9 @@ body {
 .choose-wrap {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0;
+  gap: 30px;
   max-width: 920px;
   margin: 0 auto;
-  border-radius: 28px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* ---- Mitades ---- */
@@ -256,19 +253,27 @@ body {
   position: relative;
   padding: 3rem 2.5rem 2.5rem;
   overflow: hidden;
-  transition: background 0.3s;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: background 0.3s, transform 0.3s, border-color 0.3s;
 }
 
-.choose-half:first-child {
-  border-right: 1px solid rgba(255, 255, 255, 0.07);
+.choose-half:hover {
+  transform: translateY(-4px);
 }
 
 .choose-social { background: #1a1330; }
 .choose-sport  { background: #132d33; }
 
-.choose-social:hover { background: #26194d; }
-.choose-sport:hover  { background: #154041; }
+.choose-social:hover {
+  background: #26194d;
+  border-color: rgba(200, 162, 64, 0.3);
+}
 
+.choose-sport:hover {
+  background: #154041;
+  border-color: rgba(29, 128, 158, 0.3);
+}
 /* Orbs decorativos */
 .choose-orb {
   position: absolute;
@@ -679,7 +684,7 @@ body {
 .quote-mark {
   font-family: 'Playfair Display', serif;
   font-size: 7rem;
-  color: rgba(200, 162, 64, 0.14);
+  color: rgba(200, 161, 64, 0.356);
   line-height: 0.4;
   display: block;
   margin-bottom: 1.5rem;
@@ -739,6 +744,181 @@ body {
 .divider {
   height: 1px;
   background: rgba(255, 255, 255, 0.05);
+}
+
+
+/* --- CTA Section --- */
+.cta-section {
+  position: relative;
+  overflow: hidden;
+  padding: 60px 20px;
+  background: linear-gradient(180deg, #0d0a1a 0%, #120e24 50%, #0d0a1a 100%);
+}
+
+.cta-blob {
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(90px);
+  opacity: 0.4;
+}
+
+.cta-blob--left {
+  top: -140px;
+  left: -140px;
+  background: #2cc0ff; /* azul */
+}
+
+.cta-blob--right {
+  bottom: -140px;
+  right: -140px;
+  background: #9c07ff; /* dorado */
+}
+
+.cta-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 520px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Badge */
+.cta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(81, 193, 241, 0.4);
+  color: #5ca0ee;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+/* Título */
+.cta-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.2;
+  margin: 0 0 20px;
+  letter-spacing: -0.02em;
+}
+
+.cta-highlight {
+  position: relative;
+  display: inline-block;
+}
+
+.cta-highlight::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: -4px;
+  right: -4px;
+  height: 14px;
+  background: rgba(56, 189, 248, 0.5);
+  border-radius: 4px;
+  z-index: -1;
+}
+
+/* Subtítulo */
+.cta-subtitle {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 auto 40px;
+  max-width: 500px;
+  line-height: 1.7;
+}
+
+/* Botón */
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 36px;
+  border-radius: 999px;
+  background: #3892f8;
+  color: #0d0a1a;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.cta-btn:hover {
+  background: #5fc9f9;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.35);
+  color: #0d0a1a;
+}
+
+.cta-btn:active {
+  transform: scale(0.97);
+}
+
+/* Prueba social */
+.cta-social-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 48px;
+}
+
+.cta-avatars {
+  display: flex;
+}
+
+.cta-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: rgba(56, 189, 248, 0.2);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -10px;
+}
+
+.cta-avatar:first-child {
+  margin-left: 0;
+}
+
+.cta-count {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  margin: 0;
+}
+
+.cta-count strong {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.cta-stars {
+  color: #f5a623;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cta-stars span {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 /* ================================================
