@@ -73,14 +73,38 @@ const sectionColumns = {
     },
   ],  
   patrocinadores: [
-    { label: 'Patrocinador', fn: row => renderSponsorCell(row) },
-    { label: 'Tipo', keys: ['tipo', 'nivel'] },
-    { label: 'Teléfono', keys: ['telefono', 'contacto'] },
-    { label: 'Correo', keys: ['correo', 'email'] },
-    { label: 'Web', keys: ['web', 'sitio'] },
-    { label: 'Aporte', fn: row => formatCurrency(getField(row, ['aporte', 'monto'])) },
-    { label: 'Eventos', keys: ['eventos', 'eventos_count'] },
-    { label: '', fn: () => renderButton('✏️') },
+    { label: 'Patrocinador', keys: ['nombre_p'] },
+    { label: 'Logo', fn: row => {
+        const logo = row.logo_p || '';
+        if (!logo) return '—';
+        return `<img src="${logo}" alt="logo" style="height:40px;max-width:80px;object-fit:contain;border-radius:4px;display:block;margin:0 auto;">`;
+    }},
+    { label: 'Teléfono',           keys: ['telefono_p'] },
+    { label: 'Correo electrónico', keys: ['correo_p', 'correo_electronico_p'] },
+    { label: 'Página Web',         keys: ['pagina_web_p'] },
+    { label: 'Aporte',             keys: ['aporte_p'] },
+    { label: 'Estado', fn: row => {
+        const v = row.estado_p || '';
+        const cls = v === 'activo' ? 'badge-success' : v === 'inactivo' ? 'badge-warning' : 'badge-danger';
+        return `<span class="badge ${cls}">${v}</span>`;
+    }},
+    { label: 'Acciones', fn: row => `
+      <div style="display:flex;gap:.4rem">
+        <button class="btn btn-outline btn-sm" onclick='abrirModalPatrocinador(${JSON.stringify(row)})'>✏️</button>
+        <button class="btn btn-danger btn-sm">🗑️</button>
+      </div>`
+    },
+  ],
+    eventoPatrocinador: [
+    { label: 'Nombre Patrocinador', keys: ['nombre_p'] },
+    { label: 'Nombre Evento',       keys: ['nombre_e'] },
+    { label: 'Detalle',             keys: ['detalle'] },
+    { label: 'Acciones', fn: row => `
+      <div style="display:flex;gap:.4rem">
+        <button class="btn btn-outline btn-sm" onclick='abrirModalEp(${JSON.stringify(row)})'>✏️</button>
+        <button class="btn btn-danger btn-sm">🗑️</button>
+      </div>`
+    },
   ],
   resultados: [
     { label: 'Pos. General', keys: ['pos_general', 'pos_general', 'posicion_general'] },
@@ -487,6 +511,7 @@ function loadAdminData() {
       renderTable('entregasBody', data.entregas || [], sectionColumns.entregas);
       renderTable('categoriasBody', data.categorias || [], sectionColumns.categorias);
       renderTable('patrocinadoresBody', data.patrocinadores || [], sectionColumns.patrocinadores);
+      renderTable('eventoPatrocinadorBody', data.eventoPatrocinador || [], sectionColumns.eventoPatrocinador);
       renderTable('resultadosBody', data.resultados || [], sectionColumns.resultados);
       renderTable('rutasBody', data.rutas || [], sectionColumns.rutas);
       renderTable('hidratacionBody', data.hidratacion || [], sectionColumns.hidratacion);
