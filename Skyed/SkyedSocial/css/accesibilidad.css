@@ -760,7 +760,7 @@ body.dark-mode .auth-form-box{
   background: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%) !important;
 }
 
-.sky-col-title,
+/* .sky-col-title,
 .sky-contact-icon i,
 .sky-logo-text span,
 .sky-social-btn {
@@ -773,7 +773,7 @@ body.dark-mode .auth-form-box{
 
 .sky-social-btn {
   border-color: var(--accent) !important;
-}
+} */
 
 /* ── MODO DISLEXIA ── */
 body.dyslexia {

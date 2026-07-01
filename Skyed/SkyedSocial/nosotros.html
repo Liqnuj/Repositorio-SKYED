@@ -28,15 +28,15 @@
       <i class="ti ti-home" aria-hidden="true"></i>
     </a>
 
-    <div class="nav-links" id="navLinks">
-      <a href="index.html" onclick="closeNav()">Inicio</a>
-      <a href="eventos.html" onclick="closeNav()">Eventos</a>
-      <a href="servicios.html" onclick="closeNav()">Servicios</a>
-      <a href="lugares.html" onclick="closeNav()">Lugares</a>
-      <a href="pqr.html" onclick="closeNav()">PQRS</a>
-      <a href="contacto.html" onclick="closeNav()">Contacto</a>
-    </div>
-    <a href="reservar.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>
+   <div class="nav-links" id="navLinks">
+    <a href="index.html" onclick="closeNav()">Inicio</a>
+    <a href="eventos.html" onclick="closeNav()">Eventos</a>
+    <a href="lugares.html" onclick="closeNav()">Lugares</a>
+    <a href="nosotros.html" class="active" onclick="closeNav()">Nosotros</a>
+    <a href="pqr.html" onclick="closeNav()">PQRS</a>
+    <a href=#contacto onclick="closeNav()">Contacto</a>
+  </div>
+    <a href="reservar.html" class="nav-cta" onclick="closeNav()">Reservar ahora</a>  
 
     <button class="hamburger" id="hamburger" onclick="toggleNav()" aria-label="Menú">
       <span></span><span></span><span></span>
@@ -45,9 +45,10 @@
 </nav>
 
 <!-- HERO NOSOTROS -->
-<section class="ns-hero">
-  <div class="ns-hero-bg"></div>
-  <div class="container">
+<section class="ns-hero" id="nsHero">
+  <canvas id="nsHeroParticles"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="container" style="position:relative;z-index:2;">
     <span class="section-label">Nuestra esencia</span>
     <h1 class="reveal">Doce años convirtiendo ideas en <em>momentos inolvidables</em></h1>
     <p class="reveal">Somos un equipo de diseñadores, coordinadores y creativos que cree que cada celebración merece su propia historia. Esta es la nuestra.</p>
@@ -144,7 +145,7 @@
   </div>
 </section>
 
-<!-- EQUIPO -->
+<!-- EQUIPO
 <section class="testimonials-section">
   <div class="container">
     <div class="text-center reveal">
@@ -174,7 +175,7 @@
       </div>
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- CTA FINAL -->
 <section class="conocenos-section">
@@ -188,6 +189,55 @@
   </div>
 </section>
 
+<div class="ns-map-section">
+  <div class="ns-map-wrap">
+    <div class="ns-map-top">
+      <div class="ns-map-top-left">
+        <div class="ns-map-eyebrow">Nuestra ubicación</div>
+        <h2 class="ns-map-title">Encuéntranos en Sogamoso</h2>
+        <p class="ns-map-sub">Boyacá, Colombia · Sede principal SKYED</p>
+      </div>
+      <div class="ns-map-badge">
+        <div class="ns-map-dot"></div> Encuéntranos aquí
+      </div>
+    </div>
+
+    <div class="ns-map-shell">
+      <iframe
+        class="ns-map-frame"
+        src="https://maps.google.com/maps?q=Sogamoso,Boyaca,Colombia&output=embed&z=14"
+        allowfullscreen=""
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+
+      <div class="ns-map-info-row">
+        <div class="ns-map-info-cell">
+          <div class="ns-map-info-icon"><i class="ti ti-building"></i></div>
+          <div>
+            <div class="ns-map-info-label">Dirección</div>
+            <div class="ns-map-info-val">Sogamoso, Boyacá</div>
+          </div>
+        </div>
+        <div class="ns-map-info-cell">
+          <div class="ns-map-info-icon"><i class="ti ti-clock"></i></div>
+          <div>
+            <div class="ns-map-info-label">Horario</div>
+            <div class="ns-map-info-val">Lun – Vie · 8 am – 6 pm</div>
+          </div>
+        </div>
+        <div class="ns-map-info-cell">
+          <div class="ns-map-info-icon"><i class="ti ti-phone"></i></div>
+          <div>
+            <div class="ns-map-info-label">Teléfono</div>
+            <div class="ns-map-info-val">+57 317 703 7517</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- FOOTER -->
 <footer class="sky-footer" id="contacto">
   <div class="sky-accent-bar"></div>
@@ -198,11 +248,12 @@
         <img src="img/logo_social.png" alt="SKYED" class="sky-logo-icon">
         <div class="sky-logo-text">SKY<span>ED</span></div>
       </div>
-      <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
+      <p class="sky-tagline">La plataforma profesional para eventos sociales en Boyacá.</p>
       <div class="sky-social-row">
         <a class="sky-social-btn" href="https://www.facebook.com/?locale=es_LA" target="_blank" rel="noopener noreferrer" aria-label="Facebook" onclick="return confirmarSalida(event)">F</a>
         <a class="sky-social-btn" href="https://www.instagram.com/?hl=es" target="_blank" rel="noopener noreferrer" aria-label="Instagram" onclick="return confirmarSalida(event)">IG</a>
         <a class="sky-social-btn" href="https://twitter.com/?lang=es" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" onclick="return confirmarSalida(event)">X</a>
+        <a class="sky-social-btn" href="https://www.whatsapp.com/" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" onclick="return confirmarSalida(event)">WA</a>
       </div>
     </div>
 
@@ -220,7 +271,7 @@
           <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
           <div class="sky-contact-text">
             <strong>Teléfono</strong>
-            +57 313 201 3573
+            +57 317 703 7517
           </div>
         </li>
         <li class="sky-contact-item">
@@ -296,6 +347,43 @@
 </div>
 
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Ir arriba">↑</button>
+<script>
+(function(){
+  const canvas = document.getElementById('nsHeroParticles');
+  const ctx = canvas.getContext('2d');
+  const hero = document.getElementById('nsHero');
+  function resize(){
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  const particles = [];
+  for(let i = 0; i < 40; i++){
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3.5 + 1,
+      speedY: Math.random() * 0.5 + 0.25,
+      opacity: Math.random() * 0.7 + 0.2,
+      color: Math.random() > 0.5 ? '201,168,76' : '245,230,239'
+    });
+  }
+  function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.y -= p.speedY;
+      if(p.y < -10) p.y = canvas.height + 10;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${p.opacity})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+</script>
 
 <script src="js/shared.js"></script>
 <script src="js/carrusel.js"></script>
