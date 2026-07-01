@@ -336,8 +336,9 @@ section{padding:1rem 0}
 .events-load{text-align:center;margin-top:3rem}
 
 /* SERVICES */
-.services-section{background:var(--cream);padding:2rem 0 7rem;}
+.services-section{background:var(--cream);padding:2rem 0rem;}
 .services-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;margin-top:4rem}
+
 .service-card{
   background:color-mix(in srgb, var(--accent) 15%, #ffffff);
   border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
@@ -549,14 +550,14 @@ section{padding:1rem 0}
 }
 
 .sky-logo-text{
-    font-family:'Playfair Display',serif;
+    font-family:'arial',serif;
     font-size:2rem;
     font-weight:700;
     color:#fff;
 }
 
 .sky-logo-text span{
-    color:#d4af37;
+    color:var(--accent);
 }
 
 /* Descripción */
@@ -577,21 +578,21 @@ section{padding:1rem 0}
 .sky-social-btn{
     width:40px;
     height:40px;
-    border-radius:10px;
-    background:rgba(255,255,255,.08);
-    border:1px solid rgba(255,255,255,.12);
+    border-radius:30px;
+    background:none;
+    border:1px solid var(--accent);
     display:flex;
     align-items:center;
+    color:var(--accent);
     justify-content:center;
-    color:rgba(255,255,255,.6);
     text-decoration:none;
     transition:.25s;
 }
 
 .sky-social-btn:hover{
-    background:#d4af37;
-    color:#1A0A2E;
-    border-color:#d4af37;
+    background:var(--accent);
+    color:#ffffff;
+    border-color:var(--accent);
 }
 
 /* Títulos */
@@ -600,7 +601,7 @@ section{padding:1rem 0}
     font-weight:700;
     letter-spacing:.15em;
     text-transform:uppercase;
-    color:#d4af37;
+    color:var(--accent);
     margin-bottom:1.5rem;
 }
 
@@ -622,15 +623,15 @@ section{padding:1rem 0}
     height:36px;
     min-width:36px;
     border-radius:10px;
-    background:rgba(212,175,55,.08);
-    border:1px solid rgba(212,175,55,.18);
+    background:none;
+    border:1px solid var(--accent);
     display:flex;
     align-items:center;
     justify-content:center;
 }
 
 .sky-contact-icon i{
-    color:#d4af37;
+    color:var(--accent);
     font-size:15px;
 }
 
@@ -664,7 +665,7 @@ section{padding:1rem 0}
 }
 
 .sky-copy span{
-    color:#d4af37;
+    color:var(--accent);
 }
 
 .sky-bottom-links{
@@ -707,6 +708,7 @@ section{padding:1rem 0}
 @keyframes fade-up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
 .reveal{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
 .reveal.visible{opacity:1;transform:none; border-color: var(--accent); border-width: 2px;}
+.dark-mode .reveal.visible{color: #d7d7d7; border-width: 2px;}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(10,5,24,.85);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:2rem;opacity:0;pointer-events:none;transition:opacity .35s}
