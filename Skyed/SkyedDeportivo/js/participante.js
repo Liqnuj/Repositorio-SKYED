@@ -684,8 +684,15 @@
   }
 
   const btnLogout = $('#btn-logout');
-  if (btnLogout) btnLogout.addEventListener('click', () => {
+  if (btnLogout) btnLogout.addEventListener('click', async () => {
     if (!confirm('¿Cerrar sesión?')) return;
+    try {
+      await fetch('php/cerrar_sesion.php', { method: 'POST', credentials: 'include' });
+    } catch (_) {}
+    // Limpiar localStorage del usuario actual
+    localStorage.removeItem('cicloUser');
+    localStorage.removeItem('cicloVentas');
+    localStorage.removeItem('cicloNotif');
     location.href = 'login.html';
   });
 

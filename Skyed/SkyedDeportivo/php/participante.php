@@ -427,22 +427,30 @@ if (isset($_SESSION['email'])) {
     <button class="acc-reset" id="accReset">Restablecer todo</button>
   </div>
   <script>
-  const USER_KEY = 'skyedPerfil';
-  
+  // Clave de localStorage única por usuario (evita mezclar datos entre usuarios)
+  const USER_EMAIL = <?= json_encode($usuario['correo_u'] ?? '') ?>;
+  const USER_KEY   = 'skyedPerfil:' + USER_EMAIL;
+
+  // Limpiar claves viejas de otros usuarios
+  Object.keys(localStorage).forEach(k => {
+    if (k.startsWith('skyedPerfil:') && k !== USER_KEY) localStorage.removeItem(k);
+  });
+
   const userDefaults = {
     nombre:      <?= json_encode($usuario['nombre_u'] ?? '') ?>,
     apellido:    <?= json_encode($usuario['apellido_u'] ?? '') ?>,
     email:       <?= json_encode($usuario['correo_u'] ?? '') ?>,
     telefono:    <?= json_encode($usuario['telefono_u'] ?? '') ?>,
-    ciudad:      <?= json_encode($usuario['ciudad_u'] ?? 'Colombia') ?>, 
-    categoria:   <?= json_encode($usuario['categoria_u'] ?? 'Aficionado') ?>, 
+    ciudad:      <?= json_encode($usuario['ciudad_u'] ?? 'Colombia') ?>,
+    categoria:   <?= json_encode($usuario['categoria_u'] ?? 'Aficionado') ?>,
     plan:        <?= json_encode($usuario['rol_u'] ?? 'Participante') ?>,
-    disciplinas: ['ruta'], 
-    creado:      '2026-01-01', 
+    disciplinas: ['ruta'],
+    creado:      '2026-01-01',
     fechaNac:    <?= json_encode($usuario['fecha_nacimiento_u'] ?? '') ?>,
-    foto:        null,   
+    foto:        null,
   };
-  let user = Object.assign({}, userDefaults, JSON.parse(localStorage.getItem(USER_KEY) || '{}'));
+  // Los datos del servidor SIEMPRE tienen prioridad sobre localStorage
+  let user = Object.assign({}, JSON.parse(localStorage.getItem(USER_KEY) || '{}'), userDefaults);
 
   const saveUser = () => localStorage.setItem(USER_KEY, JSON.stringify(user));
 
@@ -464,9 +472,16 @@ if (isset($_SESSION['email'])) {
   function confirmLogout() {
     fetch('cerrar_sesion.php', { method: 'POST' })
       .then(() => {
+        // Limpiar localStorage de este usuario
+        localStorage.removeItem(USER_KEY);
+        localStorage.removeItem('cicloVentas');
+        localStorage.removeItem('cicloNotif');
         window.location.href = '../login.html';
       })
       .catch(() => {
+        localStorage.removeItem(USER_KEY);
+        localStorage.removeItem('cicloVentas');
+        localStorage.removeItem('cicloNotif');
         window.location.href = '../login.html';
       });
   }
