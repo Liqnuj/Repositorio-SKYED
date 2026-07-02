@@ -912,6 +912,7 @@ section{padding:1rem 0}
   display: flex;
   gap: .6rem;
   z-index: 20;
+  margin-left: 38px;
 }
 
 .carousel-dot {
