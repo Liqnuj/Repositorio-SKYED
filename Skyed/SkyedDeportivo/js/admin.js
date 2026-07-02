@@ -95,7 +95,7 @@ const sectionColumns = {
       </div>`
     },
   ],
-    eventoPatrocinador: [
+  eventoPatrocinador: [
     { label: 'Nombre Patrocinador', keys: ['nombre_p'] },
     { label: 'Nombre Evento',       keys: ['nombre_e'] },
     { label: 'Detalle',             keys: ['detalle'] },
@@ -107,12 +107,12 @@ const sectionColumns = {
     },
   ],
   resultados: [
-    { label: 'Pos. General', keys: ['pos_general', 'pos_general', 'posicion_general'] },
-    { label: 'Pos. Categoría', keys: ['pos_categoria', 'posición_categoria', 'posicion_categoria'] },
-    { label: 'Atleta', keys: ['atleta', 'nombre', 'usuario'] },
-    { label: 'Categoría', keys: ['categoria', 'categoria_res'] },
-    { label: 'Tiempo final', keys: ['tiempo_final', 'tiempo'] },
-    { label: 'Vel. promedio', keys: ['velocidad', 'velocidad_promedio', 'vel_promedio'] },
+    { label: 'Tiempo final', keys: ['tiempo_final_r', 'tiempo_r'] },
+    { label: 'Posicion general', keys: ['pos_general_r', 'posición_general_r', 'posicion_general_r'] },
+    { label: 'Posicion en categoria', keys: ['pos_categoria_r', 'posición_categoria_r', 'posicion_categoria_r'] },
+    { label: 'Categoría', keys: ['categoria_r', 'categoria_res_r'] },
+    { label: 'Tiempo final', keys: ['tiempo_final_r', 'tiempo_r'] },
+    { label: 'Vel. promedio', keys: ['velocidad_r', 'velocidad_promedio_r', 'vel_promedio_r'] },
     { label: '', fn: () => renderButton('✏️') },
   ],
   rutas: [
