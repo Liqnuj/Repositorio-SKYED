@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Recupera tu contraseña en SKYED y vuelve a acceder a tu cuenta." />
   <title>Recuperar contraseña — SKYED</title>
-  <link rel="icon" href="../img/logo.png" />
+  <link rel="icon" href="../img/logo_deportivo_nav.png" />
   <link rel="stylesheet" href="../css/global.css" />
   <link rel="stylesheet" href="../css/auth.css" />
   <link rel="stylesheet" href="../css/accesibilidad.css" />
@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
 
   <header class="site-header" role="banner">
     <nav class="nav" aria-label="Navegación principal">
-      <a href="../index.html" class="brand"><img src="../img/logo.png" alt="" /><span>SKY<em>ED</em></span></a>
+      <a href="../index.html" class="brand"><img src="../img/logo_deportivo.png" alt="" /><span>SKY<em>ED</em></span></a>
       <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list" aria-label="Abrir menú">☰</button>
     </nav>
   </header>
@@ -93,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
     <!-- Columna SKYED -->
     <div class="sky-footer-col">
       <div class="sky-logo-row">
-        <img src="../img/logo.png" alt="SKYED" class="sky-logo-icon">
+        <img src="../img/logo_deportivo.png" alt="SKYED" class="sky-logo-icon">
         <div class="sky-logo-text">SKY<span>ED</span></div>
       </div>
       <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>

@@ -85,6 +85,13 @@ try {
     die("Error al conectar con la base de datos: " . $e->getMessage());
 }
 
+$resultado=[];
+try {
+  $stmt = $pdo->query("SELECT * FROM resultado ORDER BY id_r ASC");
+  $resultado = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error al conectar con la base de datos: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -94,7 +101,7 @@ try {
   <title>Panel Admin — SKYED</title>
   <link rel="icon" href="img/logo_deportivo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet" />
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet" /> -->
   <link rel="stylesheet" href="css/admin.css" />
   <link rel="stylesheet" href="css/accesibilidad.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
@@ -164,6 +171,7 @@ try {
     </button>
     <button class="nav-item" data-page="resultados">
       <span class="icon">🏆</span> Resultados
+      <span class="badge-count"><?= count($resultado); ?></span>
     </button>
 
     <div class="sidebar-section">Logística</div>
@@ -838,22 +846,19 @@ try {
       <div class="table-wrap">
         <table>
           <thead>
-            <tr><th>Pos. General</th><th>Pos. Categoría</th><th>Atleta</th><th>Categoría</th><th>Tiempo final</th><th>Vel. promedio</th><th></th></tr>
+            <tr><th>Tiempo final</th><th>Posición general</th><th>Posición en categoría</th><th>Estado</th><th>Acciones</th></tr>
           </thead>
           <tbody id="resultadosBody">
-            <tr>
-              <td><strong style="color:var(--warning);font-size:1.1rem">🥇 1</strong></td>
-              <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-resultado')">✏️</button></td>
-            </tr>
-            <tr>
-              <td><strong style="font-size:1.1rem">🥈 2</strong></td>
-              <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-resultado')">✏️</button></td>
-            </tr>
-            <tr>
-              <td><strong style="font-size:1.1rem">🥉 3</strong></td>
-              
-              <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-resultado')">✏️</button></td>
-            </tr>
+            <?php foreach ($resultado as $res): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($res['tiempo_final_r']); ?></td>
+                <td><?php echo htmlspecialchars($res['posicion_general_r']); ?></td>
+                <td><?php echo htmlspecialchars($res['posicion_categoria_r']); ?></td>
+                <td><?php echo htmlspecialchars($res['id_i']); ?></td>
+                <td><?php echo htmlspecialchars($res['estado_r']); ?></td>
+                <td><button class="btn btn-outline btn-sm" onclick="openModal('modal-resultado')">✏️</button></td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
