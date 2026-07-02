@@ -55,7 +55,7 @@ function updateCarousel(index) {
     content.style.transition = 'opacity .6s ease, transform .6s ease';
     content.style.opacity = '1';
     content.style.transform = 'translateY(0)';
-  }, 300);
+  }, 100);
 }
 
 function goToSlide(index) {
@@ -78,7 +78,7 @@ function carouselPrev() {
 
 function resetTimer() {
   clearInterval(carouselTimer);
-  carouselTimer = setInterval(carouselNext, 5000);
+  carouselTimer = setInterval(carouselNext, 4000);
 }
 
-carouselTimer = setInterval(carouselNext, 5000);
+carouselTimer = setInterval(carouselNext, 4000);

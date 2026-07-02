@@ -55,7 +55,7 @@
 <!-- NAV -->
 <nav id="navbar">
   <div class="nav-inner">
-    <a href="index.html" class="brand" aria-label="Inicio SKYED">
+    <a class="brand" aria-label="Inicio SKYED">
       <img src="img/logo_social.png" alt="logo social" />
       <span>SKYED<em>SOCIAL</em></span>
     </a>
@@ -147,15 +147,14 @@
 <section class="about-strip" id="nosotros">
   <div class="container">
     <div class="about-grid">
-      <div class="about-visual reveal">
-        <div class="about-img-wrap">
-          <div class="img-placeholder img-p-wedding" style="font-size:8rem">💒</div>
-        </div>
-        <div class="about-badge">
-          <div class="about-badge-num">12</div>
-          <div class="about-badge-text">Años creando<br>momentos únicos</div>
-        </div>
-      </div>
+  <div class="about-visual">
+  <div class="about-img-wrap">
+    <video autoplay muted loop playsinline poster="img/about-poster.jpg">
+      <source src="vid/about-clip.mp4" type="video/mp4">
+    </video>
+  </div>
+
+</div>
       <div class="about-content reveal">
         <span class="section-label">Sobre SkyedSocial</span>
         <h2 class="section-title">Donde los sueños se convierten en <em>realidad</em></h2>
@@ -499,11 +498,11 @@
   createParticles();
   renderEvents('todos');
   // Solo mostrar 3 eventos en home
-  document.querySelectorAll('#eventsGrid .event-card').forEach((c,i)=>{if(i>=3)c.style.display='none'});
+  document.querySelectorAll('#eventsGrid .event-card').forEach((c,i)=>{if(i>=4)c.style.display='none'});
   renderGallery();
   renderTestimonials();
   initReveal();
-  setTimeout(()=>document.querySelectorAll('.reveal').forEach(el=>observer.observe(el)),500);
+  setTimeout(()=>document.querySelectorAll('.reveal').forEach(el=>observer.observe(el)),1000);
 </script>
 <script src="js/accesibilidad.js"></script>
 </body>
