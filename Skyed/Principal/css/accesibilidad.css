@@ -1,6 +1,6 @@
 :root{
-    --accent: #9c02ae;
-    --accent-2: #852caf;
+    --accent: #8827f0;
+    --accent-2: #5a2aa5;
 }
 
 body.dark-mode {
@@ -17,7 +17,7 @@ body.dark-mode {
   right: 30px;
   width: 50px;
   height: 50px;
-  background: var(--accent);
+  background: linear-gradient(315deg, #9c02ae, #2c9caf);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -26,8 +26,9 @@ body.dark-mode {
   border: none;
   box-shadow: 0 4px 14px rgba(0, 2, 6, 0.732);
   z-index: 9999;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background 0.3s;
 }
+
 .acc-toggle:hover {
   transform: scale(1.08);
 }
@@ -41,7 +42,6 @@ body.dark-mode {
   position: fixed;
   bottom: 90px;
   right: 30px;
-  background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 14px;
   padding: 20px;
@@ -52,7 +52,7 @@ body.dark-mode {
     background 0.3s,
     border-color 0.3s;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-  background: #e3e3e3;
+  background: #e5e5e5;
 }
 
 .dark-mode .acc-panel {
@@ -213,7 +213,7 @@ nav{
 
 /* ── MODO OSCURO - NAV ── */
 body.dark-mode nav {
-  background:rgb(45 31 64 / 96%);
+  background:rgba(0, 0, 0, 0.96);
 }
 body.dark-mode .nav-logo {
   color: #f0ebe5;
@@ -298,9 +298,9 @@ body.dark-mode .product-badge {
 }
 
 /* ── MODO OSCURO - SECCIONES ── */
-body.dark-mode section {
-  background: rgba(18, 4, 35, 0.96);
-}
+        body.dark-mode section {
+        background: rgba(0, 0, 0, 0.96);
+        }
 body.dark-mode .section-title {
   color: #f0ebe5;
 }
@@ -824,7 +824,7 @@ body.dark-mode .mv-section {
 
 body.dark-mode .mv-card {
   background: #12100f;
-  border-color: #3a3430;
+  border-color: var(--accent);
 }
 
 body.dark-mode .mv-card:hover {
