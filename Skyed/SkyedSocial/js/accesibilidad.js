@@ -107,21 +107,20 @@
     document.getElementById("accReset").addEventListener("click", () => {
       currentFont = "'DM Sans', sans-serif";
       currentAccent = "#9c02ae";
-      darkMode = false;
+      darkMode = true;
       localStorage.removeItem("lumara-font");
       localStorage.removeItem("lumara-accent-social");
-      localStorage.removeItem("lumara-dark");
+      localStorage.setItem("lumara-dark", "true");
       document.body.style.fontFamily = currentFont;
       document.documentElement.style.setProperty("--accent", currentAccent);
       document.documentElement.style.setProperty("--accent-2", currentAccent);
-      document.body.classList.remove("dark-mode");
+      document.body.classList.add("dark-mode");
       document.querySelectorAll(".font-option").forEach((o) => o.classList.remove("active"));
       document.querySelector("[data-font=\"'DM Sans', sans-serif\"]")?.classList.add("active");
       document.querySelectorAll(".color-swatch").forEach((s) => s.classList.remove("active"));
       document.querySelector('[data-color="#9c02ae"]')?.classList.add("active");
-      document.getElementById("modeLight").classList.add("active");
-      document.getElementById("modeDark").classList.remove("active");
-
+      document.getElementById("modeDark").classList.add("active");
+      document.getElementById("modeLight").classList.remove("active")
       currentSize = '16px';
       localStorage.removeItem('lumara-size');
       document.documentElement.style.fontSize = currentSize;
