@@ -61,13 +61,13 @@ body {
   font-family: arial;
   font-size: 1.25rem;
   font-weight: 700;
-  color: #680991;
+  color: #2c9caf;
   letter-spacing: -.02em;
 }
 
 .nav-brand span em {
   font-family: arial;
-  color: #2c9caf;
+  color: #680991;
 }
 
 .nav-gem img {
@@ -131,6 +131,11 @@ body {
   align-items: center;
   gap: 7px;
   transition: opacity 0.2s, transform 0.15s;
+}
+
+.dark-mode .nav-login {
+  background: #4d4d4d;
+  color: #ffffff;
 }
 
 .nav-login:hover {
@@ -385,12 +390,12 @@ body {
 
 .choose-social:hover {
   background: #251a29f7;
-  border-color: rgba(200, 162, 64, 0.3);
+  border-color: var(--accent);
 }
 
 .choose-sport:hover {
   background: #154041;
-  border-color: rgba(29, 128, 158, 0.3);
+  border-color: rgb(29, 128, 158);
 }
 /* Orbs decorativos */
 .choose-orb {
@@ -692,7 +697,7 @@ body {
 }
 
 .fch-social {
-  background: #68099161;
+  background: #68099129;
   color: #680991;
   border: 1px solid #680991;
 }
@@ -737,7 +742,7 @@ body {
 }
 
 .find-ic.gold-ic {
-  background: #68099161;
+  background: #68099129;
   color: #680991;
 }
 
