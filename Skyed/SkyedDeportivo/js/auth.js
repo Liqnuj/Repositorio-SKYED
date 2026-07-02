@@ -738,6 +738,11 @@ if (loginForm) {
         if (result.ok) {
             showToast(`¡Bienvenido, ${result.usuario.nombre}!`, 'success');
             
+            // Limpiar datos del usuario anterior antes de guardar el nuevo
+            localStorage.removeItem('cicloUser');
+            localStorage.removeItem('cicloVentas');
+            localStorage.removeItem('cicloNotif');
+
             // LÓGICA DE REDIRECCIÓN POR ROL
             const ruta = (result.usuario.rol === 'adminDeportivo') ? 'admin.php' : 'php/participante.php';
             

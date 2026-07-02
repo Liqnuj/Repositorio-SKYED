@@ -108,3 +108,9 @@ window.showToast = showToast;
 function confirmarSalida() {
   return confirm("Estás a punto de salir de SKYED. ¿Deseas continuar?");
 }
+// Evita espacios múltiples: solo permite un espacio entre palabras
+document.querySelectorAll('input[type="text"]').forEach(input => {
+  input.addEventListener('input', () => {
+    input.value = input.value.replace(/  +/g, ' ');
+  });
+});
