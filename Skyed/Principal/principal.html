@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SKYED Eventos de todo estilo</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/accesibilidad.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,7 +18,7 @@
   <nav class="nav">
     <div class="nav-brand">
       <div class="nav-gem"><img src="img/icon1.png" alt="logol"></div>
-      <span class="nav-title">SKYED </span>
+      <span>SKY<em>ED</em></span>
     </div>
     <div class="nav-links">
     </div>
@@ -36,6 +37,7 @@
 
   <!-- ===== HERO ===== -->
   <section class="hero">
+    <div class="hero-bg"></div>
     <div class="hero-badge">
       <div class="badge-pulse"></div>
       Colombia · Plataforma de eventos
@@ -65,7 +67,7 @@
           <i class="ti ti-confetti"></i>
         </div>
         <div class="choose-tag">Eventos sociales</div>
-        <div class="choose-name">Skyed<br>Social</div>
+        <div class="choose-name">SKYED<br>Social</div>
         <p class="choose-desc">
           Diseñamos experiencias que emocionan. Desde bodas íntimas hasta grandes
           corporativos, cada evento es único como tú.
@@ -78,7 +80,7 @@
           <li><span class="feat-dot"></span>Coordinación total del evento</li>
         </ul>
         <a href="../SkyedSocial/index.html" class="big-btn">
-          <span>Ingresar a SkyedSocial</span>
+          <span>Ingresar a SKYEDSocial</span>
           <div class="big-btn-arrow"><i class="ti ti-arrow-right"></i></div>
         </a>
         <div class="choose-stats">
@@ -119,7 +121,7 @@
           <li><span class="feat-dot"></span>Kits y dorsales personalizados</li>
         </ul>
         <a href="../SkyedDeportivo/index.html" class="big-btn">
-          <span>Ingresar a SKYED</span>
+          <span>Ingresar a SKYEDSport</span>
           <div class="big-btn-arrow"><i class="ti ti-arrow-right"></i></div>
         </a>
         <div class="choose-stats">
@@ -317,22 +319,6 @@
         <path d="M5 12h14M12 5l7 7-7 7"/>
       </svg>
     </a>
-
-    <!-- Prueba social -->
-    <div class="cta-social-proof">
-      <div class="cta-avatars">
-        <div class="cta-avatar">A</div>
-        <div class="cta-avatar">B</div>
-        <div class="cta-avatar">C</div>
-        <div class="cta-avatar">D</div>
-        <div class="cta-avatar">E</div>
-      </div>
-      <p class="cta-count"><strong>+2,000</strong> deportistas activos</p>
-      <div class="cta-stars">
-        ★★★★★ <span>4.9</span>
-      </div>
-    </div>
-
   </div>
 </section>
 
@@ -346,6 +332,93 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+  </svg>
+</button>
+
+  <!-- Panel -->
+    <div class="acc-panel" id="accPanel">
+      <div class="acc-panel-title">Accesibilidad</div>
+
+      <!-- Tamaño de texto -->
+    <div class="acc-section">
+      <span class="acc-label">Tamaño de texto</span>
+      <div class="font-size-row">
+        <button class="size-btn" data-size="14px">A-</button>
+        <button class="size-btn active" data-size="16px">A</button>
+        <button class="size-btn" data-size="19px">A+</button>
+        <button class="size-btn" data-size="22px">A++</button>
+      </div>
+    </div>
+
+      <!-- Dislexia -->
+      <div class="acc-section">
+        <span class="acc-label">Dislexia</span>
+        <div class="mode-row">
+          <button class="mode-btn" id="dyslexiaOff">Normal</button>
+          <button class="mode-btn" id="dyslexiaOn">Activar</button>
+        </div>
+      </div>
+
+      <!-- Color de acento -->
+      <div class="acc-section">
+        <span class="acc-label">Color de acento</span>
+        <div class="color-grid">
+          <div
+            class="color-swatch active"
+            style="background: #c8432b"
+            data-color="#c8432b"
+            title="Rojo Lumara"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #c9a84c"
+            data-color="#c9a84c"
+            title="Dorado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e6da4"
+            data-color="#2e6da4"
+            title="Azul"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e7d32"
+            data-color="#2e7d32"
+            title="Verde"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #6a1b9a"
+            data-color="#6a1b9a"
+            title="Morado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #37474f"
+            data-color="#37474f"
+            title="Gris oscuro"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Modo claro / oscuro -->
+      <div class="acc-section">
+        <span class="acc-label">Modo</span>
+        <div class="mode-row">
+          <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+          <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+        </div>
+      </div>
+
+      <button class="acc-reset" id="accReset">Restablecer todo</button>
+    </div>
+
+
+  <script src="js/script.js"></script>
+  <script src="js/accesibilidad.js"></script>
 </body>
 </html>
