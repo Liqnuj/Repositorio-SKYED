@@ -33,6 +33,12 @@
   border-color: #7c3aed;
   color: #7c3aed;
 }
+/* Ajustes: agrandar ligeramente el campo teléfono sin salirse del formulario */
+#fphone{
+  width:100%;
+  max-width:420px;
+  box-sizing:border-box;
+}
 </style>
 </head>
 <body>
@@ -112,17 +118,21 @@
         <div class="form-title">Solicita tu cotización gratuita</div>
         <div class="form-row">
           <div class="form-group">
-            <label>Tu nombre</label>
-            <input type="text" id="fname" placeholder="Ej: María García">
+            <label>Nombre</label>
+            <input type="text" id="fname" placeholder="Ej: María" maxlength="20" oninput="capitalizeNameInput(this)" onblur="capitalizeNameInput(this)">
           </div>
           <div class="form-group">
+            <label>Apellido</label>
+            <input type="text" id="lname" placeholder="Ej: García" maxlength="20" oninput="capitalizeNameInput(this)" onblur="capitalizeNameInput(this)">
+          </div>
+          <div class="form-group span-two">
             <label>Teléfono / WhatsApp</label>
-            <input type="tel" id="fphone" placeholder="+57 300 000 0000">
+            <input type="text" id="fphone" placeholder="3000000000" inputmode="numeric" oninput="sanitizeNumericInput(this)" onblur="sanitizeNumericInput(this)">
           </div>
         </div>
         <div class="form-group">
           <label>Correo electrónico</label>
-          <input type="email" id="femail" placeholder="tu@correo.com">
+          <input type="email" id="femail" placeholder="tu@correo.com" oninput="validateEmailField(this)" onblur="validateEmailField(this)">
         </div>
         <div class="form-row">
           <div class="form-group">
@@ -145,7 +155,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>N° de invitados</label>
-            <input type="number" id="fguests" placeholder="Ej: 150">
+            <input type="text" id="fguests" placeholder="Ej: 150" inputmode="numeric" oninput="sanitizeNumericInput(this)" onblur="sanitizeNumericInput(this)">
           </div>
           <div class="form-group">
             <label>Presupuesto aprox.</label>
@@ -162,7 +172,7 @@
           <label>Cuéntanos tu visión</label>
           <textarea id="fmessage" placeholder="¿Qué imaginas para tu evento? Tema, estilo, detalles especiales..."></textarea>
         </div>
-        <button class="form-submit" onclick="submitForm()">✦ Enviar solicitud</button>
+        <button class="form-submit" type="button" onclick="submitForm(event)">✦ Enviar solicitud</button>
       </div>
     </div>
   </div>

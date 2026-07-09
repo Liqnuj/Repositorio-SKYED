@@ -46,6 +46,12 @@
   border-color: var(--accent);
   color: var(--accent);
 }
+/* Ajustes: agrandar un poco el campo de correo en PQR sin romper el formulario */
+#pqrEmail{
+  width:100%;
+  max-width:520px;
+  box-sizing:border-box;
+}
 </style>
 
 </head>
@@ -168,19 +174,23 @@
 
           <div class="pf-row">
             <div class="pf-group required">
-              <label>Nombre completo</label>
-              <input type="text" id="pqrNombre" placeholder="Ej: María García">
+              <label>Nombre</label>
+              <input type="text" id="pqrNombre" placeholder="Ej: María" maxlength="20" oninput="capitalizeNameInput(this)" onblur="capitalizeNameInput(this)">
             </div>
             <div class="pf-group required">
+              <label>Apellido</label>
+              <input type="text" id="pqrApellido" placeholder="Ej: García" maxlength="20" oninput="capitalizeNameInput(this)" onblur="capitalizeNameInput(this)">
+            </div>
+            <div class="pf-group required span-two">
               <label>Correo electrónico</label>
-              <input type="email" id="pqrEmail" placeholder="tu@correo.com">
+              <input type="email" id="pqrEmail" placeholder="tu@correo.com" oninput="validateEmailField(this)" onblur="validateEmailField(this)">
             </div>
           </div>
 
           <div class="pf-row">
             <div class="pf-group">
               <label>Teléfono / WhatsApp</label>
-              <input type="tel" id="pqrTel" placeholder="+57 300 000 0000">
+              <input type="text" id="pqrTel" placeholder="3000000000" inputmode="numeric" oninput="sanitizeNumericInput(this)" onblur="sanitizeNumericInput(this)">
             </div>
             <div class="pf-group">
               <label>N° de contrato / evento</label>
@@ -232,7 +242,7 @@
             No compartimos tus datos con terceros.
           </div>
 
-          <button class="pf-submit" id="pqrSubmitBtn" onclick="submitPQR()">✦ Radicar solicitud</button>
+          <button class="pf-submit" id="pqrSubmitBtn" type="button" onclick="submitPQR(event)">✦ Radicar solicitud</button>
         </div>
 
         <!-- Confirmación -->
@@ -451,18 +461,33 @@ function showFile(input){
 }
 
 // Submit
-function submitPQR(){
+function submitPQR(event){
+  if(event) event.preventDefault();
   const nombre = document.getElementById('pqrNombre').value.trim();
+  const apellido = document.getElementById('pqrApellido').value.trim();
   const email  = document.getElementById('pqrEmail').value.trim();
+  const tel = document.getElementById('pqrTel').value.trim();
   const evento = document.getElementById('pqrEvento').value;
   const asunto = document.getElementById('pqrAsunto').value.trim();
   const desc   = document.getElementById('pqrDesc').value.trim();
 
-  if(!nombre || !email || !evento || !asunto || !desc){
+  capitalizeNameInput(document.getElementById('pqrNombre'));
+  capitalizeNameInput(document.getElementById('pqrApellido'));
+  validateEmailField(document.getElementById('pqrEmail'));
+
+  if(!nombre || !apellido || !email || !evento || !asunto || !desc){
     showToast('Por favor completa todos los campos obligatorios','⚠️');
     return;
   }
-  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+  if(!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,20}$/.test(nombre)||!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,20}$/.test(apellido)){
+    showToast('Nombre y apellido solo pueden tener letras y máximo 20 caracteres','⚠️');
+    return;
+  }
+  if(tel&&!/^\d+$/.test(tel)){
+    showToast('El teléfono solo puede contener números','⚠️');
+    return;
+  }
+  if(!validateEmail(email)){
     showToast('Ingresa un correo electrónico válido','⚠️');
     return;
   }

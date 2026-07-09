@@ -495,6 +495,31 @@ section{padding:1rem 0}
 .form-submit{width:100%;padding:1rem;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--plum);border:none;border-radius:50px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:'Inter',sans-serif;margin-top:.5rem}
 .form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.4)}
 
+/* Ajuste específico: campo Teléfono en el formulario de reservar
+   Mayor especificidad para evitar ser sobrescrito por reglas generales */
+.booking-form .form-group input#fphone{
+  width:100%;
+  max-width:480px;
+  box-sizing:border-box;
+}
+
+/* Utilidad: permitir que un campo ocupe ambas columnas en formularios de booking */
+@media(min-width:900px){
+  .booking-form .form-row .form-group.span-two{
+    grid-column: 1 / -1;
+    max-width: none;
+    margin: 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+/* Asegurar que el input dentro ocupe todo el ancho del grupo */
+.booking-form .form-row .form-group.span-two input#fphone{
+  width: 100% !important;
+  max-width: none !important;
+}
+
 /* FOOTER */
 
 *{
