@@ -123,8 +123,12 @@ body.dark-mode {
   transform: scale(1.15);
 }
 .color-swatch.active {
-  border-color: var(--ink);
+  border-color: #000000;
   transform: scale(1.1);
+}
+
+.dark-mode .color-swatch.active {
+  border-color: #ffff;
 }
 
 .mode-row {
@@ -429,12 +433,12 @@ body.dark-mode .cat-banner-sub {
 }
 
 body.dark-mode .breadcrumb {
-  background: #1a1714;
-  border-bottom-color: #3a3430;
-  color: #a09890;
+  background: #000000;
+  border-bottom-color: #cacaca;
+  color: #cacaca;
 }
 body.dark-mode .breadcrumb a {
-  color: #a09890;
+  color: #cacaca;
 }
 
 body.dark-mode .filter-block {
@@ -487,7 +491,7 @@ body.dark-mode input {
   color: #dadada;
 }
 body.dark-mode select {
-  background: #0f0f0f !important;
+  background: var(--surface)  !important;
   border-color: var(--accent);
   color: #f0ebe5;
 }
