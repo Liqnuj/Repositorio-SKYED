@@ -5,7 +5,7 @@
   const u = SKY.usuario();
   const root = document.getElementById('root');
 
-  if(!u){ root.innerHTML=`<div class="alert alert-warn">Debes <a href="login.html">iniciar sesión</a> para inscribirte.</div>`; return; }
+  if(!u){ root.innerHTML=`<div class="alert alert-warn">Debes <a href="../Principal/login.html">iniciar sesión</a> para inscribirte.</div>`; return; }
   if(!ev){ root.innerHTML='<div class="alert alert-err">Evento no encontrado.</div>'; return; }
   if(ev.cupos_disponibles_e<=0){ root.innerHTML='<div class="alert alert-err">Lo sentimos, no hay cupos disponibles.</div>'; return; }
 

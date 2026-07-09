@@ -101,7 +101,7 @@ async function handleBuy(id) {
   const user = JSON.parse(localStorage.getItem('cicloUser') || 'null');
   if (!user) {
     showToast('Debes iniciar sesión para inscribirte', 'error');
-    setTimeout(() => location.href = 'login.html', 1200);
+    setTimeout(() => location.href = '../Principal/login.html', 1200);
     return;
   }
   if (await isAlreadyInscrito(id)) {

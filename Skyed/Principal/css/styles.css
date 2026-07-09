@@ -143,6 +143,47 @@ body {
   transform: translateY(-1px);
 }
 
+.nav-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.12);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.nav-user:hover {
+  background: rgba(255,255,255,0.18);
+  transform: translateY(-1px);
+}
+
+.nav-user[data-mode="confirm"],
+.mobile-user[data-mode="confirm"] {
+  background: rgba(248, 113, 113, 0.16);
+  border-color: rgba(248, 113, 113, 0.48);
+  color: #fff1f2;
+}
+
+.mobile-user {
+  display: none;
+  margin: 1rem 2rem 1.5rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-weight: 700;
+  text-align: center;
+  font-family: inherit;
+}
+
 /* Botón menú móvil (oculto en desktop) */
 .nav-menu-btn {
   display: none;

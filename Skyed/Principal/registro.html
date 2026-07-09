@@ -1,309 +1,253 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Crea tu cuenta gratis en SKYED y empieza a inscribirte en eventos de ciclismo." />
-  <title>Crear cuenta — SKYED</title>
-  <link rel="icon" href="img/logo_deportivo_nav.png" />
-  <link rel="stylesheet" href="css/global.css" />
-  <link rel="stylesheet" href="css/auth.css" />
-  <link rel="stylesheet" href="css/accesibilidad.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Crea tu cuenta gratis en SKYED y empieza a inscribirte en eventos de ciclismo.">
+<title>Crear cuenta — SKYED</title>
+<link rel="icon" href="img/icon1.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/accesibilidad.css">
 </head>
 <body>
-
-  <header class="site-header" role="banner">
-    <nav class="nav" aria-label="Navegación principal">
-      <a class="brand"><img src="img/logo_deportivo.png" alt="" /><span>SKY<em>ED</em></span></a>
-      <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list" aria-label="Abrir menú">☰</button>
-    </nav>
+  <header class="auth-topbar">
+    <a href="principal.html" class="auth-logo">
+      <img src="img/logoP.png" alt="SKYED" class="auth-logo-icon">
+      <span class="auth-logo-text">SKY<span class="accent">ED</span></span>
+    </a>
   </header>
 
-  <main id="main" class="auth-wrapper">
-    <aside class="auth-side" aria-hidden="true">
-      <h2>Únete a la <em>comunidad</em> SKYED</h2>
-      <p>Crea tu cuenta gratis y obtén acceso a todos los beneficios de la plataforma.</p>
-      <ul>
-        <li>Inscripción rápida en eventos</li>
-        <li>Descuentos exclusivos para miembros</li>
-        <li>Historial completo de tus carreras</li>
-        <li>Notificaciones de nuevos eventos</li>
-      </ul>
+  <div class="auth-grid" id="main">
+
+    <!-- ================= ASIDE ================= -->
+    <aside class="auth-aside">
+      <div class="aside-blob aside-blob--purple"></div>
+      <div class="aside-blob aside-blob--blue"></div>
+      <div class="aside-blob aside-blob--gold"></div>
+
+      <div class="aside-content">
+        <span class="aside-eyebrow"><i class="ti ti-sparkles"></i>&nbsp; Únete gratis</span>
+        <h1 class="aside-title">Únete a la <span class="hl">comunidad SKYED</span></h1>
+        <p class="aside-subtitle">
+          Crea tu cuenta gratis y obtén acceso a todos los beneficios de
+          la plataforma de eventos de ciclismo.
+        </p>
+
+        <ul class="aside-features">
+          <li><span class="feat-ico"><i class="ti ti-bolt"></i></span> Inscripción rápida en eventos</li>
+          <li><span class="feat-ico"><i class="ti ti-discount-2"></i></span> Descuentos exclusivos para miembros</li>
+          <li><span class="feat-ico"><i class="ti ti-bell"></i></span> Notificaciones de nuevos eventos</li>
+        </ul>
+      </div>
     </aside>
 
-    <section class="auth-form-box">
-    <div class="auth-form-inner">
+    <!-- ================= MAIN ================= -->
+    <main class="auth-main">
+      <div class="auth-card">
+        <a href="login.html" class="auth-back"><i class="ti ti-arrow-left"></i> Volver</a>
+        <h2 class="auth-heading">Crear cuenta</h2>
+        <p class="auth-subheading">Solo te tomará un minuto.</p>
 
-    <a href="login.html" class="back-btn" aria-label="Volver al inicio">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M19 12H5M12 5l-7 7 7 7"/>
-  </svg>
-  </a>
+        <form id="signupForm" novalidate>
 
-      <form class="auth-form" id="register-form" novalidate>
-        <h1>Crear cuenta</h1>
-        <p class="lead">Solo te tomará un minuto.</p>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="docType">Tipo de documento<span class="req">*</span></label>
+              <select id="docType" class="form-select">
+                <option value="">Selecciona</option>
+                <option value="cedula_ciudadania">Cédula de ciudadanía</option>
+                <option value="tarjeta_identidad">Tarjeta de identidad</option>
+                <option value="cedula_extranjeria">Cédula de extranjería</option>
+                <option value="pasaporte">Pasaporte</option>
+              </select>
+              <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="docNumber">Número de documento<span class="req">*</span></label>
+              <input type="text" id="docNumber" class="form-input" placeholder="Selecciona primero el tipo" maxlength="20" disabled>
+              <div class="form-error"></div>
+            </div>
+          </div>
 
-        <div class="form-row">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="firstName">Nombre<span class="req">*</span></label>
+              <input type="text" id="firstName" class="form-input" placeholder="Juan" autocomplete="given-name">
+              <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="lastName">Apellido<span class="req">*</span></label>
+              <input type="text" id="lastName" class="form-input" placeholder="Pérez" autocomplete="family-name">
+              <div class="form-error"></div>
+            </div>
+          </div>
+          <p class="form-hint" style="margin: -0.75rem 0 1.25rem;">Solo letras y espacios.</p>
+
           <div class="form-group">
-            <label for="tipoDocumento">Tipo de Documento <span class="req">*</span></label>
-            <select id="tipoDocumento" name="tipoDocumento" required data-validate="select">
-              <option value=""> Selecciona </option>
-              <option value="cedula_ciudadania">Cédula de Ciudadanía</option>
-              <option value="tarjeta_identidad">Tarjeta de Identidad</option>
-              <option value="cedula_extranjeria">Cédula de Extranjería</option>
-              <option value="pasaporte">Pasaporte</option>
-            </select>
-            <span class="error"></span>
+            <label class="form-label" for="signupEmail">Correo electrónico<span class="req">*</span></label>
+            <input type="email" id="signupEmail" class="form-input" placeholder="tucorreo@ejemplo.com" autocomplete="email" maxlength="80">
+            <div class="form-error"></div>
           </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="phone">Teléfono<span class="req">*</span></label>
+              <input type="text" id="phone" class="form-input" placeholder="3001234567" inputmode="numeric" data-digits-only maxlength="15">
+              <div class="form-hint">Solo números (7-15)</div>
+              <div class="form-error"></div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="birthdate">Fecha de nacimiento<span class="req">*</span></label>
+              <input type="date" id="birthdate" class="form-input" max="">
+              <div class="form-hint">Debes tener al menos 10 años para registrarte.</div>
+              <div class="form-error"></div>
+            </div>
+          </div>
+
           <div class="form-group">
-            <label for="documento">Número de Documento <span class="req">*</span></label>
-            <input id="documento" name="documento" type="text" required maxlength="20"
-                   data-validate="documento" placeholder="123456789" autocomplete="off" />
-            <span class="error"></span>
+            <label class="form-label" for="signupPassword">Contraseña<span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="password" id="signupPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" maxlength="50">
+              <button type="button" class="input-toggle" data-toggle-for="signupPassword" aria-label="Mostrar contraseña">
+                <i class="ti ti-eye"></i>
+              </button>
+            </div>
+            <div class="strength-meter" id="pwMeter">
+              <div class="strength-bars"><span></span><span></span><span></span><span></span></div>
+              <span class="strength-label">Muy débil</span>
+            </div>
+            <div class="form-hint">Mínimo 8 caracteres, una mayúscula, una minúscula y un número.</div>
+            <div class="form-error"></div>
           </div>
-        </div>
-        <div class="form-row">
+
           <div class="form-group">
-            <label for="nombre">Nombre <span class="req">*</span></label>
-            <input id="nombre" name="nombre" type="text" required maxlength="50"
-                   data-validate="nombre" placeholder="Juan" autocomplete="given-name" />
-            <span class="help">Solo letras</span>
-            <span class="error"></span>
+            <label class="form-label" for="confirmPassword">Confirmar contraseña<span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" maxlength="50">
+              <button type="button" class="input-toggle" data-toggle-for="confirmPassword" aria-label="Mostrar contraseña">
+                <i class="ti ti-eye"></i>
+              </button>
+            </div>
+            <div class="form-error"></div>
           </div>
-          <div class="form-group">
-            <label for="apellido">Apellido <span class="req">*</span></label>
-            <input id="apellido" name="apellido" type="text" required maxlength="50"
-                   data-validate="apellido" placeholder="Pérez" autocomplete="family-name" />
-            <span class="error"></span>
+
+          <div class="checkbox-row">
+            <input type="checkbox" id="acceptTerms">
+            <label for="acceptTerms">
+              Acepto los <a href="#" class="link-terminos" data-modal="terminos">términos y condiciones</a> y la <a href="#" class="link-terminos" data-modal="privacidad">política de privacidad</a><span class="req">*</span>
+            </label>
           </div>
-        </div>
-        <div class="form-group">
-          <label for="email">Correo Electrónico <span class="req">*</span></label>
-          <input id="email" name="email" type="email" required maxlength="80"
-                 data-validate="email" placeholder="tucorreo@ejemplo.com" autocomplete="email" />
-          <span class="error"></span>
-        </div>
+          <div class="form-error" id="termsError" style="margin-top: -1.1rem; margin-bottom: 1rem;"></div>
 
-        <div class="form-row">
-          <div class="form-group">
-            <label for="telefono">Teléfono <span class="req">*</span></label>
-            <input id="telefono" name="telefono" type="tel" required maxlength="15"
-                   data-validate="telefono" placeholder="3001234567" autocomplete="tel"
-                   inputmode="numeric" />
-            <span class="help">Solo números (7-15)</span>
-            <span class="error"></span>
-          </div>
-          <div class="form-group">
-            <label for="fechaNac">Fecha de Nacimiento <span class="req">*</span></label>
-            <input id="fechaNac" name="fechaNac" type="date" required
-                   data-validate="fecha-nacimiento" />
-            <span class="error"></span>
-          </div>
-        </div>
+          <button type="submit" class="form-submit" id="signupSubmit">
+            Crear cuenta <i class="ti ti-arrow-right"></i>
+          </button>
 
-        <div class="form-group">
-          <label for="rh">RH <span class="req">*</span></label>
-          <select id="rh" name="rh" required data-validate="select">
-            <option value="">— Selecciona —</option>
-            <option value="A+">A+</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B-">B-</option>
-            <option value="AB+">AB+</option>
-            <option value="AB-">AB-</option>
-            <option value="O+">O+</option>
-            <option value="O-">O-</option>
-          </select>
-          <span class="error"></span>
-        </div>
-
-        <div class="form-group">
-          <label for="password">Contraseña <span class="req">*</span></label>
-          <div class="input-wrap">
-            <input id="password" name="password" type="password" required maxlength="50"
-                   data-validate="password" placeholder="••••••••" autocomplete="new-password" />
-            <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
-          </div>
-          <div class="password-strength"><div class="bar"></div></div>
-          <span class="help">Mínimo 8, una mayúscula, una minúscula y un número</span>
-          <span class="error"></span>
-        </div>
-
-        <div class="form-group">
-          <label for="password-confirm">Confirmar Contraseña <span class="req">*</span></label>
-          <div class="input-wrap">
-            <input id="password-confirm" name="password-confirm" type="password" required maxlength="50"
-                   data-validate="password-confirm" placeholder="••••••••" autocomplete="new-password" />
-            <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
-          </div>
-          <span class="error"></span>
-        </div>
-
-        <div class="checkbox-row">
-          <input id="terms" type="checkbox" required data-validate="checkbox" />
-          <label for="terms">Acepto los <a href="#" class="link-terminos" data-modal="terminos">términos y condiciones</a> y la <a href="#" class="link-terminos" data-modal="privacidad">política de privacidad</a> <span class="req">*</span></label>
-        </div>
-        <span class="error error-terms"></span>
-
-        <button type="submit" class="btn btn-primary btn-block">Crear cuenta</button>
-
-        <div class="auth-footer">
-          ¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a>
-        </div>
-      </form>
-    </section>
-  </main>
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<footer class="sky-footer">
-  <div class="sky-accent-bar"></div>
-  <div class="sky-footer-top">
- 
-    <!-- Columna SKYED -->
-    <div class="sky-footer-col">
-      <div class="sky-logo-row">
-        <img src="img/logo_deportivo.png" alt="SKYED" class="sky-logo-icon">
-        <div class="sky-logo-text">SKY<span>ED</span></div>
+          <p class="form-footer" style="margin-top: 1.5rem;">¿Ya tienes cuenta? <a href="login.html" class="link-accent">Inicia sesión</a></p>
+        </form>
       </div>
-      <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Boyacá.</p>
-      <div class="sky-social-row">
-        <a class="sky-social-btn" href="https://www.facebook.com/?locale=es_LA" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon"onclick="return confirmarSalida(event)">F</a>
-        <a class="sky-social-btn" href="https://www.instagram.com/?hl=es" target="_blank" rel="noopener noreferrer" aria-label="Instagram" class="social-icon" onclick="return confirmarSalida(event)">IG</a>
-        <a class="sky-social-btn" href="https://twitter.com/?lang=es" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" class="social-icon" onclick="return confirmarSalida(event)">X</a>
+    </main>
+
+  </div>
+
+  <footer class="sky-footer">
+    <div class="sky-accent-bar"></div>
+    <div class="sky-footer-top">
+      <div class="sky-footer-col">
+        <div class="sky-logo-row">
+          <img src="img/logoP.png" alt="SKYED" class="sky-logo-icon">
+          <div class="sky-logo-text">SKY<span>ED</span></div>
+        </div>
+        <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Boyacá.</p>
+        <div class="sky-social-row">
+          <a class="sky-social-btn" href="#" aria-label="Facebook">F</a>
+          <a class="sky-social-btn" href="#" aria-label="Instagram">IG</a>
+          <a class="sky-social-btn" href="#" aria-label="X / Twitter">X</a>
+        </div>
+      </div>
+      <div class="sky-footer-col">
+        <p class="sky-col-title">Contacto</p>
+        <ul class="sky-contact-list">
+          <li class="sky-contact-item">
+            <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
+            <div class="sky-contact-text"><strong>Email</strong>skyed@gmail.com</div>
+          </li>
+          <li class="sky-contact-item">
+            <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
+            <div class="sky-contact-text"><strong>Teléfono</strong>+57 313 201 3573</div>
+          </li>
+          <li class="sky-contact-item">
+            <div class="sky-contact-icon"><i class="ti ti-map-pin"></i></div>
+            <div class="sky-contact-text"><strong>Ubicación</strong>Sogamoso, Boyacá</div>
+          </li>
+        </ul>
       </div>
     </div>
- 
-    <!-- Columna Contacto -->
-    <div class="sky-footer-col">
-      <p class="sky-col-title">Contacto</p>
-      <ul class="sky-contact-list">
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
-          <div class="sky-contact-text">
-            <strong>Email</strong>
-            skyed@gmail.com
-          </div>
-        </li>
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
-          <div class="sky-contact-text">
-            <strong>Teléfono</strong>
-            +57 313 201 3573
-          </div>
-        </li>
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-map-pin"></i></div>
-          <div class="sky-contact-text">
-            <strong>Ubicación</strong>
-            Sogamoso, Boyacá
-          </div>
-        </li>
-      </ul>
+    <div class="sky-footer-bottom">
+      <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
+      <div class="sky-bottom-links">
+        <a href="#">Términos de uso</a>
+        <a href="#">Privacidad</a>
+      </div>
     </div>
- 
-  </div>
- 
-  <div class="sky-footer-bottom">
-    <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
-    <div class="sky-bottom-links">
-      <a href="#">Términos de uso</a>
-      <a href="#">Privacidad</a>
-    </div>
-  </div>
-</footer>
-
+  </footer>
 
   <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
-  </svg>
-</button>
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+    </svg>
+  </button>
 
-   <!-- Panel -->
-    <div class="acc-panel" id="accPanel">
-      <div class="acc-panel-title">Accesibilidad</div>
-
-       <div class="acc-section">
-        <span class="acc-label">Tamaño de texto</span>
-        <div class="font-size-row">
-          <button class="size-btn" data-size="14px">A-</button>
-          <button class="size-btn active" data-size="16px">A</button>
-          <button class="size-btn" data-size="19px">A+</button>
-          <button class="size-btn" data-size="22px">A++</button>
-        </div>
+  <div class="acc-panel" id="accPanel">
+    <div class="acc-panel-title">Accesibilidad</div>
+    <div class="acc-section">
+      <span class="acc-label">Tamaño de texto</span>
+      <div class="font-size-row">
+        <button class="size-btn" data-size="14px">A-</button>
+        <button class="size-btn active" data-size="16px">A</button>
+        <button class="size-btn" data-size="19px">A+</button>
+        <button class="size-btn" data-size="22px">A++</button>
       </div>
-
-      <div class="acc-section">
-        <span class="acc-label">Dislexia</span>
-        <div class="mode-row">
-          <button class="mode-btn" id="dyslexiaOff">Normal</button>
-          <button class="mode-btn" id="dyslexiaOn">Activar</button>
-        </div>
-      </div>
-
-      <!-- Color de acento -->
-      <div class="acc-section">
-        <span class="acc-label">Color de acento</span>
-        <div class="color-grid">
-          <div
-            class="color-swatch active"
-            style="background: #c8432b"
-            data-color="#c8432b"
-            title="Rojo Lumara"
-          ></div>
-          <div
-            class="color-swatch"
-            style="background: #c9a84c"
-            data-color="#c9a84c"
-            title="Dorado"
-          ></div>
-          <div
-            class="color-swatch"
-            style="background: #2e6da4"
-            data-color="#2e6da4"
-            title="Azul"
-          ></div>
-          <div
-            class="color-swatch"
-            style="background: #2e7d32"
-            data-color="#2e7d32"
-            title="Verde"
-          ></div>
-          <div
-            class="color-swatch"
-            style="background: #6a1b9a"
-            data-color="#6a1b9a"
-            title="Morado"
-          ></div>
-          <div
-            class="color-swatch"
-            style="background: #37474f"
-            data-color="#37474f"
-            title="Gris oscuro"
-          ></div>
-        </div>
-      </div>
-
-      <!-- Modo claro / oscuro -->
-      <div class="acc-section">
-        <span class="acc-label">Modo</span>
-        <div class="mode-row">
-          <button class="mode-btn active" id="modeLight">☀️ Claro</button>
-          <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
-        </div>
-      </div>
-
-      <button class="acc-reset" id="accReset">Restablecer todo</button>
     </div>
-  <script src="js/accesibilidad.js"></script> 
-  <script src="js/global.js"></script>
-  <script src="js/index.js"></script>
-  <script src="js/auth.js"></script>
+    <div class="acc-section">
+      <span class="acc-label">Tipografía</span>
+      <div class="font-family-grid">
+        <div class="font-option active" data-font="'DM Sans', sans-serif" style="font-family: &quot;DM Sans&quot;, sans-serif">DM Sans</div>
+        <div class="font-option" data-font="'Playfair Display', Georgia, serif" style="font-family: &quot;Playfair Display&quot;, serif">Serif</div>
+        <div class="font-option" data-font="'Courier New', monospace" style="font-family: &quot;Courier New&quot;, monospace">Mono</div>
+        <div class="font-option" data-font="Montserrat" style="font-family: Montserrat">Sistema</div>
+      </div>
+    </div>
+    <div class="acc-section">
+      <span class="acc-label">Dislexia</span>
+      <div class="mode-row">
+        <button class="mode-btn" id="dyslexiaOff">Normal</button>
+        <button class="mode-btn" id="dyslexiaOn">Activar</button>
+      </div>
+    </div>
+    <div class="acc-section">
+      <span class="acc-label">Color de acento</span>
+      <div class="color-grid">
+        <div class="color-swatch active" style="background: #c8432b" data-color="#c8432b" title="Rojo Lumara"></div>
+        <div class="color-swatch" style="background: #c9a84c" data-color="#c9a84c" title="Dorado"></div>
+        <div class="color-swatch" style="background: #2e6da4" data-color="#2e6da4" title="Azul"></div>
+        <div class="color-swatch" style="background: #2e7d32" data-color="#2e7d32" title="Verde"></div>
+        <div class="color-swatch" style="background: #6a1b9a" data-color="#6a1b9a" title="Morado"></div>
+        <div class="color-swatch" style="background: #37474f" data-color="#37474f" title="Gris oscuro"></div>
+      </div>
+    </div>
+    <div class="acc-section">
+      <span class="acc-label">Modo</span>
+      <div class="mode-row">
+        <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+        <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+      </div>
+    </div>
+    <button class="acc-reset" id="accReset">Restablecer todo</button>
+  </div>
 
-    <!-- ═══════════════════════════════════════════════════════════
-       MODAL TÉRMINOS Y CONDICIONES / POLÍTICA DE PRIVACIDAD
-       ═══════════════════════════════════════════════════════════ -->
+  <!-- ===== MODAL TÉRMINOS Y CONDICIONES / PRIVACIDAD (reutilizado tal cual) ===== -->
   <div class="skyed-modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" hidden>
     <div class="skyed-modal">
 
@@ -668,11 +612,103 @@
     })();
   </script>
 
+  <script src="js/accesibilidad.js"></script>
+  <script src="js/global.js"></script>
+  <script src="js/auth.js"></script>
   <script>
-function confirmarSalida() {
-  return confirm("Estás a punto de salir de SKYED. ¿Deseas continuar?");
-}
-</script>
+    SkyedAuth.initDocumentField('docNumber', 'docType');
 
+    (function () {
+      var birthdate = document.getElementById('birthdate');
+      if (birthdate) {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        birthdate.max = yyyy + '-' + mm + '-' + dd;
+        birthdate.addEventListener('change', function () {
+          if (this.value && this.value > this.max) {
+            this.value = '';
+            if (typeof window.showToast === 'function') {
+              window.showToast('No puedes seleccionar una fecha futura.', 'error');
+            }
+          }
+        });
+      }
+    })();
+
+    var termsInput = document.getElementById('acceptTerms');
+    var termsErrorEl = document.getElementById('termsError');
+
+    SkyedAuth.initForm(
+      document.getElementById('signupForm'),
+      [
+        { id: 'docType', type: 'select', label: 'el tipo de documento' },
+        { id: 'docNumber', type: 'document', docTypeId: 'docType' },
+        { id: 'firstName', type: 'name', label: 'El nombre' },
+        { id: 'lastName', type: 'name', label: 'El apellido' },
+        { id: 'signupEmail', type: 'email' },
+        { id: 'phone', type: 'phone' },
+        { id: 'birthdate', type: 'birthdate' },
+        { id: 'signupPassword', type: 'password', meterId: 'pwMeter' },
+        { id: 'confirmPassword', type: 'confirmPassword', matches: 'signupPassword' },
+      ],
+      async function (form) {
+        if (!termsInput.checked) {
+          termsErrorEl.textContent = 'Debes aceptar los términos y la política de privacidad.';
+          termsErrorEl.classList.add('show');
+          termsInput.focus();
+          return;
+        }
+        termsErrorEl.textContent = '';
+        termsErrorEl.classList.remove('show');
+
+        var btn = document.getElementById('signupSubmit');
+        btn.disabled = true;
+        btn.innerHTML = 'Creando cuenta… <i class="ti ti-loader-2"></i>';
+
+        var payload = {
+          tipoDocumento: document.getElementById('docType').value,
+          documento: document.getElementById('docNumber').value.trim(),
+          nombre: document.getElementById('firstName').value.trim(),
+          apellido: document.getElementById('lastName').value.trim(),
+          email: document.getElementById('signupEmail').value.trim().toLowerCase(),
+          telefono: document.getElementById('phone').value.trim(),
+          fechaNac: document.getElementById('birthdate').value,
+          rh: '',
+          password: document.getElementById('signupPassword').value,
+        };
+
+        try {
+          const response = await fetch('../SkyedDeportivo/php/registro.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const result = await response.json();
+
+          if (result.ok) {
+            showToast('¡Registro exitoso! Bienvenido a SKYED.', 'success');
+            setTimeout(() => { location.href = 'login.html'; }, 1400);
+          } else {
+            showToast(result.error || 'Error en el servidor. Intenta de nuevo.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = 'Crear cuenta <i class="ti ti-arrow-right"></i>';
+          }
+        } catch (err) {
+          showToast('Error de conexión. Verifica tu internet.', 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Crear cuenta <i class="ti ti-arrow-right"></i>';
+        }
+      }
+    );
+
+    termsInput.addEventListener('change', function () {
+      if (termsInput.checked) {
+        termsErrorEl.textContent = '';
+        termsErrorEl.classList.remove('show');
+      }
+    });
+  </script>
 </body>
 </html>

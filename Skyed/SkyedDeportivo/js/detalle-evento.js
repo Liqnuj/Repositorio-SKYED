@@ -130,7 +130,7 @@
         if (!user || !user.email) {
           localStorage.setItem('pendingInscripcion', `inscripcion.html?id=${id}`);
           showToast('Debes iniciar sesión para inscribirte', 'error');
-          setTimeout(() => location.href = 'login.html', 800);
+          setTimeout(() => location.href = '../Principal/login.html', 800);
           return;
         }
         let yaInscrito = false;
