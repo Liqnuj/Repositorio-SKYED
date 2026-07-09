@@ -22,8 +22,7 @@ documento_inv int not null UNIQUE,
 CREATE TABLE usuario (
     id_u INT PRIMARY KEY auto_increment,
     tipo_documento_u ENUM ('cedula_ciudadania', 'tarjeta_identidad', 'cedula_extranjeria', 'pasaporte') NOT NULL,
-    documento_u INT NOT NULL UNIQUE,
-    rol_u ENUM("adminDeportivo","adminSocial","participante","cliente") DEFAULT 'participante',
+    documento_u INT NOT NULL UNIQUE,                           
     nombre_u VARCHAR(50) NOT NULL,
     apellido_u VARCHAR(50) NOT NULL,
     rh_u VARCHAR(5),
@@ -36,6 +35,30 @@ CREATE TABLE usuario (
     id_inv int,
     FOREIGN KEY (id_inv) REFERENCES invitado(id_inv)
 );
+
+
+-- =============================================
+-- TABLA: ROL
+
+CREATE TABLE rol (
+    id_rol INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_rol VARCHAR(50) NOT NULL UNIQUE
+);
+
+-- =============================================
+-- TABLA: USUARIO_CONTEXTO_ROL
+
+CREATE TABLE usuario_contexto_rol (
+    id_ucr INT AUTO_INCREMENT PRIMARY KEY,
+    id_u INT NOT NULL,
+    id_rol INT NOT NULL,
+    contexto ENUM('social', 'deportivo') NOT NULL,
+    FOREIGN KEY (id_u) REFERENCES usuario(id_u) ON DELETE CASCADE,
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol) ON DELETE CASCADE,
+    -- Esta restricción evita registros duplicados para un mismo usuario y contexto
+    UNIQUE KEY unique_usuario_contexto (id_u, contexto)
+);
+INSERT INTO rol (nombre_rol) VALUES ('cliente'), ('participante'), ('adminDeportivo'), ('adminSocial');
 
 -- =============================================
 -- TABLA: KIT
@@ -81,7 +104,7 @@ CREATE TABLE eventoDeportivo  (
 CREATE TABLE categoria_competencia (
     id_cc INT AUTO_INCREMENT PRIMARY KEY,
     nombre_cc VARCHAR(50) NOT NULL,
-    edad_minima_cc INT,
+    edad_minima_cc INT ,
     edad_maxima_cc INT,
     genero_cc ENUM('masculino','femenino','mixto'),
     distancia_cc VARCHAR(45),
@@ -259,7 +282,6 @@ CREATE TABLE resultado (
     id_r INT AUTO_INCREMENT PRIMARY KEY,
     tiempo_final_r TIME NOT NULL,
     posicion_general_r INT,
-    posicion_categoria_r INT,
     estado_r ENUM('oficial', 'en revision', 'desaclificado') not null,
     id_i INT,
     foreign key (id_i) references inscripcion (id_i)
@@ -374,6 +396,23 @@ CREATE TABLE seguimiento_reserva (
     fecha_actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP,
     comentario TEXT,
     FOREIGN KEY(id_rese) REFERENCES reserva(id_rese)
+);
+
+
+-- =============================================
+-- TABLA: PQR
+
+CREATE TABLE pqr (
+    id_pqr INT AUTO_INCREMENT PRIMARY KEY,
+    tipo_pqr ENUM('peticion','queja','reclamo','sugerencia','felicitacion') NOT NULL,
+    asunto_pqr VARCHAR(150) NOT NULL,
+    mensaje_pqr TEXT NOT NULL,
+    estado_pqr ENUM('abierto','en_proceso','resuelto','cerrado') DEFAULT 'abierto',
+    respuesta_pqr TEXT NULL,
+    respondido_en_pqr DATETIME NULL,
+    creado_en_pqr TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    id_u INT NOT NULL,
+    FOREIGN KEY (id_u) REFERENCES usuario(id_u) ON DELETE CASCADE 
 );
 
 
