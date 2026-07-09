@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Inicia sesión en SKYED y accede a tus inscripciones y resultados.">
+<title>Iniciar sesión — SKYED</title>
+<link rel="icon" href="img/icon1.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.47.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="css/auth.css">
+<link rel="stylesheet" href="css/accesibilidad.css">
+</head>
+<body>
+  <header class="auth-topbar">
+    <a href="principal.html" class="auth-logo">
+      <img src="img/logoP.png" alt="SKYED" class="auth-logo-icon">
+      <span class="auth-logo-text">SKY<span class="accent">ED</span></span>
+    </a>
+  </header>
+
+  <div class="auth-grid" id="main">
+
+    <!-- ================= ASIDE ================= -->
+    <aside class="auth-aside">
+      <div class="aside-blob aside-blob--blue"></div>
+      <div class="aside-blob aside-blob--purple"></div>
+      <div class="aside-blob aside-blob--gold"></div>
+
+      <div class="aside-content">
+        <span class="aside-eyebrow"><i class="ti ti-calendar-event"></i>&nbsp; Eventos deportivos</span>
+        <h1 class="aside-title">Bienvenido de vuelta a <span class="hl">SKYED</span></h1>
+        <p class="aside-subtitle">
+          Accede a tu cuenta para inscribirte en eventos, gestionar tus entradas
+          y consultar el estado de tus resultados.
+        </p>
+
+        <ul class="aside-features">
+          <li><span class="feat-ico"><i class="ti ti-calendar"></i></span> Calendario completo de eventos en tiempo real</li>
+          <li><span class="feat-ico"><i class="ti ti-ticket"></i></span> Historial de inscripciones y facturas</li>
+          <li><span class="feat-ico"><i class="ti ti-users"></i></span> Comunidad de más de 25.000 ciclistas</li>
+        </ul>
+
+        <div class="ticket-card">
+          <div class="ticket-main">
+            <div class="ticket-kicker">Tu próximo evento</div>
+            <div class="ticket-title">Feria SKYED Deportivo</div>
+            <div class="ticket-meta">Acceso general · Válido con tu cuenta</div>
+          </div>
+          <div class="ticket-stub">
+            <span>PASE</span>
+            <strong>#00 SKYED</strong>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ================= MAIN ================= -->
+    <main class="auth-main">
+      <div class="auth-card">
+        <h2 class="auth-heading">Iniciar sesión</h2>
+        <p class="auth-subheading">Ingresa tus credenciales para continuar.</p>
+
+        <form id="loginForm" novalidate>
+
+          <div class="form-group">
+            <label class="form-label" for="loginEmail">Correo electrónico<span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="email" id="loginEmail" name="email" class="form-input" placeholder="tucorreo@gmail.com" autocomplete="email" maxlength="80">
+            </div>
+            <div class="form-error"></div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginPassword">Contraseña<span class="req">*</span></label>
+            <div class="input-wrap">
+              <input type="password" id="loginPassword" name="password" class="form-input" placeholder="••••••••" autocomplete="current-password" maxlength="50">
+              <button type="button" class="input-toggle" data-toggle-for="loginPassword" aria-label="Mostrar contraseña">
+                <i class="ti ti-eye"></i>
+              </button>
+            </div>
+            <div class="form-error"></div>
+          </div>
+
+          <div class="row-between">
+            <label class="remember-row">
+              <input type="checkbox" id="loginRemember">
+              Recordarme
+            </label>
+            <a href="recuperar.html" class="link-accent">¿Olvidaste tu contraseña?</a>
+          </div>
+
+          <button type="submit" class="form-submit" id="loginSubmit">
+            Iniciar sesión <i class="ti ti-arrow-right"></i>
+          </button>
+
+          <div class="form-divider">o</div>
+
+          <p class="form-footer">¿No tienes cuenta? <a href="registro.html" class="link-accent">Regístrate gratis</a></p>
+          <p class="form-footer"><a href="principal.html" class="link-accent">Volver al inicio</a></p>
+        </form>
+      </div>
+    </main>
+
+  </div>
+
+  <footer class="sky-footer">
+    <div class="sky-accent-bar"></div>
+    <div class="sky-footer-top">
+      <div class="sky-footer-col">
+        <div class="sky-logo-row">
+          <img src="img/logoP.png" alt="SKYED" class="sky-logo-icon">
+          <div class="sky-logo-text">SKY<span>ED</span></div>
+        </div>
+        <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Boyacá.</p>
+        <div class="sky-social-row">
+          <a class="sky-social-btn" href="#" aria-label="Facebook">F</a>
+          <a class="sky-social-btn" href="#" aria-label="Instagram">IG</a>
+          <a class="sky-social-btn" href="#" aria-label="X / Twitter">X</a>
+        </div>
+      </div>
+      <div class="sky-footer-col">
+        <p class="sky-col-title">Contacto</p>
+        <ul class="sky-contact-list">
+          <li class="sky-contact-item">
+            <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
+            <div class="sky-contact-text"><strong>Email</strong>skyed@gmail.com</div>
+          </li>
+          <li class="sky-contact-item">
+            <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
+            <div class="sky-contact-text"><strong>Teléfono</strong>+57 313 201 3573</div>
+          </li>
+          <li class="sky-contact-item">
+            <div class="sky-contact-icon"><i class="ti ti-map-pin"></i></div>
+            <div class="sky-contact-text"><strong>Ubicación</strong>Sogamoso, Boyacá</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="sky-footer-bottom">
+      <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
+      <div class="sky-bottom-links">
+        <a href="#">Términos de uso</a>
+        <a href="#">Privacidad</a>
+      </div>
+    </div>
+  </footer>
+
+  <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+    </svg>
+  </button>
+
+  <div class="acc-panel" id="accPanel">
+    <div class="acc-panel-title">Accesibilidad</div>
+    <div class="acc-section">
+      <span class="acc-label">Tamaño de texto</span>
+      <div class="font-size-row">
+        <button class="size-btn" data-size="14px">A-</button>
+        <button class="size-btn active" data-size="16px">A</button>
+        <button class="size-btn" data-size="19px">A+</button>
+        <button class="size-btn" data-size="22px">A++</button>
+      </div>
+    </div>
+    <div class="acc-section">
+      <span class="acc-label">Tipografía</span>
+      <div class="font-family-grid">
+        <div class="font-option active" data-font="'DM Sans', sans-serif" style="font-family: &quot;DM Sans&quot;, sans-serif">DM Sans</div>
+        <div class="font-option" data-font="'Playfair Display', Georgia, serif" style="font-family: &quot;Playfair Display&quot;, serif">Serif</div>
+        <div class="font-option" data-font="'Courier New', monospace" style="font-family: &quot;Courier New&quot;, monospace">Mono</div>
+        <div class="font-option" data-font="Montserrat" style="font-family: Montserrat">Sistema</div>
+      </div>
+    </div>
+    <div class="acc-section">
+      <span class="acc-label">Dislexia</span>
+      <div class="mode-row">
+        <button class="mode-btn" id="dyslexiaOff">Normal</button>
+        <button class="mode-btn" id="dyslexiaOn">Activar</button>
+      </div>
+    </div>
+    <div class="acc-section">
+      <span class="acc-label">Color de acento</span>
+      <div class="color-grid">
+        <div class="color-swatch active" style="background: #c8432b" data-color="#c8432b" title="Rojo Lumara"></div>
+        <div class="color-swatch" style="background: #c9a84c" data-color="#c9a84c" title="Dorado"></div>
+        <div class="color-swatch" style="background: #2e6da4" data-color="#2e6da4" title="Azul"></div>
+        <div class="color-swatch" style="background: #2e7d32" data-color="#2e7d32" title="Verde"></div>
+        <div class="color-swatch" style="background: #6a1b9a" data-color="#6a1b9a" title="Morado"></div>
+        <div class="color-swatch" style="background: #37474f" data-color="#37474f" title="Gris oscuro"></div>
+      </div>
+    </div>
+    <div class="acc-section">
+      <span class="acc-label">Modo</span>
+      <div class="mode-row">
+        <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+        <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+      </div>
+    </div>
+    <button class="acc-reset" id="accReset">Restablecer todo</button>
+  </div>
+
+  <script src="js/accesibilidad.js"></script>
+  <script src="js/global.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    SkyedAuth.initForm(
+      document.getElementById('loginForm'),
+      [
+        { id: 'loginEmail', type: 'email' },
+        { id: 'loginPassword', type: 'required', label: 'La contraseña' },
+      ],
+      async function (form) {
+        const btn = document.getElementById('loginSubmit');
+        btn.disabled = true;
+        btn.innerHTML = 'Verificando… <i class="ti ti-loader-2"></i>';
+
+        const payload = {
+          email: document.getElementById('loginEmail').value.trim().toLowerCase(),
+          password: document.getElementById('loginPassword').value,
+        };
+
+        try {
+          const response = await fetch('../SkyedDeportivo/php/login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const result = await response.json();
+
+          if (result.ok) {
+            showToast(`¡Bienvenido, ${result.usuario.nombre}!`, 'success');
+
+            // Limpiar datos del usuario anterior antes de guardar el nuevo
+            localStorage.removeItem('cicloUser');
+            localStorage.removeItem('cicloVentas');
+            localStorage.removeItem('cicloNotif');
+
+            setTimeout(() => { location.href = 'principal.html'; }, 1000);
+          } else {
+            showToast(result.error || 'Correo o contraseña incorrectos', 'error');
+            btn.disabled = false;
+            btn.innerHTML = 'Iniciar sesión <i class="ti ti-arrow-right"></i>';
+          }
+        } catch (err) {
+          showToast('Error de conexión con el servidor', 'error');
+          btn.disabled = false;
+          btn.innerHTML = 'Iniciar sesión <i class="ti ti-arrow-right"></i>';
+        }
+      }
+    );
+  </script>
+</body>
+</html>

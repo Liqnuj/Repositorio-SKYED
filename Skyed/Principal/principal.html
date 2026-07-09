@@ -22,9 +22,13 @@
     </div>
     <div class="nav-links">
     </div>
-    <a href="login.html" class="nav-login">
+    <a href="login.html" class="nav-login" data-auth-login>
       <i class="ti ti-login"></i> Iniciar sesión
     </a>
+    <button class="nav-user" data-auth-user style="display:none;">
+      <i class="ti ti-user-circle"></i>
+      <span></span>
+    </button>
     <button class="nav-menu-btn" id="menuBtn" aria-label="Abrir menú">
       <i class="ti ti-menu-2"></i>
     </button>
@@ -32,7 +36,8 @@
 
   <!-- Menú móvil -->
   <div class="mobile-menu" id="mobileMenu">
-    <a href="login.html" class="mobile-login">Iniciar sesión</a>
+    <a href="login.html" class="mobile-login" data-auth-login>Iniciar sesión</a>
+    <button class="mobile-user" data-auth-user style="display:none;"></button>
   </div>
 
   <!-- ===== HERO ===== -->
@@ -420,6 +425,7 @@
     </div>
 
 
+  <script src="js/global.js"></script>
   <script src="js/script.js"></script>
   <script src="js/accesibilidad.js"></script>
 </body>
