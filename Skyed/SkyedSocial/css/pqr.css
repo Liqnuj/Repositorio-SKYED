@@ -177,3 +177,27 @@
 .dark-mode .privacy-link {
     color: var(--white);
 }
+
+/* Ajuste específico: campo Correo en PQR — más ancho pero contenido */
+.pqr-form-wrap .pf-group input#pqrEmail{
+  width:100%;
+  max-width:560px;
+  box-sizing:border-box;
+}
+
+/* Utilidad: hacer que el grupo con clase span-two ocupe ambas columnas en pantallas anchas */
+@media(min-width:900px){
+  .pqr-form-wrap .pf-row .pf-group.span-two{
+    grid-column: 1 / -1;
+    max-width: none;
+    margin: 0;
+    padding-right: 0;
+    padding-left: 0;
+  }
+}
+
+/* Asegurar que el input dentro ocupe todo el ancho del grupo */
+.pqr-form-wrap .pf-row .pf-group.span-two input#pqrEmail{
+  width: 100% !important;
+  max-width: none !important;
+}

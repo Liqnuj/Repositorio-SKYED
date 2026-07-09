@@ -240,12 +240,99 @@ function filterEvents(cat,btn){
 
 function loadMore(){showToast('Cargando más eventos...','🎉');}
 
+
+
+function capitalizeNameInput(el){
+  if(!el)return;
+  const value=el.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ\s]/g,'').replace(/\s+/g,' ').slice(0,20);
+  el.value=value.replace(/\b\w/g,char=>char.toUpperCase());
+  if(el.value.length>20) el.value=el.value.slice(0,20);
+}
+
+function sanitizeNumericInput(el){
+  if(!el)return;
+  el.value=el.value.replace(/\D/g,'').slice(0,15);
+}
+
+function validateEmail(email){
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validateEmailField(el){
+  if(!el)return;
+  const value=el.value.trim();
+  if(!value){
+    el.setCustomValidity('El correo es obligatorio');
+  } else if(!validateEmail(value)){
+    el.setCustomValidity('Ingresa un correo electrónico válido');
+  } else {
+    el.setCustomValidity('');
+  }
+}
+
+function attachFieldValidation(){
+  const nameFields=document.querySelectorAll('#fname, #lname, #pqrNombre, #pqrApellido');
+  nameFields.forEach(field=>{
+    field.addEventListener('input',()=>capitalizeNameInput(field));
+    field.addEventListener('blur',()=>capitalizeNameInput(field));
+  });
+
+  const numericFields=document.querySelectorAll('#fphone, #fguests, #pqrTel');
+  numericFields.forEach(field=>{
+    field.addEventListener('input',()=>sanitizeNumericInput(field));
+    field.addEventListener('blur',()=>sanitizeNumericInput(field));
+  });
+
+  const emailFields=document.querySelectorAll('#femail, #pqrEmail');
+  emailFields.forEach(field=>{
+    field.addEventListener('input',()=>validateEmailField(field));
+    field.addEventListener('blur',()=>validateEmailField(field));
+  });
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', attachFieldValidation);
+} else {
+  attachFieldValidation();
+}
+
 // Formulario contacto
-function submitForm(){
+function submitForm(event){
+  if(event) event.preventDefault();
+  
   const n=document.getElementById('fname').value.trim();
+  const a=document.getElementById('lname').value.trim();
+  const phone=document.getElementById('fphone').value.trim();
   const e=document.getElementById('femail').value.trim();
   const t=document.getElementById('ftype').value;
-  if(!n||!e||!t){showToast('Por favor completa los campos requeridos','⚠️');return;}
+  const guests=document.getElementById('fguests').value.trim();
+
+  const nameInput=document.getElementById('fname');
+  const lastNameInput=document.getElementById('lname');
+  const emailInput=document.getElementById('femail');
+
+  capitalizeNameInput(nameInput);
+  capitalizeNameInput(lastNameInput);
+  validateEmailField(emailInput);
+
+  if(!n||!a||!e||!t||!guests){showToast('Por favor completa los campos requeridos','⚠️');return;}
+  if(!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,20}$/.test(n)||!/^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{1,20}$/.test(a)){
+    showToast('Nombre y apellido solo pueden tener letras y máximo 20 caracteres','⚠️');
+    return;
+  }
+  if(phone&&!/^\d+$/.test(phone)){
+    showToast('El teléfono solo puede contener números','⚠️');
+    return;
+  }
+  if(!/^\d+$/.test(guests)||Number(guests)<0){
+    showToast('El número de invitados solo puede contener números y no puede ser negativo','⚠️');
+    return;
+  }
+  if(!validateEmail(e)){
+    showToast('Ingresa un correo electrónico válido','⚠️');
+    return;
+  }
+
   showToast('¡Solicitud enviada! Te contactamos en 24h 🎉','✦');
   document.querySelectorAll('#contactForm input,#contactForm select,#contactForm textarea').forEach(el=>el.value='');
 }
