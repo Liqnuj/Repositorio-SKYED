@@ -4,6 +4,7 @@
 
     const params  = new URLSearchParams(location.search);
     const idEvento = parseInt(params.get('id') || '1', 10);
+    const STORAGE_KEY = `skyed_insc_progreso_${idEvento}`;
 
     // Mock de eventos (misma estructura que la tabla Evento)
     const EVENTOS_MOCK = {
@@ -178,10 +179,19 @@
       }
     };
 
-    if (await isAlreadyInscrito()) {
-      // Redirigir a eventos con mensaje en URL
-      location.href = 'eventos.html?msg=ya_inscrito';
-      return;
+    // Revisar primero si ya tenemos guardada localmente una confirmación de este evento
+    let yaInscritoConDatos = null;
+    try {
+      const cached = localStorage.getItem(`skyed_ultima_inscripcion_${idEvento}`);
+      if (cached) yaInscritoConDatos = JSON.parse(cached);
+    } catch (e) { yaInscritoConDatos = null; }
+
+    if (!yaInscritoConDatos) {
+      // Solo si NO tenemos nada guardado localmente, preguntamos al servidor
+      if (await isAlreadyInscrito()) {
+        location.href = 'eventos.html?msg=ya_inscrito';
+        return;
+      }
     }
 
     mainCont.style.display = 'block';
@@ -553,12 +563,32 @@
     /* ──────────────────────────────────────────────
        9. SUBIR EL COMPROBANTE
        ────────────────────────────────────────────── */
+    function fileToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function base64ToFile(base64, filename) {
+      const arr = base64.split(',');
+      const mimeMatch = arr[0].match(/:(.*?);/);
+      const mime = mimeMatch ? mimeMatch[1] : '';
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) { u8arr[n] = bstr.charCodeAt(n); }
+      return new File([u8arr], filename, { type: mime });
+    }
+
     function setupUpload(inputId, previewId, nameId) {
       const input   = document.getElementById(inputId);
       const preview = document.getElementById(previewId);
       const nameEl  = document.getElementById(nameId);
       if (!input) return;
-      input.addEventListener('change', () => {
+      input.addEventListener('change', async () => {
         const file = input.files[0];
         if (!file) return;
         if (file.size > 5 * 1024 * 1024) {
@@ -567,6 +597,13 @@
         estado.comprobante = file;
         nameEl.textContent  = file.name;
         preview.classList.add('show');
+
+        try {
+          estado.comprobanteBase64  = await fileToBase64(file);
+          estado.comprobanteName    = file.name;
+          estado.comprobanteInputId = inputId;
+          guardarEstadoLocal();
+        } catch (e) { /* si falla, simplemente no persiste el archivo */ }
       });
       // Drag & drop
       const zone = input.closest('.upload-zone');
@@ -585,6 +622,126 @@
     /* ──────────────────────────────────────────────
        10. STEPPER — navegación entre pasos
        ────────────────────────────────────────────── */
+    function guardarEstadoLocal() {
+      try {
+        const dataToSave = {
+          paso: estado.paso,
+          categoriaId: estado.categoriaId,
+          categoriaNombre: estado.categoriaNombre,
+          quiereJersey: estado.quiereJersey,
+          talla: estado.talla,
+          metodo: estado.metodo,
+          doc_u: estado.doc_u,
+          rh_u: estado.rh_u,
+          telefono_u: estado.telefono_u,
+          contacto_nombre: estado.contacto_nombre,
+          contacto_telefono: estado.contacto_telefono,
+          contacto_parentesco: estado.contacto_parentesco,
+          fecha_nacimiento_u: estado.fecha_nacimiento_u,
+          dorsal: estado.dorsal,
+          condiciones_medicas: estado.condiciones_medicas,
+          invitado: estado.invitado || null,
+          comprobanteBase64:  estado.comprobanteBase64  || null,
+          comprobanteName:    estado.comprobanteName    || null,
+          comprobanteInputId: estado.comprobanteInputId || null,
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
+      } catch (e) { /* localStorage no disponible, se ignora */ }
+    }
+
+    function restaurarEstadoLocal() {
+      let saved;
+      try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); }
+      catch (e) { saved = null; }
+      if (!saved) return;
+
+      if (saved.doc_u && docInput) docInput.value = saved.doc_u;
+      if (saved.rh_u && rhField) rhField.value = saved.rh_u;
+      if (saved.telefono_u && telInput) telInput.value = saved.telefono_u;
+      if (saved.contacto_nombre && contactoNombre) contactoNombre.value = saved.contacto_nombre;
+      if (saved.contacto_telefono && contactoTel) contactoTel.value = saved.contacto_telefono;
+      const parentescoField = document.getElementById('p1-contacto-parentesco');
+      if (saved.contacto_parentesco && parentescoField) parentescoField.value = saved.contacto_parentesco;
+      if (saved.dorsal && dorsalInput) dorsalInput.value = saved.dorsal;
+      const medicoField = document.getElementById('p1-medico');
+      if (saved.condiciones_medicas && medicoField) medicoField.value = saved.condiciones_medicas;
+
+      // 🔑 Sincronizar también el objeto estado, no solo los campos visuales
+      estado.doc_u               = saved.doc_u || '';
+      estado.rh_u                = saved.rh_u || '';
+      estado.telefono_u          = saved.telefono_u || '';
+      estado.contacto_nombre     = saved.contacto_nombre || '';
+      estado.contacto_telefono   = saved.contacto_telefono || '';
+      estado.contacto_parentesco = saved.contacto_parentesco || '';
+      estado.fecha_nacimiento_u  = saved.fecha_nacimiento_u || '';
+      estado.dorsal               = saved.dorsal || '';
+      estado.condiciones_medicas = saved.condiciones_medicas || '';
+
+      
+
+      if (saved.categoriaId) {
+        const catDiv = document.querySelector(`.cat-option[data-id="${saved.categoriaId}"]`);
+        if (catDiv) {
+          document.querySelectorAll('.cat-option').forEach(c => c.classList.remove('selected'));
+          catDiv.classList.add('selected');
+          catDiv.querySelector('input').checked = true;
+          estado.categoriaId = saved.categoriaId;
+          estado.categoriaNombre = saved.categoriaNombre;
+        }
+      }
+
+      if (saved.quiereJersey === true) {
+        document.getElementById('jersey-si').classList.add('selected');
+        document.getElementById('jersey-no').classList.remove('selected');
+        document.getElementById('talla-section').style.display = 'block';
+        estado.quiereJersey = true;
+        if (saved.talla) {
+          const tallaBtn = document.querySelector(`#talla-section .talla-btn[data-talla="${saved.talla}"]`);
+          if (tallaBtn) {
+            document.querySelectorAll('#talla-section .talla-btn').forEach(b => b.classList.remove('selected'));
+            tallaBtn.classList.add('selected');
+            estado.talla = saved.talla;
+          }
+        }
+        actualizarPrecio();
+      } else if (saved.quiereJersey === false) {
+        document.getElementById('jersey-no').classList.add('selected');
+        document.getElementById('jersey-si').classList.remove('selected');
+        estado.quiereJersey = false;
+      }
+
+      // if (saved.metodo) {
+      //   const tab = document.querySelector(`.pago-tab[data-tab="${saved.metodo}"]`);
+      //   if (tab) tab.click();
+      // }
+
+      // if (saved.invitado) estado.invitado = saved.invitado;
+
+      if (saved.metodo) {
+        const tab = document.querySelector(`.pago-tab[data-tab="${saved.metodo}"]`);
+        if (tab) tab.click();
+      }
+
+      if (saved.comprobanteBase64 && saved.comprobanteInputId && saved.comprobanteName) {
+        try {
+          const file = base64ToFile(saved.comprobanteBase64, saved.comprobanteName);
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          const targetInput = document.getElementById(saved.comprobanteInputId);
+          if (targetInput) {
+            targetInput.files = dt.files;
+            targetInput.dispatchEvent(new Event('change'));
+          }
+        } catch (e) { /* si falla, simplemente no carga el archivo */ }
+      }
+
+      if (saved.invitado) estado.invitado = saved.invitado;
+
+      if (saved.paso === 3) poblarResumen();
+
+      if (saved.paso && saved.paso > 1) mostrarPaso(saved.paso);
+    }
+
     function mostrarPaso(n) {
       // Paneles
       document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
@@ -596,6 +753,7 @@
         if (i + 1 === n) tab.classList.add('active');
       });
       estado.paso = n;
+      guardarEstadoLocal();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -975,6 +1133,9 @@
           });
           localStorage.setItem('cicloNotif', JSON.stringify(notifs));
 
+          // Guardar esta inscripción para poder mostrarla si el usuario recarga la página
+          try { localStorage.setItem(`skyed_ultima_inscripcion_${idEvento}`, JSON.stringify(nuevaInscripcion)); } catch (e) {}
+
           mostrarExito(nuevaInscripcion);
         })
         .catch(err => {
@@ -1037,7 +1198,11 @@
       }
     }
 
+    
+
     function mostrarExito(insc) {
+      // Ya se confirmó la inscripción: borrar el progreso guardado
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
       // Ocultar stepper + panels + sidebar
       document.querySelector('.stepper').style.display = 'none';
       document.querySelector('.insc-grid').style.gridTemplateColumns = '1fr';
@@ -1124,6 +1289,13 @@
         if (errEl) errEl.classList.remove('show');
       });
     });
+
+    if (yaInscritoConDatos) {
+      mostrarExito(yaInscritoConDatos);
+    } else {
+      restaurarEstadoLocal();
+    }
+
 
   })();
 

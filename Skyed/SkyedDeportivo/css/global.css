@@ -83,10 +83,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 }
 .btn-primary{ background:var(--accent);color:#fff}
 .btn-primary:hover{background:var(--accent);transform:translateY(-1px);box-shadow:var(--shadow);color:#fff}
-.btn-outline{color:var(--primary)}
-.btn-outline:hover{color:#ffffff;color:#fff; background:var(--primary)}
+.btn-outline{color:#292727}
+.dark-mode .btn-outline{color:rgba(255, 255, 255, 0.842)}
+.btn-outline:hover{color:#171616; background:color-mix(in srgb, var(--accent) 50%, transparent)}
+.dark-mode .btn-outline:hover{color:#f4f2f2; background:color-mix(in srgb, var(--accent) 40%, transparent);}
 .btn-ghost{margin-left: auto;color:var(--primary)}
-.btn-ghost:hover{background:var(--bg); border:2px solid var(--accent);color:#0a6fa2}
+.btn-ghost:hover{background:var(--bg); border:2px solid var(--accent);color:var(--accent)}
 .btn-block{width:100%}
 
 .menu-toggle{display:none;font-size:1.6rem;color:var(--primary);padding:.4rem}

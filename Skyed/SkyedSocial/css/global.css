@@ -245,7 +245,7 @@ nav.scrolled {
 
 .dark-mode .btn-asc{color:rgba(255, 255, 255, 0.842)}
 .dark-mode .btn-asc:hover{background:rgba(255, 255, 255, 0);border-color:var(--accent); color: var(--accent)}
-.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;color:rgba(255,255,255,.5);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;animation:fade-up 1s .8s ease both}
+.hero-scroll{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:.5rem;color:rgba(255,255,255,.5);font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;animation:fade-up 1s .8s ease both; margin-right: center;}
 .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,transparent,var(--gold));animation:scroll-pulse 2s ease infinite}
 @keyframes scroll-pulse{0%,100%{opacity:.4;transform:scaleY(.8)}50%{opacity:1;transform:scaleY(1)}}
 .hero-stats{position:absolute;bottom:4rem;right:3rem;display:flex;flex-direction:column;gap:1.25rem;animation:fade-up 1s .6s ease both}
@@ -743,18 +743,37 @@ section{padding:1rem 0}
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(10,5,24,.85);backdrop-filter:blur(8px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:2rem;opacity:0;pointer-events:none;transition:opacity .35s}
 .modal-overlay.open{opacity:1;pointer-events:all}
-.modal-box{background:var(--white);border-radius:24px;max-width:640px;width:100%;max-height:90vh;overflow-y:auto;transform:scale(.94);transition:transform .35s;padding:0}
+.modal-box{
+  background:var(--white);
+  border-radius:24px;
+  max-width:640px;
+  width:100%;
+  max-height:90vh;
+  overflow-y:auto;
+  transform:scale(.94);
+  transition:transform .35s;
+  padding:0;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+}
+
+.dark-mode .modal-box{background:var(--plum); border: 2px solid var(--accent);}
+
 .modal-overlay.open .modal-box{transform:scale(1)}
 .modal-img{height:260px;overflow:hidden;border-radius:24px 24px 0 0;position:relative}
 .modal-img .img-placeholder{width:100%;height:100%;font-size:6rem}
 .modal-body{padding:2rem}
-.modal-tag{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--rose);margin-bottom:.75rem;display:block}
+.modal-tag{font-size:.7rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:.75rem;display:block}
 .modal-title{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--plum);margin-bottom:1rem}
+.dark-mode .modal-title{color:var(--white)}
 .modal-close{position:absolute;top:1.25rem;right:1.25rem;background:rgba(255,255,255,.9);border:none;width:38px;height:38px;border-radius:50%;font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .modal-close:hover{background:var(--white);box-shadow:0 4px 16px rgba(0,0,0,.15)}
-.modal-meta{display:flex;gap:1.5rem;margin-bottom:1.5rem;padding:1rem;background:var(--cream);border-radius:12px}
+.modal-meta{display:flex;gap:1.5rem;margin-bottom:1.5rem;padding:1rem;background:var(--cream);border-radius:12px; border:1px solid var(--accent);}
+
+.dark-mode .modal-meta{background:var(--plum);border: 1px solid var(--accent);}
 .modal-meta-item{text-align:center;flex:1}
 .modal-meta-item strong{display:block;font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--plum)}
+.dark-mode .modal-meta-item strong{color:var(--white)}
 .modal-meta-item span{font-size:.75rem;color:var(--text-muted)}
 .modal-includes h4{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--plum);margin-bottom:1rem}
 .modal-includes ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
