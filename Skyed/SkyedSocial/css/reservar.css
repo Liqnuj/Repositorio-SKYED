@@ -1,0 +1,95 @@
+.page-hero {
+  position: relative;
+  overflow: hidden;
+}
+.page-hero #nsHeroParticles {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.section-label{
+    background: color-mix(in srgb, var(--accent) 90%, transparent);
+    color: #ffffff;
+}
+
+.section-title{
+    color: var(--white);
+}
+
+.section-title-highlight{
+    color: var(--gold-light);
+}
+
+.section-sub{
+    color: rgba(255, 255, 255, .6);
+}
+.booking-section{background:var(--cream);padding:7rem 0}
+.dark-mode .booking-section{background:var(--plum);padding:7rem 0}
+.booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+.booking-info .section-title{color:var(--plum)}
+.dark-mode .booking-info .section-title{color:rgba(255, 255, 255, 0.842)}
+.booking-info .section-sub{color:rgba(47, 45, 45, 0.914)}
+.dark-mode .booking-info .section-sub{color:rgba(255, 255, 255, 0.842)}
+.booking-features{list-style:none;margin-top:2rem;display:flex;flex-direction:column;gap:1.25rem}
+.booking-feat{display:flex;align-items:flex-start;gap:1rem}
+.booking-feat-icon{width:44px;height:44px;border-radius:12px;background:color-mix(in srgb, var(--accent) 15%, transparent);border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.booking-feat-text strong{color:var(--plum);font-size:.9rem;display:block;margin-bottom:.2rem}
+.dark-mode .booking-feat-text strong{color:rgba(255, 255, 255, 0.842)}
+.booking-feat-text span{font-size:.82rem;color:rgba(27, 26, 26, 0.55)}
+.dark-mode .booking-feat-text span{color:rgba(255, 255, 255, 0.55)}
+.booking-form{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:24px;padding:2.5rem}
+.form-title{font-family:'arial',serif;font-size:1.5rem;font-weight:700;color:var(--plum);margin-bottom:2rem}
+.dark-mode .form-title{color:var(--white)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:.8rem;font-weight:600;color:rgba(30, 29, 29, 0.65);margin-bottom:.45rem;letter-spacing:.05em}
+.dark-mode .form-group label{color:rgba(255,255,255,.842)}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:.8rem 1rem;background:var(--white);border:1px solid var(--accent);border-radius:10px;color:var(--plum);font-size:.9rem;font-family:'Inter',sans-serif;transition:all .25s;outline:none}
+.dark-mode .form-group input,.dark-mode .form-group select,.dark-mode .form-group textarea{background:var(--plum);border-color:var(--accent);color:var(--plum)}
+/* Modo claro (default) */
+.form-group input::placeholder,
+.form-group textarea::placeholder{
+  color: rgba(47, 45, 45, 0.45);
+}
+.form-group select{
+  color: var(--plum);
+}
+
+/* Modo oscuro */
+.dark-mode .form-group input::placeholder,
+.dark-mode .form-group textarea::placeholder{
+  color: rgba(255,255,255,.3);
+}
+.dark-mode .form-group select{
+  color: rgba(255,255,255,.7);
+}
+
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}
+.dark-mode .form-group input:focus,.dark-mode .form-group select:focus,.dark-mode .form-group textarea:focus{border-color:var(--accent);background:var(--plum);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}
+.form-group select{color:var(--plum)}
+
+.form-group select option{
+  background: var(--white);
+  color: var(--plum);
+}
+
+/* Modo oscuro */
+.dark-mode .form-group select option{
+  background: var(--plum);
+  color: var(--white);
+}
+.form-group textarea{resize:none;height:100px}
+.form-submit{width:100%;padding:1rem;background:var(--accent);color:#ffffff;border:none;border-radius:50px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:'Inter',sans-serif;margin-top:.5rem}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 40px var(--accent)}
+
+imput#Iname, input#Iemail, input#Iphone, select#IeventType, textarea#Imessage {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  padding: 0.8rem 1rem;
+  color: var(--plum);
+}

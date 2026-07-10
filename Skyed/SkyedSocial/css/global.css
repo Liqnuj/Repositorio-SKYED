@@ -472,7 +472,7 @@ section{padding:1rem 0}
 .venue-price span{font-size:.75rem;font-weight:400;color:var(--text-muted)}
 
 /* BOOKING / CONTACT */
-.booking-section{background:var(--plum);padding:7rem 0}
+/* .booking-section{background:var(--plum);padding:7rem 0}
 .booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
 .booking-info .section-title{color:var(--white)}
 .booking-info .section-sub{color:rgba(255,255,255,.6)}
@@ -493,7 +493,7 @@ section{padding:1rem 0}
 .form-group select option{background:var(--plum);color:var(--white)}
 .form-group textarea{resize:none;height:100px}
 .form-submit{width:100%;padding:1rem;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--plum);border:none;border-radius:50px;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:'Inter',sans-serif;margin-top:.5rem}
-.form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.4)}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(201,168,76,.4)} */
 
 /* Ajuste específico: campo Teléfono en el formulario de reservar
    Mayor especificidad para evitar ser sobrescrito por reglas generales */
