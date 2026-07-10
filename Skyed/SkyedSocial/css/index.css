@@ -65,7 +65,7 @@
 .testimonial-card.featured .t-text,.testimonial-card.featured .t-name{color:var(--white)}
 .testimonial-card.featured .t-role,.testimonial-card.featured .t-stars{color:var(--gold-light)}
 .t-stars{display:flex;gap:.2rem;margin-bottom:1.25rem;font-size:1rem;color:var(--gold)}
-.t-text{font-size:.92rem;color:var(--text-mid);line-height:1.75;font-style:italic;margin-bottom:1.5rem}
+.t-text{font-size:.92rem;color:var(--text-mid);line-height:1.75;font-style:'Playfair Display', serif;margin-bottom:1.5rem}
 
 .dark-mode .t-text{
   color: rgba(255, 255, 255, 0.842);

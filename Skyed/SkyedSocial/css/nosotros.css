@@ -115,7 +115,7 @@
 
 .ns-hero h1 em {
   color: var(--accent);
-  font-style: italic;
+  font-style: 'Playfair Display', serif;
 }
 
 .ns-hero p {

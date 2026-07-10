@@ -258,7 +258,7 @@ section{padding:1rem 0}
 .container{max-width:1200px;margin:0 auto;padding:0 2rem; margin-top: -50px;}
 .section-label{display:inline-block;font-size:.72rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;color:#f0f0f0;margin-bottom:1rem;background:var(--accent);padding:.35rem .9rem;border-radius:50px}
 .section-title{font-family:'arial';font-size:clamp(2rem,4vw,3rem);font-weight:700;color:var(--plum);line-height:1.15;letter-spacing:-.02em}
-.section-title em{color:var(--accent);font-style:italic}
+.section-title em{color:var(--accent);font-style:'Playfair Display', serif;}
 .section-sub{font-size:1.05rem;color:var(--text-muted);line-height:1.7;margin-top:.75rem;max-width:540px}
 
 .dark-mode .section-sub{color:#c2c2c2}

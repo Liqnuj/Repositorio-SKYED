@@ -495,9 +495,9 @@ body.dark-mode .active-filter-tag button {
 body.dark-mode .active-filter-tag button:hover {
   color: #dadada;
 }
-body.dark-mode input {
+/* body.dark-mode input {
   color: #dadada;
-}
+} */
 body.dark-mode select {
   background:var(--plum) !important;
   border-color: var(--accent);
