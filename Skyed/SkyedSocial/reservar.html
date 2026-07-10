@@ -6,6 +6,7 @@
 <title>Contacto — SkyedSocial</title>
 <link rel="stylesheet" href="css/global.css">
 <link rel="stylesheet" href="css/accesibilidad.css">
+<link rel="stylesheet" href="css/reservar.css">
 <link rel="icon" href="img/logo_social.png" />
 <!-- CSS -->
 <style>  
@@ -23,21 +24,26 @@
   transition: all 0.15s;
   font-size: 20px;
   position: absolute;   
-  left: 50px;          
+  left: 50px;         
   top: 50%;
   transform: translateY(-50%);
 }
 
+.dark-mode .home-btn{
+  color:rgba(255, 255, 255, 0.842);
+  border: 1px solid rgba(255, 255, 255, 0.632);
+}
+
 .home-btn:hover {
   background: #f3eeff;
-  border-color: #7c3aed;
-  color: #7c3aed;
+  border-color: var(--accent);
+  color: var(--accent);
 }
-/* Ajustes: agrandar ligeramente el campo teléfono sin salirse del formulario */
-#fphone{
-  width:100%;
-  max-width:420px;
-  box-sizing:border-box;
+
+.dark-mode .home-btn:hover {
+  background:none;
+    border-color: var(--accent);
+  color: var(--accent);
 }
 </style>
 </head>
@@ -77,13 +83,12 @@
   </div>
 </nav>
 
-<div class="page-hero">
-  <div class="container">
-    <div class="breadcrumb">
-      <a href="index.html">Inicio</a><span>/</span><span>Contacto</span>
-    </div>
-    <h1 class="page-hero-title">Hagamos realidad<br><em>tu evento soñado</em></h1>
-    <p class="page-hero-sub">Cuéntanos tu idea y te enviamos una propuesta personalizada en menos de 24 horas.</p>
+<div class="page-hero" id="nsHero">
+  <canvas id="nsHeroParticles"></canvas>
+  <div class="hero-overlay"></div>
+  <div class="container" style="position:relative;z-index:2;">
+    <h1 class="page-hero-title reveal">Hagamos realidad<br><em>tu evento soñado</em></h1>
+    <p class="page-hero-sub reveal">Cuéntanos tu idea y te enviamos una propuesta personalizada en menos de 24 horas.</p>
   </div>
 </div>
 
@@ -92,9 +97,16 @@
   <div class="container">
     <div class="booking-grid">
       <div class="booking-info reveal">
-        <span class="section-label" style="background:rgba(201,168,76,.15);color:var(--gold-light)">Contáctanos</span>
-        <h2 class="section-title" style="color:var(--white)">Estamos listos<br><em style="color:var(--gold-light)">para ayudarte</em></h2>
-        <p class="section-sub" style="color:rgba(255,255,255,.6)">Cuéntanos tu idea y nuestro equipo de expertos te enviará una propuesta personalizada en menos de 24 horas.</p>
+        <span class="section-label">Contáctanos</span>
+
+        <h2 class="section-title">
+            Estamos listos<br>
+            <em class="section-title-highlight">para ayudarte</em>
+        </h2>
+
+        <p class="section-sub">
+            Cuéntanos tu idea y nuestro equipo de expertos te enviará una propuesta personalizada en menos de 24 horas.
+        </p>
         <ul class="booking-features">
           <li class="booking-feat">
             <div class="booking-feat-icon">📍</div>
@@ -102,7 +114,7 @@
           </li>
           <li class="booking-feat">
             <div class="booking-feat-icon">📞</div>
-            <div class="booking-feat-text"><strong>+57 300 123 4567</strong><span>Lunes a sábado, 8am – 8pm</span></div>
+            <div class="booking-feat-text"><strong>+57  317 703 7517</strong><span>Lunes a sábado, 8am – 8pm</span></div>
           </li>
           <li class="booking-feat">
             <div class="booking-feat-icon">✉️</div>
@@ -239,10 +251,139 @@
   </div>
 </footer>
 
+
+<button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+  </svg>
+</button>
+
+  <!-- Panel -->
+    <div class="acc-panel" id="accPanel">
+      <div class="acc-panel-title">Accesibilidad</div>
+
+      <!-- Tamaño de texto -->
+    <div class="acc-section">
+      <span class="acc-label">Tamaño de texto</span>
+      <div class="font-size-row">
+        <button class="size-btn" data-size="14px">A-</button>
+        <button class="size-btn active" data-size="16px">A</button>
+        <button class="size-btn" data-size="19px">A+</button>
+        <button class="size-btn" data-size="22px">A++</button>
+      </div>
+    </div>
+
+      <!-- Dislexia -->
+      <div class="acc-section">
+        <span class="acc-label">Dislexia</span>
+        <div class="mode-row">
+          <button class="mode-btn" id="dyslexiaOff">Normal</button>
+          <button class="mode-btn" id="dyslexiaOn">Activar</button>
+        </div>
+      </div>
+
+      <!-- Color de acento -->
+      <div class="acc-section">
+        <span class="acc-label">Color de acento</span>
+        <div class="color-grid">
+          <div
+            class="color-swatch active"
+            style="background: #c8432b"
+            data-color="#c8432b"
+            title="Rojo Lumara"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #c9a84c"
+            data-color="#c9a84c"
+            title="Dorado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e6da4"
+            data-color="#2e6da4"
+            title="Azul"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e7d32"
+            data-color="#2e7d32"
+            title="Verde"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #6a1b9a"
+            data-color="#6a1b9a"
+            title="Morado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #37474f"
+            data-color="#37474f"
+            title="Gris oscuro"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Modo claro / oscuro -->
+      <div class="acc-section">
+        <span class="acc-label">Modo</span>
+        <div class="mode-row">
+          <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+          <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+        </div>
+      </div>
+
+      <button class="acc-reset" id="accReset">Restablecer todo</button>
+    </div>
+
+
 <div class="toast" id="toast"><span class="toast-icon" id="toastIcon">✓</span><span id="toastMsg"></span></div>
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-
+<script src="js/accesibilidad.js"></script>
 <script src="js/shared.js"></script>
 <script>initReveal();</script>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const canvas = document.getElementById('nsHeroParticles');
+  const hero = document.getElementById('nsHero');
+  if(!canvas || !hero) return; // evita error si la página no tiene hero con partículas
+
+  const ctx = canvas.getContext('2d');
+
+  function resize(){
+    canvas.width = hero.offsetWidth;
+    canvas.height = hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const particles = [];
+  for(let i = 0; i < 40; i++){
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3.5 + 1,
+      speedY: Math.random() * 0.5 + 0.25,
+      opacity: Math.random() * 0.7 + 0.2,
+      color: Math.random() > 0.5 ? '201,168,76' : '245,230,239'
+    });
+  }
+
+  function animate(){
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.y -= p.speedY;
+      if(p.y < -10) p.y = canvas.height + 10;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.color},${p.opacity})`;
+      ctx.fill();
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+});
+</script>
 </body>
 </html>
