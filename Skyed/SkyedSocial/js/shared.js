@@ -91,9 +91,9 @@ function showToast(msg,icon='✓'){
   setTimeout(()=>t.classList.remove('show'),4000);
 }
 
-// Ir a contacto
+// Ir a reservar
 function openBooking(){
-  window.location.href='contacto.html';
+  window.location.href='reservar.html';
 }
 
 // Modal (eventos)
