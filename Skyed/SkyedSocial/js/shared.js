@@ -49,12 +49,12 @@ function renderMedia(item, size='4rem') {
 
   if (src) {
     return `
-      <div class="img-placeholder" style="width:100%;height:100%;overflow:hidden">
-        <img src="${src}" alt="${label}" style="width:100%;height:100%;object-fit:cover;display:block">
+      <div class="img-placeholder media-fill">
+        <img src="${src}" alt="${label}" class="media-fill-img">
       </div>`;
   }
 
-  return `<div class="img-placeholder" style="width:100%;height:100%;font-size:${size}">${fallback}</div>`;
+  return `<div class="img-placeholder media-fill icon-size" style="--icon-size:${size}">${fallback}</div>`;
 }
 
 // NAV scroll
@@ -109,14 +109,14 @@ function openModal(id){
       <div class="modal-meta-item"><strong>${ev.hours}h</strong><span>Duración</span></div>
       <div class="modal-meta-item"><strong>${ev.price}</strong><span>Desde</span></div>
     </div>
-    <p style="font-size:.9rem;color:var(--text-mid);line-height:1.7;margin-bottom:1.5rem">${ev.desc}</p>
+    <p class="modal-desc">${ev.desc}</p>
     <div class="modal-includes">
       <h4>¿Qué incluye?</h4>
       <ul>${ev.includes.map(i=>`<li>${i}</li>`).join('')}</ul>
     </div>
     <div class="modal-price-row">
       <div><div class="modal-price">${ev.price}</div><div class="modal-price-note">Precio base · Personalizable</div></div>
-      <button class="btn-primary" onclick="closeModalDirect();openBooking()" style="font-size:.9rem">Cotizar ahora →</button>
+      <button class="btn-primary modal-cta-btn" onclick="closeModalDirect();openBooking()">Cotizar ahora →</button>
     </div>`;
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
@@ -192,7 +192,7 @@ function renderVenues(){
         <div class="venue-tags">${v.tags.map(t=>`<span class="venue-tag">${t}</span>`).join('')}</div>
         <div class="venue-price-row">
           <div class="venue-price">${v.price} <span>${v.per}</span></div>
-          <button class="btn-sm-outline" onclick="openBooking()" style="white-space:nowrap">Reservar</button>
+          <button class="btn-sm-outline btn-nowrap" onclick="openBooking()">Reservar</button>
         </div>
       </div>`;
     grid.appendChild(card);
@@ -336,4 +336,3 @@ function submitForm(event){
   showToast('¡Solicitud enviada! Te contactamos en 24h 🎉','✦');
   document.querySelectorAll('#contactForm input,#contactForm select,#contactForm textarea').forEach(el=>el.value='');
 }
-

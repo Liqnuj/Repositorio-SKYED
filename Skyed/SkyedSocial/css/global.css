@@ -776,11 +776,14 @@ section{padding:1rem 0}
 .dark-mode .modal-meta-item strong{color:var(--white)}
 .modal-meta-item span{font-size:.75rem;color:var(--text-muted)}
 .modal-includes h4{font-size:.8rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--plum);margin-bottom:1rem}
+.dark-mode .modal-includes h4{color:var(--white)}
 .modal-includes ul{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
 .modal-includes li{font-size:.85rem;color:var(--text-mid);display:flex;align-items:center;gap:.5rem}
-.modal-includes li::before{content:'✦';color:var(--gold);font-size:.7rem}
+.dark-mode .modal-includes li{color:var(--white)}
+.modal-includes li::before{content:'✦';color:var(--accent);font-size:.7rem}
 .modal-price-row{display:flex;align-items:center;justify-content:space-between;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)}
 .modal-price{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--plum)}
+.dark-mode .modal-price{color:var(--white)}
 .modal-price-note{font-size:.8rem;color:var(--text-muted)}
 
 /* TOAST */
