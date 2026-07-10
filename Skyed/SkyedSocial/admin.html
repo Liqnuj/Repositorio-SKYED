@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Admin — SKYED SOCIAL</title>
   <link rel="icon" href="img/logo_social.png" />
+  <link rel="stylesheet" href="css/accesibilidad.css">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,600;0,700;0,900;1,900&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
@@ -26,6 +27,10 @@
     </a>
   </div>
   <div class="header-right">
+    <button class="btn-bell" id="btnBell" title="Alertas de eventos próximos" aria-label="Alertas">
+      <i class="ti ti-bell" aria-hidden="true"></i>
+      <span class="bell-badge" id="bellBadge" hidden>0</span>
+    </button>
     <span class="badge-admin">⚙ Panel Admin</span>
     <a href="index.html" class="btn-back">← Volver al inicio</a>
   </div>
@@ -77,6 +82,16 @@
         <span class="nav-label">PQRS</span>
       </a>
 
+      <a href="#" class="nav-item" data-section="lugares" data-label="Lugares">
+        <i class="ti ti-building-community" aria-hidden="true"></i>
+        <span class="nav-label">Lugares</span>
+      </a>
+
+      <a href="#" class="nav-item" data-section="servicios" data-label="Servicios">
+        <i class="ti ti-tools-kitchen" aria-hidden="true"></i>
+        <span class="nav-label">Servicios</span>
+      </a>
+
     </nav>
 
     <div class="sidebar-footer">
@@ -104,6 +119,11 @@
 
     <!-- Inicio -->
     <section class="view" data-view="inicio">
+      <div id="alertsPanel" class="alerts-panel" hidden>
+        <div class="alerts-panel-title"><i class="ti ti-bell-ringing"></i> Alertas de eventos próximos</div>
+        <div id="alertsList" class="alerts-list"></div>
+      </div>
+
       <div class="kpi-grid">
         <div class="kpi"><span>Usuarios</span><strong id="kpiUsuarios">0</strong></div>
         <div class="kpi"><span>Eventos</span><strong id="kpiEventos">0</strong></div>
@@ -126,6 +146,7 @@
             <button class="cal-view-btn" data-view="week">Semana</button>
           </div>
           <button class="cal-today-btn" id="calToday">Hoy</button>
+          <button class="cal-today-btn cal-create-btn" id="calNewEventBtn">+ Crear evento</button>
         </div>
 
         <!-- Vista mes -->
@@ -159,18 +180,6 @@
         </div>
       </div>
 
-      <!-- Panel lateral: evento seleccionado -->
-      <div class="card" id="calEventDetail" style="display:none">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem">
-          <h2 style="margin:0" id="detailTitle">—</h2>
-          <button onclick="document.getElementById('calEventDetail').style.display='none'"
-                  style="background:none;border:none;cursor:pointer;color:#8a9bb0;font-size:1.2rem">✕</button>
-        </div>
-        <p id="detailDate" style="font-size:.85rem;color:#3a4a6b;margin-bottom:.4rem"></p>
-        <p id="detailDesc" style="font-size:.9rem;color:#0f1a2e"></p>
-        <p id="detailCat" style="margin-top:.5rem"></p>
-      </div>
-
       <div class="card">
         <h2>Últimas reservas</h2>
         <table class="data-table">
@@ -188,8 +197,8 @@
       </div>
       <div class="card">
         <table class="data-table">
-          <thead><tr><th>ID</th><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Cupos</th><th>Estado</th><th>Acciones</th></tr></thead>
-          <tbody id="tablaEventos"><tr><td colspan="7" style="color:#8a9bb0;text-align:center;padding:2rem">Sin eventos</td></tr></tbody>
+          <thead><tr><th>ID</th><th>Evento</th><th>Cliente</th><th>Categoría</th><th>Fecha</th><th>Lugar</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <tbody id="tablaEventos"><tr><td colspan="8" style="color:#8a9bb0;text-align:center;padding:2rem">Sin eventos</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -207,7 +216,7 @@
       </div>
       <div class="card">
         <table class="data-table">
-          <thead><tr><th>#</th><th>Cliente</th><th>Evento</th><th>Fecha</th><th>Invitados</th><th>Total</th><th>Estado</th><th>Acciones</th></tr></thead>
+          <thead><tr><th>#</th><th>Cliente</th><th>Evento</th><th>Fecha</th><th>Invitados</th><th>Servicios</th><th>Estado</th><th>Acciones</th></tr></thead>
           <tbody id="tablaReservas"><tr><td colspan="8" style="color:#8a9bb0;text-align:center;padding:2rem">Sin reservas</td></tr></tbody>
         </table>
       </div>
@@ -273,10 +282,393 @@
       <div class="card"><p style="color:#8a9bb0;padding:1rem">Sin rutas registradas.</p></div>
     </section>
 
+    <!-- Lugares -->
+    <section class="view" data-view="lugares" hidden>
+      <div class="view-header"><h2>Gestión de lugares</h2></div>
+      <div class="card admin-resource-card">
+        <div class="admin-resource-form">
+          <h3 id="lugarFormTitle">Agregar nuevo lugar</h3>
+          <p>Estos lugares aparecerán para seleccionar al crear un evento.</p>
+          <form id="lugarForm" class="resource-form">
+            <input type="hidden" id="lugarId">
+            <div class="resource-form-grid">
+              <label class="event-field">
+                <span>Nombre del lugar</span>
+                <input id="lugarNombre" type="text" placeholder="Ej. Quinta del Sol" required>
+              </label>
+              <label class="event-field">
+                <span>Capacidad (personas)</span>
+                <input id="lugarCapacidad" type="number" min="1" placeholder="Ej. 150">
+              </label>
+              <label class="event-field">
+                <span>Ubicación</span>
+                <input id="lugarUbicacion" type="text" placeholder="Ej. Sogamoso, Boyacá">
+              </label>
+              <label class="event-field">
+                <span>Precio de referencia (COP)</span>
+                <input id="lugarPrecio" type="number" min="0" step="1000" placeholder="Ej. 2500000">
+              </label>
+              <label class="event-field">
+                <span>Estado</span>
+                <select id="lugarEstado">
+                  <option value="disponible">Disponible</option>
+                  <option value="reservado">Reservado</option>
+                  <option value="en_revision">En revisión</option>
+                </select>
+              </label>
+              <label class="event-field">
+                <span>Contacto</span>
+                <input id="lugarContacto" type="text" placeholder="Correo o teléfono del venue">
+              </label>
+              <label class="event-field resource-field-full">
+                <span>Descripción</span>
+                <textarea id="lugarDescripcion" rows="3" placeholder="Detalles del espacio, amenidades, etc."></textarea>
+              </label>
+            </div>
+            <div class="event-form-actions">
+              <button type="button" class="btn-secondary" id="lugarCancelBtn" hidden>Cancelar edición</button>
+              <button type="submit" class="btn-primary">Guardar lugar</button>
+            </div>
+          </form>
+        </div>
+        <div class="admin-resource-list">
+          <div class="admin-resource-list-header">
+            <h3>Lugares registrados</h3>
+            <p>Edita o elimina los espacios disponibles.</p>
+          </div>
+          <div id="lugaresPanel" class="resource-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Servicios -->
+    <section class="view" data-view="servicios" hidden>
+      <div class="view-header"><h2>Gestión de servicios</h2></div>
+      <div class="card admin-resource-card">
+        <div class="admin-resource-form">
+          <h3 id="servicioFormTitle">Agregar nuevo servicio</h3>
+          <p>Estos servicios se podrán seleccionar como logística al crear un evento.</p>
+          <form id="servicioForm" class="resource-form">
+            <input type="hidden" id="servicioId">
+            <div class="resource-form-grid">
+              <label class="event-field">
+                <span>Categoría</span>
+                <select id="servicioCategoria"></select>
+              </label>
+              <label class="event-field">
+                <span>Nombre del servicio</span>
+                <input id="servicioNombre" type="text" placeholder="Ej. Arcos florales naturales" required>
+              </label>
+              <label class="event-field">
+                <span>Precio de referencia (COP)</span>
+                <input id="servicioPrecio" type="number" min="0" step="1000" placeholder="Ej. 450000">
+              </label>
+              <label class="event-field">
+                <span>Estado</span>
+                <select id="servicioEstado">
+                  <option value="disponible">Disponible</option>
+                  <option value="no_disponible">No disponible</option>
+                </select>
+              </label>
+              <label class="event-field resource-field-full">
+                <span>Descripción</span>
+                <textarea id="servicioDescripcion" rows="3" placeholder="Detalles del servicio..."></textarea>
+              </label>
+            </div>
+            <div class="event-form-actions">
+              <button type="button" class="btn-secondary" id="servicioCancelBtn" hidden>Cancelar edición</button>
+              <button type="submit" class="btn-primary">Guardar servicio</button>
+            </div>
+          </form>
+        </div>
+        <div class="admin-resource-list">
+          <div class="admin-resource-list-header">
+            <h3>Catálogo de servicios</h3>
+            <p>Agrupados por categoría. Edita o elimina cada uno.</p>
+          </div>
+          <div id="serviciosPanel" class="services-catalog"></div>
+        </div>
+      </div>
+    </section>
+
   </main>
 </div>
 
+<div class="event-modal-overlay" id="eventModalOverlay" hidden>
+  <div class="event-modal event-modal-lg" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+    <div class="event-modal-header">
+      <div>
+        <h3 id="eventModalTitle">Nueva reserva y evento</h3>
+        <p>Primero los datos de la reserva del cliente, luego la logística del evento.</p>
+      </div>
+      <button type="button" class="event-modal-close" data-close-event-modal aria-label="Cerrar">×</button>
+    </div>
+
+    <form id="eventForm" class="event-form">
+      <input type="hidden" id="eventId" name="eventId">
+
+      <div class="form-section">
+        <h4 class="form-section-title"><i class="ti ti-user-circle"></i> 1. Datos de la reserva (cliente)</h4>
+        <div class="event-form-grid">
+          <label class="event-field">
+            <span>Tipo de documento</span>
+            <select id="clienteTipoDoc" name="clienteTipoDoc">
+              <option value="cedula_ciudadania">Cédula de ciudadanía</option>
+              <option value="tarjeta_identidad">Tarjeta de identidad</option>
+              <option value="cedula_extranjeria">Cédula de extranjería</option>
+              <option value="pasaporte">Pasaporte</option>
+            </select>
+          </label>
+          <label class="event-field">
+            <span>Número de documento</span>
+            <input id="clienteDocumento" name="clienteDocumento" type="number" placeholder="Ej. 1002003004">
+          </label>
+          <label class="event-field">
+            <span>Nombres</span>
+            <input id="clienteNombre" name="clienteNombre" type="text" placeholder="Ej. María Fernanda" required>
+          </label>
+          <label class="event-field">
+            <span>Apellidos</span>
+            <input id="clienteApellido" name="clienteApellido" type="text" placeholder="Ej. Rojas Pérez" required>
+          </label>
+          <label class="event-field">
+            <span>Teléfono</span>
+            <input id="clienteTelefono" name="clienteTelefono" type="tel" placeholder="Ej. 300 123 4567" required>
+          </label>
+          <label class="event-field">
+            <span>Correo</span>
+            <input id="clienteEmail" name="clienteEmail" type="email" placeholder="cliente@correo.com" required>
+          </label>
+          <label class="event-field">
+            <span>Tipo de evento</span>
+            <select id="tipoEvento" name="tipoEvento">
+              <option value="Boda">Boda</option>
+              <option value="Quinceañera">Quinceañera</option>
+              <option value="Cumpleaños">Cumpleaños</option>
+              <option value="Corporativo">Corporativo</option>
+              <option value="Social">Social / Gala</option>
+              <option value="Baby shower">Baby shower</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </label>
+          <label class="event-field">
+            <span># de invitados</span>
+            <input id="clienteInvitados" name="clienteInvitados" type="number" min="1" placeholder="Ej. 120">
+          </label>
+          <label class="event-field">
+            <span>Presupuesto estimado (COP)</span>
+            <input id="eventPresupuesto" name="eventPresupuesto" type="number" min="0" step="1000" placeholder="Ej. 8000000">
+          </label>
+          <label class="event-field">
+            <span>Estado de la reserva</span>
+            <select id="eventEstado" name="eventEstado">
+              <option value="pendiente">Pendiente</option>
+              <option value="confirmada">Confirmada</option>
+              <option value="cancelada">Cancelada</option>
+              <option value="completada">Completada</option>
+            </select>
+          </label>
+        </div>
+        <label class="event-field event-field-full">
+          <span>Peticiones / descripción del cliente</span>
+          <textarea id="peticionesCliente" name="peticionesCliente" rows="3" placeholder="Ej. Decoración en tonos pastel, música en vivo durante la cena, menú vegetariano para 10 invitados..."></textarea>
+        </label>
+      </div>
+
+      <div class="form-section">
+        <h4 class="form-section-title"><i class="ti ti-confetti"></i> 2. Datos del evento</h4>
+        <div class="event-form-grid">
+          <label class="event-field">
+            <span>Nombre del evento</span>
+            <input id="eventTitle" name="eventTitle" type="text" placeholder="Ej. Boda Camila &amp; Andrés" required>
+          </label>
+          <label class="event-field">
+            <span>Fecha</span>
+            <input id="eventDate" name="eventDate" type="date" required>
+          </label>
+          <label class="event-field">
+            <span>Hora</span>
+            <input id="eventTime" name="eventTime" type="time" value="19:00">
+          </label>
+          <label class="event-field">
+            <span>Clasificación (color en calendario)</span>
+            <select id="eventCategorySelect" name="eventCategorySelect"></select>
+          </label>
+          <label class="event-field">
+            <span>Crear nueva clasificación</span>
+            <input id="newCategoryName" name="newCategoryName" type="text" placeholder="Ej. Taller, Webinar...">
+          </label>
+          <label class="event-field">
+            <span>Color de la clasificación</span>
+            <input id="newCategoryColor" name="newCategoryColor" type="color" value="#7c3aed">
+          </label>
+        </div>
+        <div class="event-category-preview" id="eventCategoryChips"></div>
+      </div>
+
+      <div class="form-section">
+        <h4 class="form-section-title"><i class="ti ti-building-community"></i> 3. Lugar del evento</h4>
+        <div class="event-form-grid">
+          <label class="event-field">
+            <span>Selecciona el lugar</span>
+            <select id="eventLugar" name="eventLugar">
+              <option value="">— Sin lugar asignado —</option>
+            </select>
+          </label>
+          <label class="event-field">
+            <span>Dirección / referencia exacta</span>
+            <input id="eventUbicacion" name="eventUbicacion" type="text" placeholder="Ej. Salón principal, Cra 11 # 12-34">
+          </label>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h4 class="form-section-title"><i class="ti ti-tools-kitchen-2"></i> 4. Servicios incluidos (catering, flores y más)</h4>
+        <div id="eventServiciosChecklist" class="services-checklist"></div>
+        <div class="event-total-display" id="eventTotalDisplay">Total estimado de logística: $0</div>
+      </div>
+
+      <div class="form-section">
+        <h4 class="form-section-title"><i class="ti ti-clipboard-list"></i> 5. Notas de logística internas</h4>
+        <label class="event-field event-field-full">
+          <span>Notas para el equipo</span>
+          <textarea id="notasLogistica" name="notasLogistica" rows="3" placeholder="Ej. Confirmar montaje 3 horas antes, coordinar acceso de proveedores por la puerta lateral..."></textarea>
+        </label>
+      </div>
+
+      <div class="event-form-actions">
+        <button type="button" class="btn-secondary" data-close-event-modal>Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar reserva y evento</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="event-modal-overlay" id="detailModalOverlay" hidden>
+  <div class="event-modal event-modal-lg detail-modal" role="dialog" aria-modal="true" aria-labelledby="detailModalTitle">
+    <div class="event-modal-header detail-modal-header" id="detailModalHeader">
+      <div>
+        <span class="detail-modal-badges" id="detailModalBadges"></span>
+        <h3 id="detailModalTitle">—</h3>
+        <p id="detailModalMeta"></p>
+      </div>
+      <button type="button" class="event-modal-close" data-close-detail-modal aria-label="Cerrar">×</button>
+    </div>
+    <div class="event-form detail-modal-body" id="detailModalBody"></div>
+    <div class="event-form-actions detail-modal-actions">
+      <button type="button" class="btn-danger" id="detailDeleteBtn"><i class="ti ti-trash"></i> Eliminar</button>
+      <button type="button" class="btn-secondary" id="detailEditBtn"><i class="ti ti-edit"></i> Editar</button>
+      <button type="button" class="btn-primary" data-close-detail-modal>Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast" hidden></div>
+
+<button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
+  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
+  </svg>
+</button>
+
+  <!-- Panel -->
+    <div class="acc-panel" id="accPanel">
+      <div class="acc-panel-title">Accesibilidad</div>
+
+      <!-- Tamaño de texto -->
+    <div class="acc-section">
+      <span class="acc-label">Tamaño de texto</span>
+      <div class="font-size-row">
+        <button class="size-btn" data-size="14px">A-</button>
+        <button class="size-btn active" data-size="16px">A</button>
+        <button class="size-btn" data-size="19px">A+</button>
+        <button class="size-btn" data-size="22px">A++</button>
+      </div>
+    </div>
+
+      <!-- Dislexia -->
+      <div class="acc-section">
+        <span class="acc-label">Dislexia</span>
+        <div class="mode-row">
+          <button class="mode-btn" id="dyslexiaOff">Normal</button>
+          <button class="mode-btn" id="dyslexiaOn">Activar</button>
+        </div>
+      </div>
+
+      <!-- Color de acento -->
+      <div class="acc-section">
+        <span class="acc-label">Color de acento</span>
+        <div class="color-grid">
+          <div
+            class="color-swatch active"
+            style="background: #c8432b"
+            data-color="#c8432b"
+            title="Rojo Lumara"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #c9a84c"
+            data-color="#c9a84c"
+            title="Dorado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e6da4"
+            data-color="#2e6da4"
+            title="Azul"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #2e7d32"
+            data-color="#2e7d32"
+            title="Verde"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #6a1b9a"
+            data-color="#6a1b9a"
+            title="Morado"
+          ></div>
+          <div
+            class="color-swatch"
+            style="background: #37474f"
+            data-color="#37474f"
+            title="Gris oscuro"
+          ></div>
+        </div>
+      </div>
+
+      <!-- Modo claro / oscuro -->
+      <div class="acc-section">
+        <span class="acc-label">Modo</span>
+        <div class="mode-row">
+          <button class="mode-btn active" id="modeLight">☀️ Claro</button>
+          <button class="mode-btn" id="modeDark">🌙 Oscuro</button>
+        </div>
+      </div>
+
+      <button class="acc-reset" id="accReset">Restablecer todo</button>
+    </div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-img" id="modalImg"></div>
+    <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<!-- <div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">✓</span>
+  <span id="toastMsg">Mensaje enviado</span>
+</div> -->
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Ir arriba">↑</button>
+
+<script src="js/accesibilidad.js"></script>
+
 
 <script>
   const sidebar    = document.getElementById('sidebar');
@@ -331,105 +723,648 @@
   });
 
 
-  /* ═══════════════════════════════════════
-     CALENDARIO SKYED SOCIAL
-  ═══════════════════════════════════════ */
-  (function() {
+  /* ═══════════════════════════════════════════════════════
+     SKYED SOCIAL — MOTOR DE RESERVAS, EVENTOS, LUGARES Y SERVICIOS
+     Conectado a la API PHP (/api) que a su vez habla con MySQL.
+  ═══════════════════════════════════════════════════════ */
+  (function () {
+
+    const API = 'api/';
 
     const today = new Date();
-    today.setHours(0,0,0,0);
-    const y = today.getFullYear();
-    const m = today.getMonth();
+    today.setHours(0, 0, 0, 0);
 
-    // Colores por categoría
-    const eventColors = {
-      'Social':    { bg: '#ede9fe', border: '#7c3aed', text: '#4c1d95' },
-      'Música':    { bg: '#fce7f3', border: '#db2777', text: '#831843' },
-      'Deportivo': { bg: '#d1fae5', border: '#059669', text: '#064e3b' },
-      'Cultural':  { bg: '#fef3c7', border: '#c9a227', text: '#78350f' },
-      'Gala':      { bg: '#e0e7ff', border: '#4338ca', text: '#1e1b4b' },
-    };
-
-    const mkDate = (y,m,d) => { const dt = new Date(y,m,d); dt.setHours(0,0,0,0); return dt; };
-
-    // Eventos: pasados → realizados, futuros → pendientes
-    let calEvents = [
-      { id:1,  title:'Fiesta de Gala Rooftop',      date: mkDate(y,m-1,18), cat:'Gala',      desc:'Evento exclusivo de gala en terraza. Cupos limitados a 80 personas.',    hora:'8:00 PM' },
-      { id:2,  title:'Festival de Jazz & Vinos',     date: mkDate(y,m-1,24), cat:'Música',    desc:'Noche de jazz en vivo con cata de vinos premium.',                       hora:'7:00 PM' },
-      { id:3,  title:'Torneo de Tenis Social',       date: mkDate(y,m,14),   cat:'Deportivo', desc:'Torneo amistoso dobles mixtos. Club Campestre.',                          hora:'9:00 AM' },
-      { id:4,  title:'Noche de Cine al Aire Libre',  date: mkDate(y,m,18),   cat:'Cultural',  desc:'Proyección clásica bajo las estrellas. Traer cobija.',                    hora:'6:30 PM' },
-      { id:5,  title:'Coctelería Artesanal',         date: mkDate(y,m,20),   cat:'Social',    desc:'Taller y degustación de cócteles artesanales con bartender certificado.', hora:'5:00 PM' },
-      { id:6,  title:'Rumba 80s & 90s',              date: mkDate(y,m,25),   cat:'Música',    desc:'Noche retro con DJ invitado. Dress code: outfit de época.',                hora:'9:00 PM' },
-      { id:7,  title:'Brunch Dominical VIP',         date: mkDate(y,m+1,3),  cat:'Social',    desc:'Brunch exclusivo con música en vivo y showcooking.',                      hora:'11:00 AM' },
-      { id:8,  title:'Gala de Aniversario',          date: mkDate(y,m+1,8),  cat:'Gala',      desc:'Celebración del 5° aniversario de Skyed Social.',                        hora:'7:30 PM' },
-      { id:9,  title:'Tarde de Yoga & Bienestar',    date: mkDate(y,m+1,15), cat:'Deportivo', desc:'Sesión grupal de yoga al aire libre con instructor certificado.',          hora:'4:00 PM' },
-      { id:10, title:'Exposición Arte Colombiano',   date: mkDate(y,m+1,22), cat:'Cultural',  desc:'Inauguración de galería con artistas locales emergentes.',                hora:'6:00 PM' },
+    const SERVICE_CATEGORIES = [
+      { key: 'decoracion', label: 'Decoración & Florería', icon: '🌸' },
+      { key: 'catering', label: 'Catering Gourmet', icon: '🍽️' },
+      { key: 'fotografia', label: 'Fotografía & Video', icon: '📸' },
+      { key: 'musica', label: 'Música & Entretenimiento', icon: '🎵' },
+      { key: 'gestion_lugares', label: 'Gestión de Lugares', icon: '🏛️' },
+      { key: 'efectos', label: 'Efectos Especiales', icon: '✨' }
     ];
 
-    // Estado automático: pasados = realizado, futuros = pendiente, hoy = en curso
-    calEvents = calEvents.map(e => {
-      const d = new Date(e.date); d.setHours(0,0,0,0);
-      let status;
-      if (d < today) status = 'realizado';
-      else if (d.getTime() === today.getTime()) status = 'en_curso';
-      else status = 'pendiente';
-      return { ...e, status };
-    });
+    /* ---------- Cliente HTTP hacia la API PHP ---------- */
+    async function apiGet(path) {
+      const res = await fetch(API + path);
+      if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error || 'Error al consultar el servidor');
+      return res.json();
+    }
+    async function apiSend(path, method, body) {
+      const res = await fetch(API + path, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: body !== undefined ? JSON.stringify(body) : undefined
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Error al comunicarse con el servidor');
+      }
+      return res.json();
+    }
+
+    let lugares = [];
+    let servicios = [];
+    let categorias = [];
+    let eventos = [];
+
+    async function loadAll() {
+      try {
+        [lugares, servicios, categorias, eventos] = await Promise.all([
+          apiGet('lugares.php'),
+          apiGet('servicios.php'),
+          apiGet('tipos_evento.php'),
+          apiGet('eventos.php')
+        ]);
+      } catch (e) {
+        showToast('No se pudo conectar con la base de datos: ' + e.message);
+        console.error(e);
+      }
+    }
 
     const statusInfo = {
-      realizado: { label: '✓ Realizado', bg: '#d1fae5', color: '#065f46', dot: '#059669' },
-      pendiente:  { label: '◷ Pendiente', bg: '#eff6ff', color: '#1e40af', dot: '#3b82f6' },
-      en_curso:   { label: '● En curso',  bg: '#fef9c3', color: '#854d0e', dot: '#f59e0b' },
+      pendiente: { label: '◷ Pendiente', bg: '#eff6ff', color: '#1e40af', dot: '#3b82f6' },
+      confirmada: { label: '✓ Confirmada', bg: '#d1fae5', color: '#065f46', dot: '#059669' },
+      en_curso: { label: '● En curso', bg: '#fef9c3', color: '#854d0e', dot: '#f59e0b' },
+      completada: { label: '✓ Realizado', bg: '#f1f5f9', color: '#475569', dot: '#94a3b8' },
+      cancelada: { label: '✕ Cancelada', bg: '#fee2e2', color: '#991b1b', dot: '#ef4444' }
     };
+
+    function parseLocalDate(dateStr) {
+      // Evita el corrimiento de un día por zona horaria al construir Date desde "YYYY-MM-DD".
+      return new Date(dateStr + 'T00:00:00');
+    }
+
+    function deriveDisplayStatus(ev) {
+      if (ev.estado === 'cancelada') return 'cancelada';
+      if (ev.estado === 'completada') return 'completada';
+      const d = parseLocalDate(ev.fecha);
+      if (d < today) return 'completada';
+      if (d.getTime() === today.getTime()) return 'en_curso';
+      return ev.estado === 'confirmada' ? 'confirmada' : 'pendiente';
+    }
+
+    function getCategoryColor(ev) {
+      const color = ev.categoriaColor || '#7c3aed';
+      return { bg: `${color}18`, border: color, text: color };
+    }
+
+    function lugarById(id) { return lugares.find(l => l.id === id); }
+    function servicioById(id) { return servicios.find(s => s.id === id); }
+
+    function fmtMoney(n) {
+      const num = Number(n);
+      return isNaN(num) ? '$0' : '$' + Math.round(num).toLocaleString('es-CO');
+    }
+
+    /* ---------- Toast global ---------- */
+    let toastTimer;
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.innerHTML = `<span class="toast-icon">✓</span><span>${message}</span>`;
+      toast.hidden = false;
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.hidden = true; }, 2800);
+    }
+
+    /* ═══════════════ LUGARES CRUD ═══════════════ */
+    const lugarForm = document.getElementById('lugarForm');
+    const lugarId = document.getElementById('lugarId');
+    const lugarNombre = document.getElementById('lugarNombre');
+    const lugarCapacidad = document.getElementById('lugarCapacidad');
+    const lugarUbicacion = document.getElementById('lugarUbicacion');
+    const lugarPrecio = document.getElementById('lugarPrecio');
+    const lugarEstado = document.getElementById('lugarEstado');
+    const lugarContacto = document.getElementById('lugarContacto');
+    const lugarDescripcion = document.getElementById('lugarDescripcion');
+    const lugarFormTitle = document.getElementById('lugarFormTitle');
+    const lugarCancelBtn = document.getElementById('lugarCancelBtn');
+    const lugaresPanel = document.getElementById('lugaresPanel');
+
+    function resetLugarForm() {
+      lugarForm.reset();
+      lugarId.value = '';
+      lugarEstado.value = 'disponible';
+      lugarFormTitle.textContent = 'Agregar nuevo lugar';
+      lugarCancelBtn.hidden = true;
+    }
+
+    function renderLugares() {
+      lugaresPanel.innerHTML = lugares.length ? lugares.map(l => `
+        <div class="resource-item">
+          <div class="resource-item-header">
+            <div class="resource-item-title">${l.nombre}</div>
+            <span class="resource-item-type">Lugar</span>
+          </div>
+          <div class="resource-item-meta"><strong>${l.capacidad || '—'} personas</strong> · ${l.ubicacion || 'Sin ubicación'}</div>
+          <div class="resource-item-contact">${l.descripcion || ''}</div>
+          <div class="resource-item-contact">Contacto: ${l.contacto || 'Por definir'}</div>
+          <div class="resource-item-contact">Precio: ${fmtMoney(l.precio)}</div>
+          <span class="resource-item-status">${l.estado}</span>
+          <div class="resource-item-actions">
+            <button type="button" class="resource-action-btn resource-action-btn-edit" data-edit-lugar="${l.id}">Editar</button>
+            <button type="button" class="resource-action-btn resource-action-btn-delete" data-delete-lugar="${l.id}">Eliminar</button>
+          </div>
+        </div>
+      `).join('') : `<div class="resource-item"><strong>No hay lugares aún.</strong></div>`;
+      populateLugarSelect();
+    }
+
+    lugaresPanel.addEventListener('click', async e => {
+      const editBtn = e.target.closest('[data-edit-lugar]');
+      const delBtn = e.target.closest('[data-delete-lugar]');
+      if (editBtn) {
+        const l = lugarById(Number(editBtn.dataset.editLugar));
+        if (!l) return;
+        lugarId.value = l.id;
+        lugarNombre.value = l.nombre;
+        lugarCapacidad.value = l.capacidad || '';
+        lugarUbicacion.value = l.ubicacion || '';
+        lugarPrecio.value = l.precio || '';
+        lugarEstado.value = l.estado || 'disponible';
+        lugarContacto.value = l.contacto || '';
+        lugarDescripcion.value = l.descripcion || '';
+        lugarFormTitle.textContent = `Editando ${l.nombre}`;
+        lugarCancelBtn.hidden = false;
+        lugarForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (delBtn) {
+        const id = Number(delBtn.dataset.deleteLugar);
+        const l = lugarById(id);
+        if (l && confirm(`¿Eliminar el lugar "${l.nombre}"? Los eventos que lo usan quedarán sin lugar asignado.`)) {
+          try {
+            await apiSend('lugares.php?id=' + id, 'DELETE');
+            await loadAll();
+            renderAll();
+            showToast('Lugar eliminado');
+          } catch (err) { showToast(err.message); }
+        }
+      }
+    });
+
+    lugarCancelBtn.addEventListener('click', resetLugarForm);
+
+    lugarForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const nombre = lugarNombre.value.trim();
+      if (!nombre) { showToast('Ingresa el nombre del lugar'); return; }
+      const data = {
+        nombre,
+        capacidad: lugarCapacidad.value ? Number(lugarCapacidad.value) : 0,
+        ubicacion: lugarUbicacion.value.trim(),
+        precio: lugarPrecio.value ? Number(lugarPrecio.value) : 0,
+        estado: lugarEstado.value,
+        contacto: lugarContacto.value.trim(),
+        descripcion: lugarDescripcion.value.trim()
+      };
+      const id = Number(lugarId.value);
+      try {
+        if (id) {
+          await apiSend('lugares.php?id=' + id, 'PUT', data);
+          showToast('Lugar actualizado');
+        } else {
+          await apiSend('lugares.php', 'POST', data);
+          showToast('Lugar guardado correctamente');
+        }
+        await loadAll();
+        renderAll();
+        resetLugarForm();
+      } catch (err) { showToast(err.message); }
+    });
+
+    /* ═══════════════ SERVICIOS CRUD ═══════════════ */
+    const servicioForm = document.getElementById('servicioForm');
+    const servicioId = document.getElementById('servicioId');
+    const servicioCategoria = document.getElementById('servicioCategoria');
+    const servicioNombre = document.getElementById('servicioNombre');
+    const servicioPrecio = document.getElementById('servicioPrecio');
+    const servicioEstado = document.getElementById('servicioEstado');
+    const servicioDescripcion = document.getElementById('servicioDescripcion');
+    const servicioFormTitle = document.getElementById('servicioFormTitle');
+    const servicioCancelBtn = document.getElementById('servicioCancelBtn');
+    const serviciosPanel = document.getElementById('serviciosPanel');
+
+    servicioCategoria.innerHTML = SERVICE_CATEGORIES.map(c => `<option value="${c.key}">${c.icon} ${c.label}</option>`).join('');
+
+    function resetServicioForm() {
+      servicioForm.reset();
+      servicioId.value = '';
+      servicioEstado.value = 'disponible';
+      servicioFormTitle.textContent = 'Agregar nuevo servicio';
+      servicioCancelBtn.hidden = true;
+    }
+
+    function renderServicios() {
+      serviciosPanel.innerHTML = SERVICE_CATEGORIES.map(cat => {
+        const items = servicios.filter(s => s.categoria === cat.key);
+        return `
+          <div class="service-category-block">
+            <h4 class="service-category-heading">${cat.icon} ${cat.label}</h4>
+            <div class="resource-list">
+              ${items.length ? items.map(s => `
+                <div class="resource-item">
+                  <div class="resource-item-header">
+                    <div class="resource-item-title">${s.nombre}</div>
+                    <span class="resource-item-type">${s.estado === 'disponible' ? 'Disponible' : 'No disponible'}</span>
+                  </div>
+                  ${s.descripcion ? `<div class="resource-item-contact">${s.descripcion}</div>` : ''}
+                  <div class="resource-item-contact">Precio: ${fmtMoney(s.precio)}</div>
+                  <div class="resource-item-actions">
+                    <button type="button" class="resource-action-btn resource-action-btn-edit" data-edit-servicio="${s.id}">Editar</button>
+                    <button type="button" class="resource-action-btn resource-action-btn-delete" data-delete-servicio="${s.id}">Eliminar</button>
+                  </div>
+                </div>
+              `).join('') : `<div class="resource-item"><strong>Sin servicios en esta categoría.</strong></div>`}
+            </div>
+          </div>
+        `;
+      }).join('');
+      populateServiciosChecklist();
+    }
+
+    serviciosPanel.addEventListener('click', async e => {
+      const editBtn = e.target.closest('[data-edit-servicio]');
+      const delBtn = e.target.closest('[data-delete-servicio]');
+      if (editBtn) {
+        const s = servicioById(Number(editBtn.dataset.editServicio));
+        if (!s) return;
+        servicioId.value = s.id;
+        servicioCategoria.value = s.categoria;
+        servicioNombre.value = s.nombre;
+        servicioPrecio.value = s.precio || '';
+        servicioEstado.value = s.estado || 'disponible';
+        servicioDescripcion.value = s.descripcion || '';
+        servicioFormTitle.textContent = `Editando ${s.nombre}`;
+        servicioCancelBtn.hidden = false;
+        servicioForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (delBtn) {
+        const id = Number(delBtn.dataset.deleteServicio);
+        const s = servicioById(id);
+        if (s && confirm(`¿Eliminar el servicio "${s.nombre}"?`)) {
+          try {
+            await apiSend('servicios.php?id=' + id, 'DELETE');
+            await loadAll();
+            renderAll();
+            showToast('Servicio eliminado');
+          } catch (err) { showToast(err.message); }
+        }
+      }
+    });
+
+    servicioCancelBtn.addEventListener('click', resetServicioForm);
+
+    servicioForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const nombre = servicioNombre.value.trim();
+      if (!nombre) { showToast('Ingresa el nombre del servicio'); return; }
+      const data = {
+        categoria: servicioCategoria.value,
+        nombre,
+        precio: servicioPrecio.value ? Number(servicioPrecio.value) : 0,
+        estado: servicioEstado.value,
+        descripcion: servicioDescripcion.value.trim()
+      };
+      const id = Number(servicioId.value);
+      try {
+        if (id) {
+          await apiSend('servicios.php?id=' + id, 'PUT', data);
+          showToast('Servicio actualizado');
+        } else {
+          await apiSend('servicios.php', 'POST', data);
+          showToast('Servicio guardado correctamente');
+        }
+        await loadAll();
+        renderAll();
+        resetServicioForm();
+      } catch (err) { showToast(err.message); }
+    });
+
+    /* ═══════════════ MODAL: NUEVO / EDITAR EVENTO ═══════════════ */
+    const eventModalOverlay = document.getElementById('eventModalOverlay');
+    const eventModalTitle = document.getElementById('eventModalTitle');
+    const eventForm = document.getElementById('eventForm');
+    const eventIdInput = document.getElementById('eventId');
+    const categorySelect = document.getElementById('eventCategorySelect');
+    const newCategoryName = document.getElementById('newCategoryName');
+    const newCategoryColor = document.getElementById('newCategoryColor');
+    const eventDateInput = document.getElementById('eventDate');
+    const eventTimeInput = document.getElementById('eventTime');
+    const eventTitleInput = document.getElementById('eventTitle');
+    const eventLugarSelect = document.getElementById('eventLugar');
+    const eventUbicacionInput = document.getElementById('eventUbicacion');
+    const eventPresupuestoInput = document.getElementById('eventPresupuesto');
+    const eventTotalDisplay = document.getElementById('eventTotalDisplay');
+    const eventServiciosChecklist = document.getElementById('eventServiciosChecklist');
+    const eventEstadoSelect = document.getElementById('eventEstado');
+    const clienteTipoDocSelect = document.getElementById('clienteTipoDoc');
+    const clienteDocumentoInput = document.getElementById('clienteDocumento');
+    const clienteNombreInput = document.getElementById('clienteNombre');
+    const clienteApellidoInput = document.getElementById('clienteApellido');
+    const clienteTelefonoInput = document.getElementById('clienteTelefono');
+    const clienteEmailInput = document.getElementById('clienteEmail');
+    const tipoEventoInput = document.getElementById('tipoEvento');
+    const clienteInvitadosInput = document.getElementById('clienteInvitados');
+    const peticionesClienteInput = document.getElementById('peticionesCliente');
+    const notasLogisticaInput = document.getElementById('notasLogistica');
+
+    function populateLugarSelect(selectedId) {
+      eventLugarSelect.innerHTML = '<option value="">— Sin lugar asignado —</option>' +
+        lugares.map(l => `<option value="${l.id}" ${selectedId === l.id ? 'selected' : ''}>${l.nombre} (${l.capacidad || '?'} pers.) — ${fmtMoney(l.precio)}</option>`).join('');
+    }
+
+    function computeTotal() {
+      const lugarSel = eventLugarSelect.value ? lugarById(Number(eventLugarSelect.value)) : null;
+      let total = lugarSel ? Number(lugarSel.precio) || 0 : 0;
+      eventServiciosChecklist.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+        total += Number(cb.dataset.price) || 0;
+      });
+      eventTotalDisplay.textContent = 'Total estimado de logística: ' + fmtMoney(total);
+      return total;
+    }
+
+    function populateServiciosChecklist(selectedIds) {
+      const sel = new Set(selectedIds || []);
+      eventServiciosChecklist.innerHTML = SERVICE_CATEGORIES.map(cat => {
+        const items = servicios.filter(s => s.categoria === cat.key);
+        if (!items.length) return '';
+        return `
+          <div class="service-check-group">
+            <div class="service-check-heading">${cat.icon} ${cat.label}</div>
+            <div class="service-check-items">
+              ${items.map(s => `
+                <label class="service-check-item">
+                  <input type="checkbox" value="${s.id}" data-price="${s.precio || 0}" ${sel.has(s.id) ? 'checked' : ''}>
+                  <span>${s.nombre}</span>
+                  <em>${fmtMoney(s.precio)}</em>
+                </label>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+      eventServiciosChecklist.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.addEventListener('change', computeTotal);
+      });
+      computeTotal();
+    }
+
+    function renderCategoryOptions() {
+      categorySelect.innerHTML = categorias.map(cat => `<option value="${cat.id}" data-color="${cat.color}">${cat.nombre}</option>`).join('');
+      const chipContainer = document.getElementById('eventCategoryChips');
+      chipContainer.innerHTML = categorias.map(cat => {
+        const isSelected = String(cat.id) === categorySelect.value;
+        return `<span class="event-category-chip" style="background:${cat.color}18;color:${cat.color};border-color:${cat.color}22;${isSelected ? 'box-shadow: inset 0 0 0 1px ' + cat.color : ''}"><span class="event-category-dot" style="background:${cat.color}"></span>${cat.nombre}</span>`;
+      }).join('');
+    }
+
+    function openEventModal(prefillDate) {
+      eventModalTitle.textContent = 'Nueva reserva y evento';
+      eventIdInput.value = '';
+      eventForm.reset();
+      eventDateInput.value = (prefillDate || today).toISOString().slice(0, 10);
+      eventTimeInput.value = '19:00';
+      eventEstadoSelect.value = 'pendiente';
+      clienteTipoDocSelect.value = 'cedula_ciudadania';
+      newCategoryColor.value = '#7c3aed';
+      renderCategoryOptions();
+      populateLugarSelect(null);
+      eventUbicacionInput.value = '';
+      populateServiciosChecklist([]);
+      eventModalOverlay.hidden = false;
+      clienteNombreInput.focus();
+    }
+
+    function openEditModal(ev) {
+      eventModalTitle.textContent = 'Editar reserva y evento';
+      eventIdInput.value = ev.id;
+      clienteTipoDocSelect.value = ev.clienteTipoDocumento || 'cedula_ciudadania';
+      clienteDocumentoInput.value = ev.clienteDocumento || '';
+      clienteNombreInput.value = ev.clienteNombre || '';
+      clienteApellidoInput.value = ev.clienteApellido || '';
+      clienteTelefonoInput.value = ev.clienteTelefono || '';
+      clienteEmailInput.value = ev.clienteEmail || '';
+      tipoEventoInput.value = ev.tipoEvento || 'Otro';
+      clienteInvitadosInput.value = ev.invitados || '';
+      eventPresupuestoInput.value = ev.presupuesto || '';
+      eventEstadoSelect.value = ev.estado || 'pendiente';
+      peticionesClienteInput.value = ev.peticionesCliente || '';
+      eventTitleInput.value = ev.titulo || '';
+      eventDateInput.value = ev.fecha;
+      eventTimeInput.value = (ev.hora || '19:00:00').slice(0, 5);
+      newCategoryName.value = '';
+      newCategoryColor.value = '#7c3aed';
+      renderCategoryOptions();
+      categorySelect.value = ev.categoriaId;
+      renderCategoryOptions();
+      populateLugarSelect(ev.lugarId);
+      eventUbicacionInput.value = ev.ubicacion || '';
+      populateServiciosChecklist(ev.servicioIds);
+      notasLogisticaInput.value = ev.notasLogistica || '';
+      closeDetailModal();
+      eventModalOverlay.hidden = false;
+    }
+
+    function closeEventModal() {
+      eventModalOverlay.hidden = true;
+      eventForm.reset();
+    }
+
+    document.getElementById('btnNuevoEvento') && document.getElementById('btnNuevoEvento').addEventListener('click', () => openEventModal());
+    document.getElementById('calNewEventBtn').addEventListener('click', () => openEventModal());
+    document.querySelectorAll('[data-close-event-modal]').forEach(btn => btn.addEventListener('click', closeEventModal));
+    eventModalOverlay.addEventListener('click', e => { if (e.target === eventModalOverlay) closeEventModal(); });
+    categorySelect.addEventListener('change', renderCategoryOptions);
+    eventLugarSelect.addEventListener('change', computeTotal);
+
+    eventForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const titulo = eventTitleInput.value.trim();
+      const dateValue = eventDateInput.value;
+      const clienteNombre = clienteNombreInput.value.trim();
+      const clienteApellido = clienteApellidoInput.value.trim();
+      const clienteTelefono = clienteTelefonoInput.value.trim();
+      const clienteEmail = clienteEmailInput.value.trim();
+      if (!titulo || !dateValue || !clienteNombre || !clienteApellido || !clienteTelefono || !clienteEmail) {
+        showToast('Completa nombre, apellido, teléfono, correo, evento y fecha');
+        return;
+      }
+
+      const servicioIds = Array.from(eventServiciosChecklist.querySelectorAll('input[type="checkbox"]:checked')).map(cb => Number(cb.value));
+      const lugarIdVal = eventLugarSelect.value ? Number(eventLugarSelect.value) : null;
+      const total = computeTotal();
+
+      const payload = {
+        titulo,
+        fecha: dateValue,
+        hora: eventTimeInput.value || '19:00',
+        categoriaId: newCategoryName.value.trim() ? null : Number(categorySelect.value) || null,
+        categoriaNombre: newCategoryName.value.trim() || null,
+        categoriaColor: newCategoryColor.value,
+        estado: eventEstadoSelect.value,
+        invitados: clienteInvitadosInput.value ? Number(clienteInvitadosInput.value) : 0,
+        presupuesto: eventPresupuestoInput.value ? Number(eventPresupuestoInput.value) : 0,
+        total,
+        ubicacion: eventUbicacionInput.value.trim(),
+        peticionesCliente: peticionesClienteInput.value.trim(),
+        notasLogistica: notasLogisticaInput.value.trim(),
+        lugarId: lugarIdVal,
+        servicioIds,
+        cliente: {
+          tipoDocumento: clienteTipoDocSelect.value,
+          documento: clienteDocumentoInput.value ? Number(clienteDocumentoInput.value) : null,
+          nombre: clienteNombre,
+          apellido: clienteApellido,
+          telefono: clienteTelefono,
+          correo: clienteEmail
+        }
+      };
+
+      const editId = Number(eventIdInput.value);
+      try {
+        if (editId) {
+          await apiSend('eventos.php?id=' + editId, 'PUT', payload);
+          showToast('Reserva y evento actualizados');
+        } else {
+          await apiSend('eventos.php', 'POST', payload);
+          showToast('Reserva y evento creados. Ya aparece en el calendario.');
+        }
+        await loadAll();
+        closeEventModal();
+        renderAll();
+      } catch (err) {
+        showToast(err.message);
+      }
+    });
+
+    /* ═══════════════ MODAL: DETALLE DE EVENTO ═══════════════ */
+    const detailModalOverlay = document.getElementById('detailModalOverlay');
+    const detailModalHeader = document.getElementById('detailModalHeader');
+    const detailModalBadges = document.getElementById('detailModalBadges');
+    const detailModalTitle = document.getElementById('detailModalTitle');
+    const detailModalMeta = document.getElementById('detailModalMeta');
+    const detailModalBody = document.getElementById('detailModalBody');
+    const detailDeleteBtn = document.getElementById('detailDeleteBtn');
+    const detailEditBtn = document.getElementById('detailEditBtn');
+    let currentDetailId = null;
+
+    function closeDetailModal() { detailModalOverlay.hidden = true; currentDetailId = null; }
+    document.querySelectorAll('[data-close-detail-modal]').forEach(btn => btn.addEventListener('click', closeDetailModal));
+    detailModalOverlay.addEventListener('click', e => { if (e.target === detailModalOverlay) closeDetailModal(); });
+
+    function showDetail(ev) {
+      if (!ev) return;
+      currentDetailId = ev.id;
+      const c = getCategoryColor(ev);
+      const st = deriveDisplayStatus(ev);
+      const si = statusInfo[st];
+      const lugar = ev.lugarId ? lugarById(ev.lugarId) : null;
+      const serviciosSel = (ev.servicioIds || []).map(servicioById).filter(Boolean);
+
+      detailModalHeader.style.background = `linear-gradient(135deg, ${c.bg}, var(--card-bg))`;
+      detailModalHeader.style.borderLeft = `4px solid ${c.border}`;
+      detailModalBadges.innerHTML =
+        `<span class="event-cat-badge" style="background:${c.bg};color:${c.text};border:1px solid ${c.border}">${ev.categoria || 'Sin clasificar'}</span>` +
+        `<span class="event-cat-badge" style="background:${si.bg};color:${si.color};border:1px solid ${si.dot}">${si.label}</span>`;
+      detailModalTitle.textContent = ev.titulo;
+      detailModalMeta.innerHTML =
+        `<i class="ti ti-calendar"></i> ${parseLocalDate(ev.fecha).toLocaleDateString('es-CO', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} &nbsp;·&nbsp; <i class="ti ti-clock"></i> ${(ev.hora || '').slice(0, 5)}`;
+
+      const serviciosPorCat = SERVICE_CATEGORIES.map(cat => {
+        const items = serviciosSel.filter(s => s.categoria === cat.key);
+        if (!items.length) return '';
+        return `<div class="detail-service-group">
+          <div class="detail-service-heading">${cat.icon} ${cat.label}</div>
+          <div class="detail-chip-row">${items.map(s => `<span class="detail-chip">${s.nombre}</span>`).join('')}</div>
+        </div>`;
+      }).join('');
+
+      detailModalBody.innerHTML = `
+        <div class="detail-grid">
+          <div class="detail-block">
+            <h4 class="form-section-title"><i class="ti ti-user-circle"></i> Cliente / Reserva</h4>
+            <p><strong>${ev.clienteNombre || ''} ${ev.clienteApellido || ''}</strong></p>
+            <p class="detail-muted">${ev.tipoEvento || ''} ${ev.invitados ? '· ' + ev.invitados + ' invitados' : ''}</p>
+            <p class="detail-muted">${ev.clienteTelefono ? '<i class="ti ti-phone"></i> ' + ev.clienteTelefono : ''} ${ev.clienteEmail ? ' &nbsp; <i class="ti ti-mail"></i> ' + ev.clienteEmail : ''}</p>
+            <p class="detail-muted">Presupuesto: ${fmtMoney(ev.presupuesto)} · Total logística: ${fmtMoney(ev.total)}</p>
+            ${ev.peticionesCliente ? `<p class="detail-quote">"${ev.peticionesCliente}"</p>` : ''}
+          </div>
+          <div class="detail-block">
+            <h4 class="form-section-title"><i class="ti ti-building-community"></i> Lugar</h4>
+            ${lugar ? `
+              <p><strong>${lugar.nombre}</strong></p>
+              <p class="detail-muted">${lugar.ubicacion || ''} · ${lugar.capacidad ? lugar.capacidad + ' personas' : ''}</p>
+              <p class="detail-muted">${fmtMoney(lugar.precio)}</p>
+            ` : '<p class="detail-muted">Sin lugar asignado.</p>'}
+            ${ev.ubicacion ? `<p class="detail-muted"><i class="ti ti-map-pin"></i> ${ev.ubicacion}</p>` : ''}
+          </div>
+        </div>
+        <div class="detail-block" style="margin-top:1rem">
+          <h4 class="form-section-title"><i class="ti ti-tools-kitchen-2"></i> Servicios de logística</h4>
+          ${serviciosPorCat || '<p class="detail-muted">Sin servicios asignados.</p>'}
+        </div>
+        ${ev.notasLogistica ? `
+        <div class="detail-block" style="margin-top:1rem">
+          <h4 class="form-section-title"><i class="ti ti-clipboard-list"></i> Notas internas</h4>
+          <p class="detail-muted">${ev.notasLogistica}</p>
+        </div>` : ''}
+      `;
+
+      detailModalOverlay.hidden = false;
+    }
+    window.__calShowDetail = id => showDetail(eventos.find(e => e.id === id));
+
+    detailEditBtn.addEventListener('click', () => {
+      const ev = eventos.find(e => e.id === currentDetailId);
+      if (ev) openEditModal(ev);
+    });
+    detailDeleteBtn.addEventListener('click', async () => {
+      const ev = eventos.find(e => e.id === currentDetailId);
+      if (ev && confirm(`¿Eliminar la reserva y evento "${ev.titulo}"?`)) {
+        try {
+          await apiSend('eventos.php?id=' + ev.id, 'DELETE');
+          await loadAll();
+          closeDetailModal();
+          renderAll();
+          showToast('Evento eliminado');
+        } catch (err) { showToast(err.message); }
+      }
+    });
+
+    /* ═══════════════ CALENDARIO ═══════════════ */
+    const sameDay = (a, b) => a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const days = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
 
     let currentDate = new Date(today);
     let currentView = 'month';
 
-    const calGrid     = document.getElementById('calGrid');
-    const calTitle    = document.getElementById('calTitle');
-    const calMonthV   = document.getElementById('calMonthView');
-    const calWeekV    = document.getElementById('calWeekView');
+    const calGrid = document.getElementById('calGrid');
+    const calTitle = document.getElementById('calTitle');
+    const calMonthV = document.getElementById('calMonthView');
+    const calWeekV = document.getElementById('calWeekView');
     const calWeekWrap = document.getElementById('calWeekWrap');
-    const detailPanel = document.getElementById('calEventDetail');
 
-    const sameDay = (a,b) => a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate();
-    const months  = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-    const days    = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+    function eventsOnDay(date) { return eventos.filter(e => sameDay(parseLocalDate(e.fecha), date)); }
 
-    function eventsOnDay(date) {
-      return calEvents.filter(e => sameDay(e.date, date));
-    }
-
-    // ── RENDER MES ──────────────────────────
     function renderMonth() {
-      const cy = currentDate.getFullYear();
-      const cm = currentDate.getMonth();
+      const cy = currentDate.getFullYear(), cm = currentDate.getMonth();
       calTitle.textContent = months[cm] + ' ' + cy;
       calGrid.innerHTML = '';
 
-      const firstDay    = new Date(cy, cm, 1).getDay();
-      const daysInMonth = new Date(cy, cm+1, 0).getDate();
-      const daysInPrev  = new Date(cy, cm, 0).getDate();
+      const firstDay = new Date(cy, cm, 1).getDay();
+      const daysInMonth = new Date(cy, cm + 1, 0).getDate();
+      const daysInPrev = new Date(cy, cm, 0).getDate();
 
       let cells = [];
-      for (let i = firstDay - 1; i >= 0; i--)
-        cells.push({ date: new Date(cy, cm-1, daysInPrev - i), otherMonth: true });
-      for (let d = 1; d <= daysInMonth; d++)
-        cells.push({ date: new Date(cy, cm, d), otherMonth: false });
+      for (let i = firstDay - 1; i >= 0; i--) cells.push({ date: new Date(cy, cm - 1, daysInPrev - i), otherMonth: true });
+      for (let d = 1; d <= daysInMonth; d++) cells.push({ date: new Date(cy, cm, d), otherMonth: false });
       let next = 1;
-      while (cells.length < 42)
-        cells.push({ date: new Date(cy, cm+1, next++), otherMonth: true });
+      while (cells.length < 42) cells.push({ date: new Date(cy, cm + 1, next++), otherMonth: true });
 
       cells.forEach(({ date, otherMonth }) => {
-        const isToday   = sameDay(date, today);
-        const isWeekend = [0,6].includes(date.getDay());
-        const isPast    = date < today && !isToday;
+        const isToday = sameDay(date, today);
+        const isWeekend = [0, 6].includes(date.getDay());
+        const isPast = date < today && !isToday;
         const cell = document.createElement('div');
-        cell.className = 'cal-cell' +
-          (otherMonth ? ' other-month' : '') +
-          (isToday    ? ' today' : '') +
-          (isWeekend  ? ' weekend' : '') +
-          (isPast && !otherMonth ? ' past-day' : '');
+        cell.className = 'cal-cell' + (otherMonth ? ' other-month' : '') + (isToday ? ' today' : '') + (isWeekend ? ' weekend' : '') + (isPast && !otherMonth ? ' past-day' : '');
 
         const num = document.createElement('div');
         num.className = 'cal-day-num';
@@ -438,78 +1373,58 @@
 
         const dayEvts = eventsOnDay(date);
         dayEvts.slice(0, 3).forEach(ev => {
-          const c  = eventColors[ev.cat] || eventColors['Social'];
-          const si = statusInfo[ev.status];
+          const c = getCategoryColor(ev);
+          const st = deriveDisplayStatus(ev);
           const pill = document.createElement('span');
           pill.className = 'cal-event-pill';
-          // Pasados: más apagados con tachado visual + check
-          const prefix = ev.status === 'realizado' ? '✓ ' : ev.status === 'en_curso' ? '● ' : '';
-          pill.textContent = prefix + ev.title;
-          pill.style.cssText =
-            'background:' + (ev.status === 'realizado' ? '#f1f5f9' : c.bg) + ';' +
-            'color:' + (ev.status === 'realizado' ? '#64748b' : c.text) + ';' +
-            'border-left:3px solid ' + (ev.status === 'realizado' ? '#94a3b8' : c.border) + ';' +
-            (ev.status === 'realizado' ? 'opacity:.7;' : '');
+          const prefix = st === 'completada' ? '✓ ' : st === 'en_curso' ? '● ' : st === 'cancelada' ? '✕ ' : '';
+          pill.textContent = prefix + ev.titulo;
+          pill.style.cssText = 'background:' + (st === 'completada' ? '#f1f5f9' : c.bg) + ';color:' + (st === 'completada' ? '#64748b' : c.text) + ';border-left:3px solid ' + (st === 'completada' ? '#94a3b8' : c.border) + ';' + (st === 'completada' ? 'opacity:.7;' : '');
           pill.addEventListener('click', e => { e.stopPropagation(); showDetail(ev); });
           cell.appendChild(pill);
         });
 
         if (dayEvts.length > 3) {
           const more = document.createElement('span');
-          more.style.cssText = 'font-size:.68rem;color:#8a9bb0;font-weight:600;padding-left:4px;cursor:pointer;';
+          more.style.cssText = 'font-size:.68rem;color:var(--page-subtle);font-weight:600;padding-left:4px;cursor:pointer;';
           more.textContent = '+' + (dayEvts.length - 3) + ' más';
           cell.appendChild(more);
         }
 
+        cell.addEventListener('dblclick', () => openEventModal(date));
         calGrid.appendChild(cell);
       });
     }
 
-    // ── RENDER SEMANA ────────────────────────
     function renderWeek() {
       const start = new Date(currentDate);
       start.setDate(currentDate.getDate() - currentDate.getDay());
       const end = new Date(start); end.setDate(start.getDate() + 6);
+      calTitle.textContent = days[start.getDay()] + ' ' + start.getDate() + ' ' + months[start.getMonth()] + ' – ' + days[end.getDay()] + ' ' + end.getDate() + ' ' + months[end.getMonth()];
 
-      calTitle.textContent = days[start.getDay()] + ' ' + start.getDate() + ' ' + months[start.getMonth()] +
-        ' – ' + days[end.getDay()] + ' ' + end.getDate() + ' ' + months[end.getMonth()];
-
-      const hours = [];
-      for (let h = 6; h <= 22; h++) hours.push(h);
-
-      let html = '<div class="cal-week-grid">';
-      html += '<div class="cal-week-day-header"></div>';
+      const hours = []; for (let h = 6; h <= 22; h++) hours.push(h);
+      let html = '<div class="cal-week-grid"><div class="cal-week-day-header"></div>';
       for (let d = 0; d < 7; d++) {
         const date = new Date(start); date.setDate(start.getDate() + d);
         const isToday = sameDay(date, today);
-        html += '<div class="cal-week-day-header'+(isToday?' today-col':'')+'">' +
-          days[d] + '<span style="font-size:1.15rem">' + date.getDate() + '</span></div>';
+        html += '<div class="cal-week-day-header' + (isToday ? ' today-col' : '') + '">' + days[d] + '<span style="font-size:1.15rem">' + date.getDate() + '</span></div>';
       }
-
       hours.forEach(h => {
-        const label = h === 12 ? '12 PM' : h < 12 ? h+' AM' : (h-12)+' PM';
+        const label = h === 12 ? '12 PM' : h < 12 ? h + ' AM' : (h - 12) + ' PM';
         html += '<div class="cal-week-time-label">' + label + '</div>';
         for (let d = 0; d < 7; d++) {
           const date = new Date(start); date.setDate(start.getDate() + d);
           const isToday = sameDay(date, today);
           const dayEvts = eventsOnDay(date).filter(ev => {
-            const evHour = parseInt((ev.hora || '10:00').split(':')[0]);
-            const isPM   = (ev.hora || '').includes('PM') && evHour !== 12;
-            const h24    = isPM ? evHour + 12 : evHour;
-            return h24 === h;
+            const evHour = parseInt((ev.hora || '19:00').split(':')[0]);
+            return evHour === h;
           });
-
           html += '<div class="cal-week-cell' + (isToday ? ' today-col' : '') + '">';
           dayEvts.forEach(ev => {
-            const c  = eventColors[ev.cat] || eventColors['Social'];
-            const si = statusInfo[ev.status];
-            const prefix = ev.status === 'realizado' ? '✓ ' : ev.status === 'en_curso' ? '● ' : '';
-            html += '<div class="cal-week-event" style="' +
-              'background:' + (ev.status === 'realizado' ? '#f1f5f9' : c.bg) + ';' +
-              'color:' + (ev.status === 'realizado' ? '#64748b' : c.text) + ';' +
-              'border-left:3px solid ' + (ev.status === 'realizado' ? '#94a3b8' : c.border) + ';' +
-              (ev.status === 'realizado' ? 'opacity:.75;' : '') +
-              '" onclick="window.__calShowDetail(' + ev.id + ')">' + prefix + ev.title + '</div>';
+            const c = getCategoryColor(ev);
+            const st = deriveDisplayStatus(ev);
+            const prefix = st === 'completada' ? '✓ ' : st === 'en_curso' ? '● ' : st === 'cancelada' ? '✕ ' : '';
+            html += '<div class="cal-week-event" style="background:' + (st === 'completada' ? '#f1f5f9' : c.bg) + ';color:' + (st === 'completada' ? '#64748b' : c.text) + ';border-left:3px solid ' + (st === 'completada' ? '#94a3b8' : c.border) + ';' + (st === 'completada' ? 'opacity:.75;' : '') + '" onclick="window.__calShowDetail(' + ev.id + ')">' + prefix + ev.titulo + '</div>';
           });
           html += '</div>';
         }
@@ -518,60 +1433,193 @@
       calWeekWrap.innerHTML = html;
     }
 
-    // ── DETALLE ─────────────────────────────
-    function showDetail(ev) {
-      const c  = eventColors[ev.cat] || eventColors['Social'];
-      const si = statusInfo[ev.status];
-      document.getElementById('detailTitle').textContent = ev.title;
-      document.getElementById('detailDate').innerHTML =
-        '<i class="ti ti-calendar" style="vertical-align:-2px;margin-right:4px"></i>' +
-        ev.date.toLocaleDateString('es-CO', {weekday:'long', year:'numeric', month:'long', day:'numeric'}) +
-        ' &nbsp;·&nbsp; <i class="ti ti-clock" style="vertical-align:-2px;margin-right:2px"></i>' + (ev.hora || '');
-      document.getElementById('detailDesc').textContent = ev.desc;
-      document.getElementById('detailCat').innerHTML =
-        '<span class="event-cat-badge" style="background:' + c.bg + ';color:' + c.text + ';border:1px solid ' + c.border + '">' + ev.cat + '</span>' +
-        '&nbsp;&nbsp;<span class="event-cat-badge" style="background:' + si.bg + ';color:' + si.color + ';border:1px solid ' + si.dot + '">' + si.label + '</span>';
-      detailPanel.style.display = 'block';
-      detailPanel.style.borderLeftColor = c.border;
-      detailPanel.scrollIntoView({ behavior:'smooth', block:'nearest' });
-    }
-
-  window.__calShowDetail = id => showDetail(calEvents.find(e => e.id === id));
-
-    // ── NAVEGACIÓN ───────────────────────────
     function navigate(dir) {
-      if (currentView === 'month') {
-        currentDate.setMonth(currentDate.getMonth() + dir);
-      } else {
-        currentDate.setDate(currentDate.getDate() + dir * 7);
-      }
-      render();
+      if (currentView === 'month') currentDate.setMonth(currentDate.getMonth() + dir);
+      else currentDate.setDate(currentDate.getDate() + dir * 7);
+      renderCalendar();
     }
-
     function setView(v) {
       currentView = v;
       document.querySelectorAll('.cal-view-btn').forEach(b => b.classList.toggle('active', b.dataset.view === v));
       calMonthV.style.display = v === 'month' ? '' : 'none';
-      calWeekV.style.display  = v === 'week'  ? '' : 'none';
-      render();
+      calWeekV.style.display = v === 'week' ? '' : 'none';
+      renderCalendar();
     }
-
-    function render() {
-      if (currentView === 'month') renderMonth();
-      else renderWeek();
-    }
+    function renderCalendar() { if (currentView === 'month') renderMonth(); else renderWeek(); }
 
     document.getElementById('calPrev').addEventListener('click', () => navigate(-1));
     document.getElementById('calNext').addEventListener('click', () => navigate(1));
-    document.getElementById('calToday').addEventListener('click', () => {
-      currentDate = new Date(today);
-      render();
+    document.getElementById('calToday').addEventListener('click', () => { currentDate = new Date(today); renderCalendar(); });
+    document.querySelectorAll('.cal-view-btn').forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
+
+    /* ═══════════════ ALERTAS DE PROXIMIDAD ═══════════════ */
+    const ALERT_WINDOW_DAYS = 5;
+    function computeUpcoming() {
+      return eventos
+        .filter(ev => ev.estado !== 'cancelada')
+        .map(ev => {
+          const d = parseLocalDate(ev.fecha);
+          const diffDays = Math.round((d - today) / 86400000);
+          return { ev, diffDays };
+        })
+        .filter(x => x.diffDays >= 0 && x.diffDays <= ALERT_WINDOW_DAYS)
+        .sort((a, b) => a.diffDays - b.diffDays);
+    }
+
+    function renderAlerts() {
+      const upcoming = computeUpcoming();
+      const panel = document.getElementById('alertsPanel');
+      const list = document.getElementById('alertsList');
+      const bellBadge = document.getElementById('bellBadge');
+
+      if (!upcoming.length) {
+        panel.hidden = true;
+        bellBadge.hidden = true;
+        return;
+      }
+      panel.hidden = false;
+      bellBadge.hidden = false;
+      bellBadge.textContent = upcoming.length;
+
+      list.innerHTML = upcoming.map(({ ev, diffDays }) => {
+        const lugar = ev.lugarId ? lugarById(ev.lugarId) : null;
+        const nServicios = (ev.servicioIds || []).length;
+        const when = diffDays === 0 ? 'Hoy' : diffDays === 1 ? 'Mañana' : `En ${diffDays} días`;
+        const urgency = diffDays <= 1 ? 'urgent' : diffDays <= 3 ? 'soon' : '';
+        return `
+          <div class="alert-item ${urgency}" data-open-alert="${ev.id}">
+            <div class="alert-item-when">${when}</div>
+            <div class="alert-item-body">
+              <strong>${ev.titulo}</strong>
+              <span>${ev.clienteNombre || ''} ${ev.clienteApellido || ''} · ${lugar ? lugar.nombre : 'Sin lugar'} · ${nServicios} servicio(s) de logística</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.getElementById('alertsList').addEventListener('click', e => {
+      const item = e.target.closest('[data-open-alert]');
+      if (item) showDetail(eventos.find(ev => ev.id === Number(item.dataset.openAlert)));
     });
-    document.querySelectorAll('.cal-view-btn').forEach(b => {
-      b.addEventListener('click', () => setView(b.dataset.view));
+    document.getElementById('btnBell').addEventListener('click', () => {
+      document.querySelector('.nav-item[data-section="inicio"]').click();
+      document.getElementById('alertsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 
-    render();
+    /* ═══════════════ TABLAS: EVENTOS / RESERVAS / DASHBOARD ═══════════════ */
+    function renderEventosTable() {
+      const tbody = document.getElementById('tablaEventos');
+      if (!eventos.length) { tbody.innerHTML = `<tr><td colspan="8" style="color:#8a9bb0;text-align:center;padding:2rem">Sin eventos</td></tr>`; return; }
+      tbody.innerHTML = eventos.slice().sort((a, b) => new Date(a.fecha) - new Date(b.fecha)).map(ev => {
+        const st = deriveDisplayStatus(ev);
+        const si = statusInfo[st];
+        const lugar = ev.lugarId ? lugarById(ev.lugarId) : null;
+        return `<tr>
+          <td>${ev.id}</td>
+          <td>${ev.titulo}</td>
+          <td>${ev.clienteNombre || ''} ${ev.clienteApellido || ''}</td>
+          <td>${ev.categoria || '—'}</td>
+          <td>${parseLocalDate(ev.fecha).toLocaleDateString('es-CO')}</td>
+          <td>${lugar ? lugar.nombre : '—'}</td>
+          <td><span class="event-cat-badge" style="background:${si.bg};color:${si.color};border:1px solid ${si.dot}">${si.label}</span></td>
+          <td>
+            <button class="resource-action-btn resource-action-btn-edit" data-view-evento="${ev.id}">Ver</button>
+            <button class="resource-action-btn resource-action-btn-delete" data-del-evento="${ev.id}">Eliminar</button>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+
+    document.getElementById('tablaEventos').addEventListener('click', async e => {
+      const v = e.target.closest('[data-view-evento]');
+      const d = e.target.closest('[data-del-evento]');
+      if (v) showDetail(eventos.find(ev => ev.id === Number(v.dataset.viewEvento)));
+      if (d) {
+        const ev = eventos.find(x => x.id === Number(d.dataset.delEvento));
+        if (ev && confirm(`¿Eliminar "${ev.titulo}"?`)) {
+          try {
+            await apiSend('eventos.php?id=' + ev.id, 'DELETE');
+            await loadAll();
+            renderAll();
+            showToast('Evento eliminado');
+          } catch (err) { showToast(err.message); }
+        }
+      }
+    });
+
+    let filtroReservasVal = '';
+    document.getElementById('filtroReservas').addEventListener('change', e => {
+      filtroReservasVal = e.target.value;
+      renderReservasTable();
+    });
+
+    function renderReservasTable() {
+      const tbody = document.getElementById('tablaReservas');
+      let list = eventos.slice().sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+      if (filtroReservasVal) {
+        list = list.filter(ev => deriveDisplayStatus(ev) === filtroReservasVal || ev.estado === filtroReservasVal);
+      }
+      if (!list.length) { tbody.innerHTML = `<tr><td colspan="8" style="color:#8a9bb0;text-align:center;padding:2rem">Sin reservas</td></tr>`; return; }
+      tbody.innerHTML = list.map(ev => {
+        const st = deriveDisplayStatus(ev);
+        const si = statusInfo[st];
+        const nServicios = (ev.servicioIds || []).length;
+        return `<tr>
+          <td>${ev.id}</td>
+          <td>${ev.clienteNombre || ''} ${ev.clienteApellido || ''}</td>
+          <td>${ev.titulo}</td>
+          <td>${parseLocalDate(ev.fecha).toLocaleDateString('es-CO')}</td>
+          <td>${ev.invitados || '—'}</td>
+          <td>${nServicios} servicio(s)</td>
+          <td><span class="event-cat-badge" style="background:${si.bg};color:${si.color};border:1px solid ${si.dot}">${si.label}</span></td>
+          <td><button class="resource-action-btn resource-action-btn-edit" data-view-reserva="${ev.id}">Ver</button></td>
+        </tr>`;
+      }).join('');
+    }
+    document.getElementById('tablaReservas').addEventListener('click', e => {
+      const v = e.target.closest('[data-view-reserva]');
+      if (v) showDetail(eventos.find(ev => ev.id === Number(v.dataset.viewReserva)));
+    });
+
+    function renderDashboard() {
+      document.getElementById('kpiEventos').textContent = eventos.length;
+      document.getElementById('kpiReservas').textContent = eventos.length;
+      document.getElementById('kpiConfirmadas').textContent = eventos.filter(ev => deriveDisplayStatus(ev) === 'confirmada').length;
+      const totalIngresos = eventos.reduce((sum, ev) => sum + (Number(ev.total) || 0), 0);
+      document.getElementById('kpiIngresos').textContent = fmtMoney(totalIngresos);
+      document.getElementById('kpiUsuarios').textContent = new Set(eventos.map(e => e.clienteEmail || e.clienteId)).size;
+
+      const tbody = document.getElementById('ultimasReservas');
+      const latest = eventos.slice().sort((a, b) => new Date(b.creadoEn) - new Date(a.creadoEn)).slice(0, 5);
+      tbody.innerHTML = latest.length ? latest.map(ev => {
+        const st = deriveDisplayStatus(ev);
+        const si = statusInfo[st];
+        return `<tr>
+          <td>${ev.id}</td>
+          <td>${ev.clienteNombre || ''} ${ev.clienteApellido || ''}</td>
+          <td>${ev.titulo}</td>
+          <td>${parseLocalDate(ev.fecha).toLocaleDateString('es-CO')}</td>
+          <td><span class="event-cat-badge" style="background:${si.bg};color:${si.color};border:1px solid ${si.dot}">${si.label}</span></td>
+        </tr>`;
+      }).join('') : `<tr><td colspan="5" style="color:#8a9bb0;text-align:center;padding:2rem">Sin datos aún</td></tr>`;
+    }
+
+    /* ═══════════════ RENDER GLOBAL ═══════════════ */
+    function renderAll() {
+      renderCalendar();
+      renderEventosTable();
+      renderReservasTable();
+      renderDashboard();
+      renderAlerts();
+      renderLugares();
+      renderServicios();
+    }
+
+    (async function init() {
+      await loadAll();
+      renderAll();
+    })();
   })();
 
   // Logout placeholder
