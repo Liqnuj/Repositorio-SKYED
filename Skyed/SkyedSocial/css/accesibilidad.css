@@ -213,7 +213,7 @@ nav{
 
 /* ── MODO OSCURO - NAV ── */
 body.dark-mode nav {
-  background:rgb(45 31 64 / 96%);
+  background:#1A0A2E;
 }
 body.dark-mode .nav-logo {
   color: #f0ebe5;
@@ -231,22 +231,22 @@ body.dark-mode .nav-actions button:hover {
   background: #2a2420;
 }
 body.dark-mode .search-wrap input {
-  background: #2a2420;
-  border-color: #3a3430;
+  background: none;
+  border-color: var(--accent);
   color: #f0ebe5;
 }
 body.dark-mode .search-wrap input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 body.dark-mode .btn-auth {
   color: #000000;
 }
 
 /* ── MODO OSCURO - TOPBAR ── */
-body.dark-mode .topbar {
+/* body.dark-mode .topbar {
   background: #0f0d0b;
-}
+} */
 
 /* ── MODO OSCURO - HERO ── */
 body.dark-mode .hero-text {
@@ -299,7 +299,7 @@ body.dark-mode .product-badge {
 
 /* ── MODO OSCURO - SECCIONES ── */
 body.dark-mode section {
-  background: rgba(18, 4, 35, 0.96);
+  background: var(--plum);
 }
 body.dark-mode .section-title {
   color: #f0ebe5;
@@ -581,8 +581,8 @@ body.dark-mode .delivery-option-name {
 /* ── MODO OSCURO - SKYED NAV ── */
 body.dark-mode .site-header,
 body.dark-mode .nav {
-  background: #1f1c19;
-  border-bottom-color: #3a3430;
+  background:  var(--sidebar-bg);
+  border-bottom-color:none;
 }
 
 body.dark-mode .nav-links a {
