@@ -3,6 +3,7 @@
 }
 
 .pqr-section{background:var(--cream);padding:5rem 0 7rem}
+.dark-mode .pqr-section{background:var(--plum)}
 .pqr-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:4rem;align-items:start}
 
 /* Tarjetas tipo */
@@ -56,7 +57,7 @@
   background:var(--plum);
 }
 .pf-group input::placeholder,.pf-group textarea::placeholder{color:var(--text-muted)}
-.pf-group input:focus,.pf-group select:focus,.pf-group textarea:focus{border-color:var(--plum);background:var(--white);box-shadow:0 0 0 3px rgba(26,10,46,.06)}
+.pf-group input:focus,.pf-group select:focus,.pf-group textarea:focus{border-color:var(--accent);background:var(--white);box-shadow:0 0 0 3px rgba(26,10,46,.06)}
 
 .dark-mode .pf-group input:focus,.pf-group select:focus,.pf-group textarea:focus{
   background: var(--plum);
@@ -200,4 +201,34 @@
 .pqr-form-wrap .pf-row .pf-group.span-two input#pqrEmail{
   width: 100% !important;
   max-width: none !important;
+}
+
+select#pqrEvento{
+  background: var(--cream);
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  color: var(--text-dark);
+  font-size: .88rem;
+  font-family: 'Inter', sans-serif;
+  transition: all .25s;
+  outline: none;
+}
+textarea#pqrDesc{
+  background: var(--cream);
+  border: 1.5px solid var(--accent);
+  border-radius: 10px;
+  color: var(--text-dark);
+  font-size: .88rem;
+  font-family: 'Inter', sans-serif;
+  transition: all .25s;
+  outline: none;  
+}
+
+.dark-mode select#pqrEvento{
+  background: var(--plum);
+  color: var(--white);
+}
+.dark-mode textarea#pqrDesc{
+  background: var(--plum);
+  color: var(--white);
 }

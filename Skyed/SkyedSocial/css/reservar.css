@@ -49,7 +49,7 @@
 .form-group label{display:block;font-size:.8rem;font-weight:600;color:rgba(30, 29, 29, 0.65);margin-bottom:.45rem;letter-spacing:.05em}
 .dark-mode .form-group label{color:rgba(255,255,255,.842)}
 .form-group input,.form-group select,.form-group textarea{width:100%;padding:.8rem 1rem;background:var(--white);border:1px solid var(--accent);border-radius:10px;color:var(--plum);font-size:.9rem;font-family:'Inter',sans-serif;transition:all .25s;outline:none}
-.dark-mode .form-group input,.dark-mode .form-group select,.dark-mode .form-group textarea{background:var(--plum);border-color:var(--accent);color:var(--plum)}
+.dark-mode .form-group input,.dark-mode .form-group select,.dark-mode .form-group textarea{background:var(--plum);border-color:var(--accent);color:var(--white)}
 /* Modo claro (default) */
 .form-group input::placeholder,
 .form-group textarea::placeholder{
