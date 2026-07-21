@@ -1,40 +1,32 @@
 <?php
 session_start();
-include("conexion.php");
+include("/../../conexion.php"); 
 
-if (!isset($_SESSION['verificado']) || $_SESSION['verificado'] !== true) {
-    header("Location: ../login.html");
-    exit();
-}
 
-$email = $_SESSION['email']; 
+$email_sesion = $_SESSION['email'] ?? '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $nueva_pass = $_POST['contraseña'];
-    $confirmar_pass = $_POST['confirmar_contraseña'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
+    $codigo = implode('', $_POST['codigo']);
 
-    if ($nueva_pass !== $confirmar_pass) {
-        $error = "Las contraseñas no coinciden.";
-    } 
-    else if (strlen($nueva_pass) < 8) {
-        $error = "La contraseña debe tener al menos 8 caracteres.";
-    } 
-    else {
-        $hashedPassword = password_hash($nueva_pass, PASSWORD_BCRYPT);
-        $stmt = $pdo->prepare("UPDATE usuario SET contrasena_u = ?, codigo = NULL WHERE correo_u = ?");
-        if ($stmt->execute([$hashedPassword, $email])) {
-            session_destroy(); 
-            echo "<script>
-                    alert('Contraseña actualizada con éxito. Ya puedes iniciar sesión.');
-                    window.location.href='../login.html';
-                  </script>";
-            exit();
-        } else {
-            $error = "Hubo un error al actualizar la contraseña. Inténtalo de nuevo.";
-        }
+    $stmt = $pdo->prepare("SELECT * FROM usuario WHERE TRIM(correo_u) = TRIM(?) AND TRIM(codigo) = TRIM(?)");
+    
+    $stmt->execute([$email_sesion, $codigo]);
+    
+    $usuario = $stmt->fetch();
+
+    if ($usuario) {
+        $_SESSION['usuario'] = $email_sesion;
+        $_SESSION['email'] = $email_sesion;
+        $_SESSION['verificado'] = true;
+        header("Location: cambiar_contraseña.php");
+        exit();
+    } else {
+        $error = "El código ingresado es incorrecto.";
     }
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -44,8 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <title>Recuperar contraseña — SKYED</title>
   <link rel="icon" href="../img/logo_deportivo_nav.png" />
   <link rel="stylesheet" href="../css/global.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
   <link rel="stylesheet" href="../css/accesibilidad.css" />
-  <link rel="stylesheet" href="../css/cambiar_contrasena.css" />
 </head>
 <body>
 
@@ -65,38 +57,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <li>Tu cuenta siempre protegida</li>
       </ul>
     </aside>
-<section class="auth-form-box">
-      <form class="auth-form" id="reset-password-form" action="cambiar_contraseña.php" method="POST">
-          <h1>Cambia tu contraseña</h1>
-          <p class="lead">Ingresa una contraseña válida y segura para tu cuenta</p>
-        <div class="form-group">
-          <label for="password">Nueva contraseña <span class="req">*</span></label>
-          <div class="input-wrap">
-            <input id="password" name="contraseña" type="password" required maxlength="50"
-                   data-validate="password" placeholder="••••••••" autocomplete="new-password" />
-            <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
-          </div>
-          <div class="password-strength"><div class="bar"></div></div>
-          <span class="help">Mínimo 8, una mayúscula, una minúscula y un número</span>
-          <span class="error"></span>
-        </div>
+    <section class="auth-form-box">
+    <form class="auth-form" id="reset-form" method="POST">
+        <div id="step2">
+            <h1>Verifica el código</h1>
+            <p class="lead">Enviamos un código a <br><strong><?php echo $email_sesion; ?></strong></p>
 
-        <div class="form-group">
-          <label for="password-confirm">Confirmar Contraseña <span class="req">*</span></label>
-          <div class="input-wrap">
-            <input id="password-confirm" name="confirmar_contraseña" type="password" required maxlength="50"
-                   data-validate="password-confirm" placeholder="••••••••" autocomplete="new-password" />
-            <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
-          </div>
-          <span class="error"></span>
+            <div class="form-group">
+                <label>Ingresa el código de 6 dígitos <span class="req">*</span></label>
+                <?php if(isset($error)): ?>
+                    <p style="color: #e74c3c; font-weight: bold;"><?php echo $error; ?></p>
+                <?php endif; ?>
+                <div class="otp-inputs" role="group" aria-label="Código de 6 dígitos">
+                    <input type="text" name="codigo[]" inputmode="numeric" maxlength="1" aria-label="Dígito 1" />
+                    <input type="text" name="codigo[]" inputmode="numeric" maxlength="1" aria-label="Dígito 2" />
+                    <input type="text" name="codigo[]" inputmode="numeric" maxlength="1" aria-label="Dígito 3" />
+                    <input type="text" name="codigo[]" inputmode="numeric" maxlength="1" aria-label="Dígito 4" />
+                    <input type="text" name="codigo[]" inputmode="numeric" maxlength="1" aria-label="Dígito 5" />
+                    <input type="text" name="codigo[]" inputmode="numeric" maxlength="1" aria-label="Dígito 6" />
+                </div>
+            </div>
         </div>
-        
-        <button type="submit" class="btn btn-primary btn-block">Guardar nueva contraseña</button>
-        
-      </form>
-    </section>
+        <button type="submit" class="btn btn-primary btn-block">Verificar código</button>
+        <div class="auth-footer">
+            <a href="../login.html">← Volver a iniciar sesión</a>
+        </div>
+        </section>
     </main>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    </form>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <footer class="sky-footer">
   <div class="sky-accent-bar"></div>
   <div class="sky-footer-top">
@@ -159,10 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <path d="M12 2a2 2 0 1 1 0 4 2 2 0 0 1 0-4zm0 6c1.1 0 2 .9 2 2v5h-1v5h-2v-5H9v-5c0-1.1.9-2 2-2z"/>
   </svg>
 </button>
-    <script src="../js/accesibilidad.js"></script> 
-    <script src="../js/global.js"></script>
-    <script src="../js/index.js"></script>
-    <script src="../js/auth.js"></script>
+
   <!-- Panel -->
     <div class="acc-panel" id="accPanel">
       <div class="acc-panel-title">Accesibilidad</div>
@@ -239,5 +225,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
       <button class="acc-reset" id="accReset">Restablecer todo</button>
     </div>
+  <script src="../js/accesibilidad.js"></script>
+  <script src="../js/verificar.js"></script>
+
 </body>
 </html>

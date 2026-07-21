@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("conexion.php"); 
+include("/../../conexion.php"); 
 include("correo.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
