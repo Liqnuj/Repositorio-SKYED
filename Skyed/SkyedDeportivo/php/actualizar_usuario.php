@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require __DIR__ . '/conexion.php';
+require __DIR__ . '/../../conexion.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
 $id   = intval($data['id_u'] ?? 0);

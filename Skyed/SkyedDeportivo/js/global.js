@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(r => r.json())
     .then(data => {
       const loginLink = document.querySelector('[data-auth-login]');
-      const registerLink = document.querySelector('[data-auth-register]');
       const userBox = document.querySelector('[data-auth-user]');
 
       if (data.loggedin && data.usuario) {
@@ -64,26 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ocultar botón de login
         if (loginLink) loginLink.style.display = 'none';
 
-        // Configurar botón de cerrar sesión
-        if (registerLink) {
-          registerLink.textContent = 'Cerrar sesión';
-          registerLink.href = '#';
-          registerLink.style.display = 'inline-block';
-          registerLink.addEventListener('click', e => {
-            e.preventDefault();
-            const closePath = isSubdir ? '../php/cerrar_sesion.php' : 'php/cerrar_sesion.php';
-            fetch(closePath).then(() => {
-              localStorage.removeItem('cicloUser');
-              showToast('Sesión cerrada', 'success');
-              setTimeout(() => location.href = 'index.html', 600);
-            });
-          });
-        }
+        // El cierre de sesión se maneja únicamente desde Principal
       } else {
         // No hay sesión activa
         localStorage.removeItem('cicloUser');
         if (loginLink) loginLink.style.display = 'inline-block';
-        if (registerLink) registerLink.style.display = 'none';
         if (userBox) userBox.style.display = 'none';
       }
     })

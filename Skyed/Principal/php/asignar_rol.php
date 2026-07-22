@@ -7,34 +7,56 @@ if (empty($_SESSION['usuario_id'])) {
     exit;
 }
 $id_u = $_SESSION['usuario_id'];
+$email_u = strtolower($_SESSION['email'] ?? '');
 
 $destino = $_GET['destino'] ?? '';
 if (!in_array($destino, ['social', 'deportivo'], true)) {
     die("Destino inválido");
 }
 
-try {
-    $sqlCheck = "SELECT r.nombre_rol 
-                 FROM rol r 
-                 JOIN usuario_contexto_rol ucr ON r.id_rol = ucr.id_rol 
-                 WHERE ucr.id_u = ? AND ucr.contexto = ?";
-    $stmt = $pdo->prepare($sqlCheck);
-    $stmt->execute([$id_u, $destino]);
-    
-    $rol_existente = $stmt->fetchColumn();
+$ADMINS = [
+    'deportivo' => ['correoadmindeportivo@gmail.com'],
+    'social'    => ['correoadminsocial@gmail.com'],
+];
 
-    if ($rol_existente) {
+$es_admin = in_array($email_u, $ADMINS[$destino], true);
+
+try {
+    if ($es_admin) {
+        $rol_admin = ($destino === 'deportivo') ? 'adminDeportivo' : 'adminSocial';
+
+        $sqlUpsert = "INSERT INTO usuario_contexto_rol (id_u, id_rol, contexto)
+                       VALUES (?, (SELECT id_rol FROM rol WHERE nombre_rol = ?), ?)
+                       ON DUPLICATE KEY UPDATE id_rol = VALUES(id_rol)";
+        $stmtUpsert = $pdo->prepare($sqlUpsert);
+        $stmtUpsert->execute([$id_u, $rol_admin, $destino]);
+
         $_SESSION['contexto_actual'] = $destino;
-        $_SESSION['rol_actual'] = $rol_existente;
-        
+        $_SESSION['rol_actual'] = $rol_admin;
+
     } else {
-        $id_rol_asignar = ($destino === 'deportivo') ? 2 : 1;
-        
-        $sqlInsert = "INSERT INTO usuario_contexto_rol (id_u, id_rol, contexto) VALUES (?, ?, ?)";
-        $stmtInsert = $pdo->prepare($sqlInsert);
-        $stmtInsert->execute([$id_u, $id_rol_asignar, $destino]);
-        $_SESSION['contexto_actual'] = $destino;
-        $_SESSION['rol_actual'] = ($destino === 'deportivo') ? 'participante' : 'cliente';
+        $sqlCheck = "SELECT r.nombre_rol 
+                     FROM rol r 
+                     JOIN usuario_contexto_rol ucr ON r.id_rol = ucr.id_rol 
+                     WHERE ucr.id_u = ? AND ucr.contexto = ?";
+        $stmt = $pdo->prepare($sqlCheck);
+        $stmt->execute([$id_u, $destino]);
+
+        $rol_existente = $stmt->fetchColumn();
+
+        if ($rol_existente) {
+            $_SESSION['contexto_actual'] = $destino;
+            $_SESSION['rol_actual'] = $rol_existente;
+
+        } else {
+            $id_rol_asignar = ($destino === 'deportivo') ? 2 : 1;
+
+            $sqlInsert = "INSERT INTO usuario_contexto_rol (id_u, id_rol, contexto) VALUES (?, ?, ?)";
+            $stmtInsert = $pdo->prepare($sqlInsert);
+            $stmtInsert->execute([$id_u, $id_rol_asignar, $destino]);
+            $_SESSION['contexto_actual'] = $destino;
+            $_SESSION['rol_actual'] = ($destino === 'deportivo') ? 'participante' : 'cliente';
+        }
     }
 
     if ($destino === 'deportivo') {

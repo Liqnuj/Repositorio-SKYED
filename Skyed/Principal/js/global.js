@@ -1,6 +1,5 @@
 /* ===== Utilidades comunes de Principal ===== */
 
-// Sistema de toast (idéntico al de SkyedDeportivo/js/global.js)
 function showToast(msg, type = '') {
   const t = document.createElement('div');
   t.className = `toast ${type}`;
@@ -14,9 +13,6 @@ function showToast(msg, type = '') {
 }
 window.showToast = showToast;
 
-// Principal no tiene backend propio: la sesión vive en SkyedDeportivo.
-// Si en el futuro se agregan botones con [data-auth-user] / [data-auth-login]
-// en esta carpeta, aquí se puede verificar la sesión activa así:
 document.addEventListener('DOMContentLoaded', () => {
   const loginLinks = document.querySelectorAll('[data-auth-login]');
   const registerLink = document.querySelector('[data-auth-register]');
@@ -24,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!loginLinks.length && !registerLink && !userBoxes.length) return;
 
-  fetch('../SkyedDeportivo/php/check-auth.php')
+  fetch('php/confirmar_sesion.php')
     .then(r => r.json())
     .then(data => {
       if (data.loggedin && data.usuario) {
@@ -44,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (userBox.dataset.mode === 'confirm') {
               userBox.dataset.mode = 'processing';
               userBox.innerHTML = `<i class="ti ti-loader-2"></i><span>Cerrando...</span>`;
-              fetch('../SkyedDeportivo/php/cerrar_sesion.php')
+              fetch('php/cerrar_sesion.php')
                 .then(() => {
                   showToast('Sesión cerrada', 'success');
                   setTimeout(() => {
@@ -76,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
           registerLink.style.display = 'inline-block';
           registerLink.addEventListener('click', e => {
             e.preventDefault();
-            fetch('../SkyedDeportivo/php/cerrar_sesion.php').then(() => {
+            fetch('php/cerrar_sesion.php').then(() => {
               showToast('Sesión cerrada', 'success');
               setTimeout(() => (location.href = 'principal.html'), 600);
             });

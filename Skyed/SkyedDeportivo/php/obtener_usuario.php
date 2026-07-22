@@ -1,6 +1,7 @@
 <?php
 header('Content-Type: application/json');
-require  'conexion.php';
+require __DIR__ . '/../../conexion.php';
+
 
 $id = intval($_GET['id'] ?? 0);
 if (!$id) { echo json_encode(['error' => 'ID inválido']); exit; }

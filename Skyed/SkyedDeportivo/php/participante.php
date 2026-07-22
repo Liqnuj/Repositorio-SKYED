@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/conexion.php';
+require __DIR__ . '/../../conexion.php';
 
 if (!isset($_SESSION['email'])) {
     header('Location: ../login.html');
@@ -291,7 +291,6 @@ if (isset($_SESSION['email'])) {
                   <div class="stat-row"><span class="label">Renovación</span><span class="value" id="c-renov">—</span></div>
                   <div class="stat-row"><span class="label">Total invertido</span><span class="value" id="c-total">$0</span></div>
                   <div style="margin-top:1.25rem;display:flex;flex-direction:column;gap:.6rem">
-                    <button type="button" onclick="handleLogout()" class="btn btn-outline btn-block">Cerrar sesión</button>
                     <button type="button" id="btn-delete" class="btn btn-ghost btn-block" style="color:var(--danger)">Eliminar cuenta</button>
                   </div>
                 </div>
@@ -305,23 +304,6 @@ if (isset($_SESSION['email'])) {
     </div>
 
   </main>
-
-  <!-- MODAL CONFIRMAR CIERRE DE SESIÓN -->
-  <div id="modal-logout" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;z-index:9999;display:none">
-    <div style="background:#fff;border-radius:12px;padding:2rem;max-width:400px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.2)">
-      <div style="font-size:2.5rem;margin-bottom:1rem">⏻</div>
-      <h2 style="margin:0 0 0.5rem;font-size:1.3rem;color:#1a1a1a">¿Cerrar sesión?</h2>
-      <p style="margin:0 0 1.5rem;color:#666;font-size:0.95rem">¿Estás seguro de que deseas cerrar tu sesión?</p>
-      <div style="display:flex;gap:0.75rem;justify-content:center">
-        <button onclick="closeLogoutModal()" style="padding:0.6rem 1.5rem;border:1px solid #ddd;background:#fff;border-radius:6px;cursor:pointer;font-size:0.95rem;font-weight:500;color:#666;transition:all 0.2s">
-          Cancelar
-        </button>
-        <button onclick="confirmLogout()" style="padding:0.6rem 1.5rem;background:#dc2626;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:0.95rem;font-weight:500;transition:all 0.2s">
-          Sí, cerrar sesión
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- FOOTER -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
@@ -452,31 +434,6 @@ if (isset($_SESSION['email'])) {
   let user = Object.assign({}, userDefaults, { foto: _localData.foto || null });
 
   const saveUser = () => localStorage.setItem(USER_KEY, JSON.stringify(user));
-
-  /* ===== SESSION MANAGEMENT ===== */
-  function handleLogout() {
-    const modal = document.getElementById('modal-logout');
-    if (modal) modal.style.display = 'flex';
-  }
-
-  function closeLogoutModal() {
-    const modal = document.getElementById('modal-logout');
-    if (modal) modal.style.display = 'none';
-  }
-
-  function confirmLogout() {
-    fetch('cerrar_sesion.php', { method: 'POST' })
-      .then(() => {
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '../login.html';
-      })
-      .catch(() => {
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.href = '../login.html';
-      });
-  }
 </script>
   
   <script src="../js/global.js"></script>
