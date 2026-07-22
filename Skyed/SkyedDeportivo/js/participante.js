@@ -683,19 +683,6 @@
     cRenov.textContent = fmtFechaLarga(renov.toISOString());
   }
 
-  const btnLogout = $('#btn-logout');
-  if (btnLogout) btnLogout.addEventListener('click', async () => {
-    if (!confirm('¿Cerrar sesión?')) return;
-    try {
-      await fetch('php/cerrar_sesion.php', { method: 'POST', credentials: 'include' });
-    } catch (_) {}
-    // Limpiar localStorage del usuario actual
-    localStorage.removeItem('cicloUser');
-    localStorage.removeItem('cicloVentas');
-    localStorage.removeItem('cicloNotif');
-    location.href = 'login.html';
-  });
-
   const btnDelete = $('#btn-delete');
   if (btnDelete) btnDelete.addEventListener('click', () => {
     if (!confirm('Esta acción eliminará tu cuenta permanentemente. ¿Continuar?')) return;

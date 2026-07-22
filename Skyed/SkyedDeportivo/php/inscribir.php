@@ -2,7 +2,7 @@
 // php/inscribir.php — registra una venta/factura
 header('Content-Type: application/json');
 session_start();
-require __DIR__ . '/conexion.php';
+require __DIR__ . '/../../conexion.php';
 
 if (empty($_SESSION['user_id'])) { http_response_code(401); echo json_encode(['ok'=>false,'error'=>'No autenticado']); exit; }
 $d = json_decode(file_get_contents('php://input'), true) ?: $_POST;

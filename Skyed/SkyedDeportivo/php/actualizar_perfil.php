@@ -1,7 +1,7 @@
 <?php
 session_start();
 header('Content-Type: application/json');
-require __DIR__ . '/conexion.php';
+require __DIR__ . '/../../conexion.php';
 
 if (!isset($_SESSION['email'])) {
     echo json_encode(['ok' => false, 'error' => 'No hay sesión activa']);

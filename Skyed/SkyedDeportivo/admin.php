@@ -1,6 +1,6 @@
 <?php
 session_start();
-require __DIR__ . '/php/conexion.php';
+require __DIR__ . '/../conexion.php';
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'adminDeportivo') {
     header("Location: login.html"); 
@@ -196,7 +196,6 @@ try {
         <div class="admin-name"><?php echo htmlspecialchars($_SESSION['nombre'] ?? 'Admin'); ?></div>
         <div class="admin-role">Super Admin</div>
       </div>
-      <button class="btn-logout" title="Cerrar sesión" onclick="handleLogoutAdmin()">⏻</button>
     </div>
   </div>
 </nav>
@@ -1814,31 +1813,6 @@ try {
 <!-- Toast -->
 <div class="toast" id="toast">✅ Acción completada</div>
 
-<!-- MODAL CONFIRMAR CIERRE DE SESIÓN -->
-<div id="modal-logout" class="logout-modal">
-    <div class="logout-modal-content">
-        <div class="logout-icon">⏻</div>
-
-        <h2 class="logout-title">
-            ¿Cerrar sesión?
-        </h2>
-
-        <p class="logout-text">
-            ¿Estás seguro de que deseas cerrar tu sesión?
-        </p>
-
-        <div class="logout-buttons">
-            <button onclick="closeLogoutModalAdmin()" class="btn-cancel">
-                Cancelar
-            </button>
-
-            <button onclick="confirmLogoutAdmin()" class="btn-cerrar">
-                Sí, cerrar sesión
-            </button>
-        </div>
-    </div>
-</div>
-
 
   <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -2780,31 +2754,6 @@ function guardarEventoPatrocinador() {
   .catch(() => showToast('Error de conexión ❌', 'error'));
 }
 
-
-/* ===== SESSION MANAGEMENT ===== */
-function handleLogoutAdmin() {
-  const modal = document.getElementById('modal-logout');
-  if (modal) {
-    modal.style.display = 'flex';
-  }
-}
-
-function closeLogoutModalAdmin() {
-  const modal = document.getElementById('modal-logout');
-  if (modal) {
-    modal.style.display = 'none';
-  }
-}
-
-function confirmLogoutAdmin() {
-  fetch('php/cerrar_sesion.php', { method: 'POST' })
-    .then(() => {
-      window.location.href = 'login.html';
-    })
-    .catch(() => {
-      window.location.href = 'login.html';
-    });
-}
 </script>
 <script src="js/crear-evento.js"></script>
 <script src="js/accesibilidad.js"></script>
