@@ -27,7 +27,7 @@
       <div class="aside-blob aside-blob--gold"></div>
 
       <div class="aside-content">
-        <span class="aside-eyebrow"><i class="ti ti-calendar-event"></i>&nbsp; Eventos deportivos y sociales</span>
+        <span class="aside-eyebrow"><i class="ti ti-calendar-event"></i>&nbsp; Eventos deportivos</span>
         <h1 class="aside-title">Bienvenido de vuelta a <span class="hl">SKYED</span></h1>
         <p class="aside-subtitle">
           Accede a tu cuenta para inscribirte en eventos, gestionar tus entradas
@@ -37,13 +37,13 @@
         <ul class="aside-features">
           <li><span class="feat-ico"><i class="ti ti-calendar"></i></span> Calendario completo de eventos en tiempo real</li>
           <li><span class="feat-ico"><i class="ti ti-ticket"></i></span> Historial de inscripciones y facturas</li>
-          <li><span class="feat-ico"><i class="ti ti-chart-bar"></i></span> Resultados y estadísticas de tus eventos</li>
+          <li><span class="feat-ico"><i class="ti ti-users"></i></span> Comunidad de más de 25.000 ciclistas</li>
         </ul>
 
         <div class="ticket-card">
           <div class="ticket-main">
             <div class="ticket-kicker">Tu próximo evento</div>
-            <div class="ticket-title">Feria SKYED </div>
+            <div class="ticket-title">Feria SKYED Deportivo</div>
             <div class="ticket-meta">Acceso general · Válido con tu cuenta</div>
           </div>
           <div class="ticket-stub">
@@ -60,25 +60,25 @@
         <h2 class="auth-heading">Iniciar sesión</h2>
         <p class="auth-subheading">Ingresa tus credenciales para continuar.</p>
 
-        <form id="loginForm" novalidate>
+        <form id="login-form" novalidate>
 
           <div class="form-group">
-            <label class="form-label" for="loginEmail">Correo electrónico<span class="req">*</span></label>
+            <label class="form-label" for="email">Correo electrónico<span class="req">*</span></label>
             <div class="input-wrap">
-              <input type="email" id="loginEmail" name="email" class="form-input" placeholder="tucorreo@gmail.com" autocomplete="email" maxlength="80">
+              <input type="email" id="email" name="email" class="form-input" placeholder="tucorreo@gmail.com" autocomplete="email" maxlength="80" data-validate="email" required>
             </div>
-            <div class="form-error"></div>
+            <div class="form-error error"></div>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="loginPassword">Contraseña<span class="req">*</span></label>
+            <label class="form-label" for="password">Contraseña<span class="req">*</span></label>
             <div class="input-wrap">
-              <input type="password" id="loginPassword" name="password" class="form-input" placeholder="••••••••" autocomplete="current-password" maxlength="50">
-              <button type="button" class="input-toggle" data-toggle-for="loginPassword" aria-label="Mostrar contraseña">
+              <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" autocomplete="current-password" maxlength="50" data-validate="password" required>
+              <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">
                 <i class="ti ti-eye"></i>
               </button>
             </div>
-            <div class="form-error"></div>
+            <div class="form-error error"></div>
           </div>
 
           <div class="row-between">
@@ -202,52 +202,5 @@
   <script src="js/accesibilidad.js"></script>
   <script src="js/global.js"></script>
   <script src="js/auth.js"></script>
-  <script>
-    SkyedAuth.initForm(
-      document.getElementById('loginForm'),
-      [
-        { id: 'loginEmail', type: 'email' },
-        { id: 'loginPassword', type: 'required', label: 'La contraseña' },
-      ],
-      async function (form) {
-        const btn = document.getElementById('loginSubmit');
-        btn.disabled = true;
-        btn.innerHTML = 'Verificando… <i class="ti ti-loader-2"></i>';
-
-        const payload = {
-          email: document.getElementById('loginEmail').value.trim().toLowerCase(),
-          password: document.getElementById('loginPassword').value,
-        };
-
-        try {
-          const response = await fetch('../SkyedDeportivo/php/login.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          const result = await response.json();
-
-          if (result.ok) {
-            showToast(`¡Bienvenido, ${result.usuario.nombre}!`, 'success');
-
-            // Limpiar datos del usuario anterior antes de guardar el nuevo
-            localStorage.removeItem('cicloUser');
-            localStorage.removeItem('cicloVentas');
-            localStorage.removeItem('cicloNotif');
-
-            setTimeout(() => { location.href = 'principal.html'; }, 1000);
-          } else {
-            showToast(result.error || 'Correo o contraseña incorrectos', 'error');
-            btn.disabled = false;
-            btn.innerHTML = 'Iniciar sesión <i class="ti ti-arrow-right"></i>';
-          }
-        } catch (err) {
-          showToast('Error de conexión con el servidor', 'error');
-          btn.disabled = false;
-          btn.innerHTML = 'Iniciar sesión <i class="ti ti-arrow-right"></i>';
-        }
-      }
-    );
-  </script>
 </body>
 </html>
