@@ -1,330 +1,819 @@
+/* ─── Expresiones regulares base ─────────────────────────────── */
+const RX = {
+  soloLetras  : /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ]+$/,
+  email       : /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/,
+  telefono    : /^\d{7,15}$/,
+  password : /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
+};
+
+const DOCUMENTO_RULES = {
+  cedula_ciudadania: {
+    patron      : /^\d{6,10}$/,
+    soloDigitos : true,
+    mayusculas  : false,
+    min         : 6,
+    max         : 10,
+    label       : 'Cédula de ciudadanía',
+    hint        : 'Solo números, entre 6 y 10 dígitos.',
+    placeholder : '1234567890',
+    inputmode   : 'numeric',
+  },
+  tarjeta_identidad: {
+    patron      : /^\d{10,11}$/,
+    soloDigitos : true,
+    mayusculas  : false,
+    min         : 10,
+    max         : 11,
+    label       : 'Tarjeta de identidad',
+    hint        : 'Solo números, entre 10 y 11 dígitos.',
+    placeholder : '10123456789',
+    inputmode   : 'numeric',
+  },
+  cedula_extranjeria: {
+    patron      : /^[A-Z0-9]{4,12}$/,
+    soloDigitos : false,
+    mayusculas  : true,
+    min         : 4,
+    max         : 12,
+    label       : 'Cédula de extranjería',
+    hint        : 'Letras mayúsculas y números, entre 4 y 12 caracteres.',
+    placeholder : 'E123456',
+    inputmode   : 'text',
+  },
+  pasaporte: {
+    patron      : /^[A-Z0-9]{5,20}$/,
+    soloDigitos : false,
+    mayusculas  : true,
+    min         : 5,
+    max         : 20,
+    label       : 'Pasaporte',
+    hint        : 'Letras mayúsculas y números, entre 5 y 20 caracteres.',
+    placeholder : 'AB1234567',
+    inputmode   : 'text',
+  },
+};
+
+/* ─── Mensajes de ayuda generales por campo ──────────────────── */
+const HINTS = {
+  nombre           : 'Solo letras, primera en mayúscula, máx. 30 caracteres, sin números ni más de un espacio entre palabras.',
+  apellido         : 'Solo letras, primera en mayúscula, máx. 30 caracteres, sin números ni más de un espacio entre palabras.',
+  email            : 'Formato válido: tucorreo@gmail.com',
+  telefono         : 'Solo números, entre 7 y 15 dígitos.',
+  password         : 'Mínimo 8 caracteres con al menos 1 mayúscula, 1 minúscula y 1 número.',
+  'password-confirm': 'Debe coincidir exactamente con la contraseña anterior.',
+  'fecha-nacimiento': 'Debes tener al menos 10 años.',
+};
+
 /* ================================================================
-   SkyedAuth — helper genérico de validación para los formularios
-   de autenticación de Principal (login / registro / recuperar).
-   Usa las mismas reglas que SkyedDeportivo/js/auth.js pero expuestas
-   como una API reutilizable: SkyedAuth.initForm() / initDocumentField()
+   UTILIDAD: MARCAR CAMPO VÁLIDO / INVÁLIDO
    ================================================================ */
-(function () {
-  'use strict';
+function setField(input, ok, msg) {
+  input.classList.toggle('valid',   ok);
+  input.classList.toggle('invalid', !ok);
 
-  /* ─── Expresiones regulares base (mismas que en SkyedDeportivo) ─── */
-  const RX = {
-    nombre   : /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ ]+$/,
-    email    : /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/,
-    telefono : /^\d{7,15}$/,
-    password : /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-  };
+  let errEl = null;
 
-  const DOCUMENTO_RULES = {
-    cedula_ciudadania: {
-      patron: /^\d{6,10}$/, soloDigitos: true, min: 6, max: 10,
-      hint: 'Solo números, entre 6 y 10 dígitos.',
-      placeholder: '1234567890', inputmode: 'numeric',
-    },
-    tarjeta_identidad: {
-      patron: /^\d{10,11}$/, soloDigitos: true, min: 10, max: 11,
-      hint: 'Solo números, entre 10 y 11 dígitos.',
-      placeholder: '10123456789', inputmode: 'numeric',
-    },
-    cedula_extranjeria: {
-      patron: /^[A-Z0-9]{4,12}$/, soloDigitos: false, min: 4, max: 12,
-      hint: 'Letras mayúsculas y números, entre 4 y 12 caracteres.',
-      placeholder: 'E123456', inputmode: 'text',
-    },
-    pasaporte: {
-      patron: /^[A-Z0-9]{5,20}$/, soloDigitos: false, min: 5, max: 20,
-      hint: 'Letras mayúsculas y números, entre 5 y 20 caracteres.',
-      placeholder: 'AB1234567', inputmode: 'text',
-    },
-  };
-
-  /* ─── Utilidades de estado visual (usa css: data-state + .form-error.show) ─── */
-  function getError(input) {
+  if (input.dataset.validate === 'checkbox') {
+    /* El .error del checkbox está como hermano siguiente de .checkbox-row */
+    const row = input.closest('.checkbox-row');
+    errEl = row?.nextElementSibling?.classList.contains('error')
+      ? row.nextElementSibling
+      : null;
+    /* Fallback: crearlo si no existe */
+    if (!errEl && row) {
+      errEl = document.createElement('span');
+      errEl.className = 'error error-terms';
+      row.parentNode.insertBefore(errEl, row.nextSibling);
+    }
+  } else {
+    /* Campos normales: el .error está dentro de .form-group */
     const group = input.closest('.form-group');
-    return group ? group.querySelector('.form-error') : null;
+    if (!group) return;
+    errEl = group.querySelector('.error');
+    if (!errEl) {
+      errEl = document.createElement('span');
+      errEl.className = 'error';
+      group.appendChild(errEl);
+    }
   }
 
-  function markValid(input) {
-    input.setAttribute('data-state', 'valid');
-    const err = getError(input);
-    if (err) { err.textContent = ''; err.classList.remove('show'); }
+  if (!errEl) return;
+
+  if (ok) {
+    errEl.textContent = '';
+    errEl.classList.remove('show');
+  } else {
+    const hint = HINTS[input.dataset.validate] || '';
+    errEl.innerHTML = `<strong>⚠ ${msg}</strong>${hint ? `<br><small>${hint}</small>` : ''}`;
+    errEl.classList.add('show');
+  }
+}
+
+/* ================================================================
+   GESTIÓN DINÁMICA DEL CAMPO DOCUMENTO
+   Se llama cada vez que cambia el select de tipo de documento
+   ================================================================ */
+function actualizarCampoDocumento(tipo) {
+  const docInput = document.getElementById('documento');
+  if (!docInput) return;
+
+  /* Sin selección: resetear a estado neutral */
+  if (!tipo || !DOCUMENTO_RULES[tipo]) {
+    docInput.placeholder  = 'Selecciona primero el tipo';
+    docInput.maxLength    = 20;
+    docInput.inputMode    = 'text';
+    docInput.disabled     = true;
+    docInput.value        = '';
+    docInput.classList.remove('valid', 'invalid');
+    const errEl = docInput.closest('.form-group')?.querySelector('.error');
+    if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+    return;
   }
 
-  function markInvalid(input, msg) {
-    input.setAttribute('data-state', 'invalid');
-    const err = getError(input);
-    if (err) { err.textContent = msg; err.classList.add('show'); }
+  const regla = DOCUMENTO_RULES[tipo];
+  docInput.disabled     = false;
+  docInput.placeholder  = regla.placeholder;
+  docInput.maxLength    = regla.max;
+  docInput.inputMode    = regla.inputmode;
+  docInput.value        = '';               // limpiar al cambiar tipo
+  docInput.classList.remove('valid', 'invalid');
+
+  /* Actualizar hint visual debajo del campo */
+  const group = docInput.closest('.form-group');
+  let helpEl  = group?.querySelector('.help-doc');
+  if (!helpEl && group) {
+    helpEl = document.createElement('span');
+    helpEl.className = 'help help-doc';
+    group.insertBefore(helpEl, group.querySelector('.error'));
+  }
+  if (helpEl) helpEl.textContent = regla.hint;
+
+  /* Limpiar error previo */
+  const errEl = group?.querySelector('.error');
+  if (errEl) { errEl.textContent = ''; errEl.classList.remove('show'); }
+}
+
+/* ================================================================
+   FILTROS DE ESCRITURA EN TIEMPO REAL
+   ================================================================ */
+
+/** Nombre / Apellido: capitaliza, bloquea dígitos y doble espacio */
+function filtroNombreApellido(e) {
+  const input = e.target;
+  let val = input.value;
+
+  val = val.replace(/[^A-Za-zÁÉÍÓÚáéíóúÜüÑñ ]/g, '');
+  val = val.replace(/^ +/, '');
+  val = val.replace(/ {2,}/g, ' ');
+  if (val.length > 30) val = val.slice(0, 30);
+
+  val = val.replace(/(^|\s)([a-záéíóúüña-z])/gi,
+    (_, sep, letra) => sep + letra.toUpperCase());
+
+  if (input.value !== val) {
+    const pos = input.selectionStart - (input.value.length - val.length);
+    input.value = val;
+    try { input.setSelectionRange(pos, pos); } catch (_) {}
+  }
+}
+
+/** Teléfono: solo dígitos */
+function filtroSoloNumeros(e) {
+  const input = e.target;
+  const val   = input.value.replace(/\D/g, '');
+  if (input.value !== val) input.value = val;
+}
+
+/** Email: sin espacios, minúsculas */
+function filtroEmail(e) {
+  const input = e.target;
+  const val   = input.value.replace(/\s/g, '').toLowerCase();
+  if (input.value !== val) input.value = val;
+}
+
+/**
+ * Documento: aplica el filtro según el tipo seleccionado.
+ * - Solo dígitos para CC y TI
+ * - Letras mayúsculas + dígitos para CE y Pasaporte
+ */
+function filtroDocumento(e) {
+  const input     = e.target;
+  const tipoSel   = document.getElementById('tipoDocumento');
+  const tipo      = tipoSel?.value || '';
+  const regla     = DOCUMENTO_RULES[tipo];
+  if (!regla) return;
+
+  let val = input.value;
+
+  if (regla.soloDigitos) {
+    /* CC, TI: eliminar todo lo que no sea dígito */
+    val = val.replace(/\D/g, '');
+  } else {
+    /* CE, Pasaporte: eliminar lo que no sea letra o dígito, forzar mayúsculas */
+    val = val.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
   }
 
-  function clearState(input) {
-    input.removeAttribute('data-state');
-    const err = getError(input);
-    if (err) { err.textContent = ''; err.classList.remove('show'); }
+  /* Respetar maxLength de la regla */
+  if (val.length > regla.max) val = val.slice(0, regla.max);
+
+  if (input.value !== val) input.value = val;
+}
+
+/** Bloquear teclas no numéricas (para campos de solo dígitos) */
+function bloquearTeclasNoNumericas(e) {
+  const permitidas = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Home','End'];
+  if (permitidas.includes(e.key)) return;
+  if (!/^\d$/.test(e.key)) e.preventDefault();
+}
+
+/** Bloquear teclas inválidas para documento (letras+dígitos o solo dígitos según tipo) */
+function bloquearTeclasDocumento(e) {
+  const permitidas = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Home','End'];
+  if (permitidas.includes(e.key)) return;
+
+  const tipoSel = document.getElementById('tipoDocumento');
+  const tipo    = tipoSel?.value || '';
+  const regla   = DOCUMENTO_RULES[tipo];
+  if (!regla) { e.preventDefault(); return; }
+
+  if (regla.soloDigitos) {
+    if (!/^\d$/.test(e.key)) e.preventDefault();
+  } else {
+    /* CE / Pasaporte: solo letras y dígitos */
+    if (!/^[A-Za-z0-9]$/.test(e.key)) e.preventDefault();
+  }
+}
+
+/* ================================================================
+   VALIDACIÓN DE CADA CAMPO
+   ================================================================ */
+
+function validateField(input) {
+  const v = input.value.trim();
+  const t = input.dataset.validate;
+
+  /* ── Obligatorio ── */
+  if (input.required && v === '') {
+    setField(input, false, 'Este campo es obligatorio.');
+    return false;
   }
 
-  /* ─── Filtros de escritura en tiempo real ─── */
-  function attachNameFilter(input) {
-    input.addEventListener('input', () => {
-      let val = input.value;
-      val = val.replace(/[^A-Za-zÁÉÍÓÚáéíóúÜüÑñ ]/g, '');
-      val = val.replace(/^ +/, '').replace(/ {2,}/g, ' ');
-      if (val.length > 30) val = val.slice(0, 30);
-      val = val.replace(/(^|\s)([a-záéíóúüña-z])/gi, (_, sep, letra) => sep + letra.toUpperCase());
-      if (input.value !== val) input.value = val;
-    });
+  /* ── Nombre / Apellido ── */
+  if (t === 'nombre' || t === 'apellido') {
+    if (v.length < 2) { setField(input, false, 'Mínimo 2 caracteres.'); return false; }
+    if (v.length > 30) { setField(input, false, 'Máximo 30 caracteres.'); return false; }
+    if (/\d/.test(v)) { setField(input, false, 'No se permiten números.'); return false; }
+    if (/ {2,}/.test(v)) { setField(input, false, 'No se permiten dos espacios seguidos.'); return false; }
+    const palabras = v.split(' ');
+    if (palabras.some(p => !RX.soloLetras.test(p))) {
+      setField(input, false, 'Solo letras, sin caracteres especiales.'); return false;
+    }
+    const correcto = palabras.map(p => p.charAt(0).toUpperCase() + p.slice(1)).join(' ');
+    if (v !== correcto) {
+      setField(input, false, 'La primera letra debe ir en mayúscula.'); return false;
+    }
   }
 
-  function attachDigitsOnlyFilter(input) {
-    input.addEventListener('input', () => {
-      const val = input.value.replace(/\D/g, '');
-      if (input.value !== val) input.value = val;
-    });
+  /* ── Documento (con reglas por tipo) ── */
+  if (t === 'documento') {
+    const tipoSel = document.getElementById('tipoDocumento');
+    const tipo    = tipoSel?.value || '';
+    const regla   = DOCUMENTO_RULES[tipo];
+
+    if (!tipo) {
+      setField(input, false, 'Primero selecciona el tipo de documento.');
+      return false;
+    }
+
+    if (!regla) {
+      setField(input, false, 'Tipo de documento no reconocido.');
+      return false;
+    }
+
+    if (v.length < regla.min) {
+      setField(input, false,
+        `Para ${regla.label} el mínimo es ${regla.min} caracteres. — ${regla.hint}`);
+      return false;
+    }
+
+    if (v.length > regla.max) {
+      setField(input, false,
+        `Para ${regla.label} el máximo es ${regla.max} caracteres. — ${regla.hint}`);
+      return false;
+    }
+
+    if (!regla.patron.test(v)) {
+      if (regla.soloDigitos) {
+        setField(input, false,
+          `La ${regla.label} solo admite números (${regla.min}–${regla.max} dígitos).`);
+      } else {
+        setField(input, false,
+          `El ${regla.label} solo admite letras mayúsculas y números (${regla.min}–${regla.max} caracteres).`);
+      }
+      return false;
+    }
   }
 
-  function attachEmailFilter(input) {
-    input.addEventListener('input', () => {
-      const val = input.value.replace(/\s/g, '').toLowerCase();
-      if (input.value !== val) input.value = val;
-    });
+  /* ── Email ── */
+  if (t === 'email') {
+    if (!RX.email.test(v)) {
+      setField(input, false, 'El correo no tiene un formato válido.'); return false;
+    }
+    const [usuario, dominio] = v.split('@');
+    if (!usuario || dominio?.split('.').some(p => !p)) {
+      setField(input, false, 'El correo no tiene un formato válido.'); return false;
+    }
   }
 
-  /* ─── Toggle de mostrar/ocultar contraseña: [data-toggle-for] ─── */
-  function initPasswordToggles(scope) {
-    scope.querySelectorAll('[data-toggle-for]').forEach(btn => {
-      const target = document.getElementById(btn.dataset.toggleFor);
-      if (!target || btn.dataset.toggleBound) return;
-      btn.dataset.toggleBound = '1';
-      btn.addEventListener('click', () => {
-        const icon = btn.querySelector('i');
-        const show = target.type === 'password';
-        target.type = show ? 'text' : 'password';
-        if (icon) {
-          icon.classList.toggle('ti-eye', !show);
-          icon.classList.toggle('ti-eye-off', show);
-        }
-        btn.setAttribute('aria-label', show ? 'Ocultar contraseña' : 'Mostrar contraseña');
+  /* ── Teléfono ── */
+  if (t === 'telefono') {
+    if (!/^\d+$/.test(v)) {
+      setField(input, false, 'Solo se permiten números.'); return false;
+    }
+    if (!RX.telefono.test(v)) {
+      setField(input, false, 'El teléfono debe tener entre 7 y 15 dígitos.'); return false;
+    }
+  }
+
+  /* ── Contraseña ── */
+  if (t === 'password') {
+    if (v.length < 8) {
+      setField(input, false, 'Mínimo 8 caracteres.'); return false;
+    }
+    if (!RX.password.test(v)) {
+      setField(input, false, 'Debe incluir mayúscula, minúscula y un número.'); return false;
+    }
+  }
+
+  /* ── Confirmar contraseña ── */
+  if (t === 'password-confirm') {
+    const pwInput = document.querySelector('[data-validate="password"]');
+    if (pwInput && v !== pwInput.value) {
+      setField(input, false, 'Las contraseñas no coinciden.'); return false;
+    }
+  }
+
+  /* ── Fecha de nacimiento ── */
+  if (t === 'fecha-nacimiento') {
+    const res = validarFechaNacimiento(v);
+    if (!res.ok) { setField(input, false, res.msg); return false; }
+  }
+
+  /* ── Select genérico ── */
+  if (t === 'select') {
+    if (!v) { setField(input, false, 'Selecciona una opción válida.'); return false; }
+  }
+
+  /* ── Checkbox de términos ── */
+  if (t === 'checkbox') {
+    if (!input.checked) {
+      setField(input, false, 'Debes aceptar los términos para continuar.'); return false;
+    }
+  }
+  setField(input, true, '');
+  return true;
+}
+
+
+
+function validarFechaNacimiento(valor) {
+  if (!valor) return { ok: false, msg: 'La fecha de nacimiento es obligatoria.' };
+
+  let dia, mes, anio;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(valor)) {
+    [anio, mes, dia] = valor.split('-').map(Number);
+  } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
+    [dia, mes, anio] = valor.split('/').map(Number);
+  } else {
+    return { ok: false, msg: 'Formato inválido. Usa DD/MM/AAAA.' };
+  }
+
+  const fecha = new Date(anio, mes - 1, dia);
+  if (fecha.getFullYear() !== anio || fecha.getMonth() !== mes - 1 || fecha.getDate() !== dia) {
+    return { ok: false, msg: 'La fecha no existe (revisa el día y el mes).' };
+  }
+
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
+
+  if (fecha >= hoy)
+    return { ok: false, msg: 'La fecha de nacimiento no puede ser hoy ni futura.' };
+  if (anio === hoy.getFullYear())
+    return { ok: false, msg: `El año de nacimiento no puede ser ${hoy.getFullYear()}.` };
+
+  const cumple10 = new Date(anio + 10, mes - 1, dia);
+  if (hoy < cumple10)
+    return { ok: false, msg: 'Debes tener al menos 10 años para registrarte.' };
+
+  if (hoy.getFullYear() - anio > 120)
+    return { ok: false, msg: 'Ingresa una fecha de nacimiento válida.' };
+
+  return { ok: true, msg: '' };
+}
+
+/* ================================================================
+   ADJUNTAR FILTROS Y VALIDACIÓN EN TIEMPO REAL
+   ================================================================ */
+function attachFilters(form) {
+  form.querySelectorAll('[data-validate]').forEach(input => {
+    const t = input.dataset.validate;
+
+    /* ── Nombre / Apellido ── */
+    if (t === 'nombre' || t === 'apellido') {
+      input.addEventListener('input', filtroNombreApellido);
+      input.addEventListener('keydown', e => {
+        const perm = ['Backspace','Delete','ArrowLeft','ArrowRight','Tab','Home','End',' '];
+        if (perm.includes(e.key)) return;
+        if (/^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ]$/.test(e.key)) return;
+        e.preventDefault();
       });
+    }
+
+    /* ── Teléfono ── */
+    if (t === 'telefono') {
+      input.addEventListener('input',   filtroSoloNumeros);
+      input.addEventListener('keydown', bloquearTeclasNoNumericas);
+      input.addEventListener('paste', e => {
+        const txt = (e.clipboardData || window.clipboardData).getData('text');
+        if (!/^\d+$/.test(txt)) e.preventDefault();
+      });
+    }
+
+    /* ── Documento ── */
+    if (t === 'documento') {
+      input.addEventListener('input',   filtroDocumento);
+      input.addEventListener('keydown', bloquearTeclasDocumento);
+      input.addEventListener('paste', e => {
+        /* Validar lo pegado según el tipo activo */
+        setTimeout(() => filtroDocumento({ target: input }), 0);
+      });
+    }
+
+    /* ── Email ── */
+    if (t === 'email') {
+      input.addEventListener('input', filtroEmail);
+      input.addEventListener('paste', () =>
+        setTimeout(() => filtroEmail({ target: input }), 0));
+    }
+
+    /* ── Checkbox: validar al marcar/desmarcar ── */
+    if (t === 'checkbox') {
+      input.addEventListener('change', () => validateField(input));
+    }
+
+    /* ── Select: validar al cambiar opción ── */
+    if (input.tagName === 'SELECT') {
+      input.addEventListener('change', () => validateField(input));
+    }
+
+    if (t !== 'checkbox') {
+          input.addEventListener('blur', () => validateField(input));
+          input.addEventListener('input', () => validateField(input));
+          input.addEventListener('animationstart', e => {
+            if (e.animationName === 'onAutoFillStart') validateField(input);
+          });
+    }
+  });
+}
+
+/* ================================================================
+   VIGILANCIA DE CAMPOS (respaldo para autofill que no dispara eventos)
+   ================================================================ */
+function iniciarVigilanciaDeCampos(form) {
+  const campos = form.querySelectorAll('[data-validate]');
+  const valoresPrevios = new Map();
+
+  campos.forEach(input => {
+    if (input.dataset.validate === 'checkbox') return;
+    valoresPrevios.set(input, input.value);
+  });
+
+  setInterval(() => {
+    campos.forEach(input => {
+      if (input.dataset.validate === 'checkbox') return;
+      if (input.value !== valoresPrevios.get(input)) {
+        valoresPrevios.set(input, input.value);
+        validateField(input);
+      }
     });
-  }
+  }, 400);
+}
 
-  /* ─── Indicador de fuerza de contraseña ─── */
-  function updateStrengthMeter(meterId, value) {
-    const meter = document.getElementById(meterId);
-    if (!meter) return;
-    const bars = meter.querySelectorAll('.strength-bars span');
-    const label = meter.querySelector('.strength-label');
+/* ================================================================
+   BARRA DE FORTALEZA DE CONTRASEÑA
+   ================================================================ */
 
-    if (!value) {
-      meter.classList.remove('show');
-      bars.forEach(b => (b.style.background = ''));
+function initPasswordStrength(form) {
+  const pwInput = form.querySelector('[data-validate="password"]');
+  const pwBar   = form.querySelector('.password-strength .bar');
+  const pwLabel = form.querySelector('.password-strength .label');
+  if (!pwInput || !pwBar) return;
+
+  const niveles = [
+    { color: '#dc2626', texto: 'Muy débil'  },
+    { color: '#f97316', texto: 'Débil'      },
+    { color: '#eab308', texto: 'Aceptable'  },
+    { color: '#16a34a', texto: 'Fuerte'     },
+    { color: '#0ea5e9', texto: 'Muy fuerte' },
+  ];
+
+  pwInput.addEventListener('input', () => {
+    const v = pwInput.value;
+    let score = 0;
+    if (v.length >= 8)           score++;
+    if (v.length >= 12)          score++;
+    if (/[A-Z]/.test(v))         score++;
+    if (/\d/.test(v))            score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+
+    const idx = Math.min(score, niveles.length) - 1;
+    pwBar.style.width      = (score * 20) + '%';
+    pwBar.style.background = idx >= 0 ? niveles[idx].color : '#e5e7eb';
+    if (pwLabel) pwLabel.textContent = idx >= 0 ? niveles[idx].texto : '';
+  });
+}
+
+/* ================================================================
+   TOGGLE MOSTRAR / OCULTAR CONTRASEÑA
+   ================================================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+    
+    const toggleButtons = document.querySelectorAll('.toggle-pass');
+
+    toggleButtons.forEach(button => {
+        
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); 
+            
+            const input = this.previousElementSibling;
+            
+            if (input && input.tagName === 'INPUT') {
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.textContent = '🙈'; 
+                } else {
+                    input.type = 'password';
+                    this.textContent = '👁'; 
+                }
+            } 
+        });
+    });
+});
+// Asegurarnos de que el HTML haya cargado
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- NUEVO: VALIDACIÓN DE CONTRASEÑAS EN TIEMPO REAL ---
+    const passwordInput = document.getElementById('password');
+    const confirmInput = document.getElementById('password-confirm');
+
+    // Función que revisa si son iguales
+    function chequearCoincidencia() {
+        // Solo empezamos a validar si ya escribieron algo en "Confirmar"
+        if (confirmInput.value === '') {
+            // Si está vacío, quitamos las alertas
+            confirmInput.classList.remove('valid', 'invalid');
+            const errorSpan = confirmInput.closest('.form-group').querySelector('.error');
+            if(errorSpan) {
+                errorSpan.textContent = '';
+                errorSpan.classList.remove('show');
+            }
+            return;
+        }
+        const errorSpan = confirmInput.closest('.form-group').querySelector('.error');
+
+        if (passwordInput.value === confirmInput.value) {
+            // ✅ SÍ COINCIDEN
+            confirmInput.classList.remove('invalid');
+            confirmInput.classList.add('valid'); 
+            
+            if (errorSpan) {
+                errorSpan.textContent = '¡Las contraseñas coinciden!';
+                // Forzamos el color a verde para el éxito
+                errorSpan.style.color = 'var(--success, #2e7d32)'; 
+                errorSpan.classList.add('show');
+            }
+        } else {
+            // ❌ NO COINCIDEN
+            confirmInput.classList.remove('valid');
+            confirmInput.classList.add('invalid'); 
+            
+            if (errorSpan) {
+                errorSpan.textContent = 'Las contraseñas no coinciden.';
+                // Volvemos al color rojo de error
+                errorSpan.style.color = 'var(--danger, #e74c3c)'; 
+                errorSpan.classList.add('show');
+            }
+        }
+    }
+    if (passwordInput && confirmInput) {
+        passwordInput.addEventListener('input', chequearCoincidencia);
+        confirmInput.addEventListener('input', chequearCoincidencia);
+    }
+});
+
+/* ================================================================
+   LÍMITES EN EL SELECTOR DE FECHA
+   ================================================================ */
+
+function initDateLimits() {
+  const fechaInput = document.querySelector('[data-validate="fecha-nacimiento"]');
+  if (!fechaInput) return;
+
+  const ayer = new Date();
+  ayer.setDate(ayer.getDate() - 1);
+  fechaInput.setAttribute('max', ayer.toISOString().split('T')[0]);
+
+  const min120 = new Date();
+  min120.setFullYear(min120.getFullYear() - 120);
+  fechaInput.setAttribute('min', min120.toISOString().split('T')[0]);
+}
+
+/* ================================================================
+   LISTENER PRINCIPAL DEL SELECT DE TIPO DE DOCUMENTO
+   ================================================================ */
+
+function initTipoDocumento() {
+  const tipoSel  = document.getElementById('tipoDocumento');
+  const docInput = document.getElementById('documento');
+  if (!tipoSel || !docInput) return;
+
+  /* Estado inicial: campo deshabilitado hasta que se elija tipo */
+  actualizarCampoDocumento('');
+
+  tipoSel.addEventListener('change', () => {
+    actualizarCampoDocumento(tipoSel.value);
+    /* Revalidar el select de tipo */
+    validateField(tipoSel);
+  });
+
+  /* Si al cargar la página ya hay un valor (ej. back del navegador) */
+  if (tipoSel.value) actualizarCampoDocumento(tipoSel.value);
+}
+
+/* ================================================================
+   VALIDACIÓN COMPLETA DEL FORMULARIO
+   ================================================================ */
+
+function validateForm(form) {
+  let ok = true;
+  form.querySelectorAll('[data-validate]').forEach(input => {
+    if (!validateField(input)) ok = false;
+  });
+  return ok;
+}
+
+/* ================================================================
+   FORMULARIO DE REGISTRO
+   ================================================================ */
+
+const regForm = document.getElementById('register-form');
+if (regForm) {
+  initTipoDocumento();
+  attachFilters(regForm);
+  iniciarVigilanciaDeCampos(regForm);
+  initPasswordStrength(regForm);
+  initDateLimits();
+
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      regForm.querySelectorAll('[data-validate]').forEach(input => {
+        if (input.dataset.validate === 'checkbox') return;
+        if (input.dataset.validate === 'password' || input.dataset.validate === 'password-confirm') return;
+        if (input.value && input.value.trim() !== '') {
+          validateField(input);
+        }
+      });
+      const tipoSel = document.getElementById('tipoDocumento');
+      const docInput = document.getElementById('documento');
+      if (tipoSel && tipoSel.value && docInput) {
+        const valorGuardado = docInput.value;
+        actualizarCampoDocumento(tipoSel.value);
+        if (valorGuardado) {
+          docInput.value = valorGuardado;
+          validateField(docInput);
+        }
+      }
+    }, 400);
+  });
+
+  regForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!validateForm(regForm)) {
+      showToast('Por favor corrige los campos marcados en rojo.', 'error');
+      const primero = regForm.querySelector('.invalid');
+      if (primero) primero.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    meter.classList.add('show');
 
+    const formData = {
+      tipoDocumento : regForm.tipoDocumento?.value.trim()  || '',
+      documento     : regForm.documento?.value.trim()      || '',
+      nombre        : regForm.nombre?.value.trim()         || '',
+      apellido      : regForm.apellido?.value.trim()       || '',
+      email         : regForm.email?.value.trim()          || '',
+      telefono      : regForm.telefono?.value.trim()       || '',
+      fechaNac      : regForm.fechaNac?.value              || '',
+      rh            : regForm.rh?.value                    || '',
+      password      : regForm.password?.value              || '',
+    };
+
+    if (result.ok) {
+        showToast(`¡Bienvenido, ${result.usuario.nombre}!`, 'success');
+
+        localStorage.removeItem('cicloUser');
+        localStorage.removeItem('cicloVentas');
+        localStorage.removeItem('cicloNotif');
+
+        setTimeout(() => {
+            location.href = '../principal.html';
+        }, 1000);
+
+    } else {
+        showToast(result.error || 'Correo o contraseña incorrectos', 'error');
+    }
+  });
+}
+
+/* ===== Indicador de fortaleza de contraseña ===== */
+const pwInput = document.querySelector('[data-validate="password"]');
+const pwBar = document.querySelector('.password-strength .bar');
+if (pwInput && pwBar) {
+  pwInput.addEventListener('input', () => {
+    const v = pwInput.value;
     let score = 0;
-    if (value.length >= 8) score++;
-    if (/[A-Z]/.test(value)) score++;
-    if (/[a-z]/.test(value)) score++;
-    if (/\d/.test(value)) score++;
-    if (/[^A-Za-z0-9]/.test(value)) score++;
+    if (v.length >= 8) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[a-z]/.test(v)) score++;
+    if (/\d/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+    const colors = ['#dc2626','#f97316','#eab308','#16a34a','#16a34a'];
+    pwBar.style.width = (score * 20) + '%';
+    pwBar.style.background = colors[Math.max(0,score-1)] || '#dc2626';
+  });
+}
 
-    const colors = ['#f87171', '#f97316', '#f5a623', '#4ade80', '#4ade80'];
-    const labels = ['Muy débil', 'Débil', 'Media', 'Fuerte', 'Muy fuerte'];
-    const idx = Math.max(0, Math.min(score - 1, 4));
-
-    bars.forEach((b, i) => { b.style.background = i <= idx ? colors[idx] : ''; });
-    if (label) label.textContent = value.length ? labels[idx] : '';
-  }
-
-  /* ─── Campo dinámico de documento ─── */
-  function initDocumentField(numberId, typeId) {
-    const numberInput = document.getElementById(numberId);
-    const typeSelect = document.getElementById(typeId);
-    if (!numberInput || !typeSelect) return;
-
-    function apply(tipo) {
-      const regla = DOCUMENTO_RULES[tipo];
-      if (!regla) {
-        numberInput.disabled = true;
-        numberInput.value = '';
-        numberInput.placeholder = 'Selecciona primero el tipo';
-        numberInput.maxLength = 20;
-        numberInput.inputMode = 'text';
-        clearState(numberInput);
-        return;
-      }
-      numberInput.disabled = false;
-      numberInput.value = '';
-      numberInput.placeholder = regla.placeholder;
-      numberInput.maxLength = regla.max;
-      numberInput.inputMode = regla.inputmode;
-      clearState(numberInput);
+/* ===== Formulario login ===== */
+const loginForm = document.getElementById('login-form');
+if (loginForm) {
+  attachFilters(loginForm);
+  iniciarVigilanciaDeCampos(regForm); 
+  
+  loginForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (!validateForm(loginForm)) { 
+        showToast('Revisa los campos en rojo', 'error'); 
+        return; 
     }
-
-    typeSelect.addEventListener('change', () => apply(typeSelect.value));
-    numberInput.addEventListener('input', () => {
-      const regla = DOCUMENTO_RULES[typeSelect.value];
-      if (!regla) return;
-      let val = numberInput.value;
-      val = regla.soloDigitos ? val.replace(/\D/g, '') : val.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
-      if (val.length > regla.max) val = val.slice(0, regla.max);
-      if (numberInput.value !== val) numberInput.value = val;
-    });
-
-    apply(typeSelect.value);
-  }
-
-  /* ─── Validación de un campo según su tipo de configuración ─── */
-  function validateByType(input, cfg, fieldsById) {
-    const v = input.value.trim();
-    const label = cfg.label || 'Este campo';
-
-    if (input.disabled) { clearState(input); return true; }
-
-    switch (cfg.type) {
-      case 'email':
-        if (!v) return fail('El correo electrónico es obligatorio.');
-        if (!RX.email.test(v)) return fail('Ingresa un correo electrónico válido.');
-        return pass();
-
-      case 'password': {
-        if (!v) return fail('La contraseña es obligatoria.');
-        if (!RX.password.test(v)) return fail('Mínimo 8 caracteres, con mayúscula, minúscula y número.');
-        return pass();
-      }
-
-      case 'confirmPassword': {
-        const other = document.getElementById(cfg.matches);
-        if (!v) return fail('Confirma tu contraseña.');
-        if (!other || v !== other.value) return fail('Las contraseñas no coinciden.');
-        return pass();
-      }
-
-      case 'name':
-        if (!v) return fail(`${label} es obligatorio.`);
-        if (!RX.nombre.test(v)) return fail(`${label} solo puede contener letras.`);
-        return pass();
-
-      case 'phone':
-        if (!v) return fail('El teléfono es obligatorio.');
-        if (!RX.telefono.test(v)) return fail('Ingresa un teléfono válido (7 a 15 dígitos).');
-        return pass();
-
-      case 'birthdate': {
-        if (!v) return fail('La fecha de nacimiento es obligatoria.');
-
-        const partes = /^([0-9]{4})-([0-9]{2})-([0-9]{2})$/.exec(v);
-        if (!partes) return fail('Formato inválido. Usa la fecha del calendario.');
-
-        const anio = Number(partes[1]);
-        const mes = Number(partes[2]);
-        const dia = Number(partes[3]);
-        const fecha = new Date(anio, mes - 1, dia);
-        const esFechaValida = fecha.getFullYear() === anio && fecha.getMonth() === mes - 1 && fecha.getDate() === dia;
-
-        if (!esFechaValida) return fail('La fecha no existe. Revisa el día y el mes.');
-
-        const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
-        if (fecha > hoy) return fail('La fecha no puede ser futura.');
-
-        let edad = hoy.getFullYear() - fecha.getFullYear();
-        const m = hoy.getMonth() - fecha.getMonth();
-        if (m < 0 || (m === 0 && hoy.getDate() < fecha.getDate())) edad--;
-
-        if (edad < 10) return fail('Debes tener al menos 10 años para registrarte.');
-        return pass();
-      }
-
-      case 'select':
-        if (!v) return fail(`Selecciona ${label}.`);
-        return pass();
-
-      case 'document': {
-        const typeInput = document.getElementById(cfg.docTypeId);
-        const tipo = typeInput ? typeInput.value : '';
-        const regla = DOCUMENTO_RULES[tipo];
-        if (!tipo) return fail('Primero selecciona el tipo de documento.');
-        if (!v) return fail('El número de documento es obligatorio.');
-        if (regla && !regla.patron.test(v)) return fail(regla.hint);
-        return pass();
-      }
-
-      case 'required':
-      default:
-        if (!v) return fail(`${label} es obligatorio.`);
-        return pass();
-    }
-
-    function fail(msg) { markInvalid(input, msg); return false; }
-    function pass() { markValid(input); return true; }
-  }
-
-  /* ─── API pública: inicializa un formulario completo ─── */
-  function initForm(form, fields, onValidSubmit) {
-    if (!form) return;
-
-    const byId = {};
-    fields.forEach(f => (byId[f.id] = f));
-
-    // Filtros de escritura + toggles de contraseña + medidor de fuerza
-    fields.forEach(cfg => {
-      const input = document.getElementById(cfg.id);
-      if (!input) return;
-
-      if (cfg.type === 'name') attachNameFilter(input);
-      if (cfg.type === 'email') attachEmailFilter(input);
-      if (cfg.type === 'phone' || input.hasAttribute('data-digits-only')) attachDigitsOnlyFilter(input);
-
-      if (cfg.type === 'password' && cfg.meterId) {
-        input.addEventListener('input', () => updateStrengthMeter(cfg.meterId, input.value));
-      }
-      if (cfg.type === 'confirmPassword') {
-        input.addEventListener('input', () => {
-          const other = document.getElementById(cfg.matches);
-          if (other && other.value) validateByType(input, cfg);
+    
+    const formData = {
+        email: loginForm.email.value.trim().toLowerCase(),
+        password: loginForm.password.value
+    };
+    
+    try {
+        const response = await fetch('php/login.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
         });
-      }
+        
+        const result = await response.json();
+        if (result.ok) {
+            showToast(`¡Bienvenido, ${result.usuario.nombre}!`, 'success');
+            
+            // Limpiar datos del usuario anterior antes de guardar el nuevo
+            localStorage.removeItem('cicloUser');
+            localStorage.removeItem('cicloVentas');
+            localStorage.removeItem('cicloNotif');
 
-      // Validación "en vivo" al salir del campo
-      input.addEventListener('blur', () => {
-        if (input.value.trim() || input.tagName === 'SELECT') validateByType(input, cfg);
-      });
-    });
-
-    initPasswordToggles(form);
-
-    form.addEventListener('submit', function (e) {
-      let allValid = true;
-      fields.forEach(cfg => {
-        const input = document.getElementById(cfg.id);
-        if (!input) return;
-        if (!validateByType(input, cfg)) allValid = false;
-      });
-
-      if (!allValid) {
-        e.preventDefault();
-        if (typeof window.showToast === 'function') {
-          window.showToast('Por favor corrige los campos marcados en rojo.', 'error');
+            // El rol ahora depende del contexto (social/deportivo),
+            // así que tras el login se elige el mundo en principal.html
+            setTimeout(() => {
+                location.href = 'principal.html';
+            }, 1000);
+            
+        } else {
+            showToast(result.error || 'Correo o contraseña incorrectos', 'error');
         }
-        const firstInvalid = form.querySelector('[data-state="invalid"]');
-        if (firstInvalid) firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
+    } catch (error) {
+        showToast('Error de conexión con el servidor', 'error');
+    }
+  });
+}
 
-      // Si se provee un callback, controlamos el envío nosotros (fetch/JSON).
-      // Si no se provee, dejamos que el formulario navegue de forma normal
-      // (esto es lo que usa recuperar.html para hablar directo con el PHP
-      // de SkyedDeportivo, igual que en la versión original).
-      if (typeof onValidSubmit === 'function') {
-        e.preventDefault();
-        onValidSubmit(form);
-      }
+/* ===== Formulario CAMBIAR CONTRASEÑA (PHP) ===== */
+const resetPassForm = document.getElementById('reset-password-form');
+if (resetPassForm) {
+    attachFilters(resetPassForm);
+    iniciarVigilanciaDeCampos(regForm);
+    
+    initPasswordStrength(resetPassForm);
+
+    resetPassForm.addEventListener('submit', function(e) {
+        if (!validateForm(resetPassForm)) {
+            e.preventDefault(); 
+            showToast('Por favor, cumple con los requisitos de la contraseña', 'error');
+        }
     });
-  }
-
-  window.SkyedAuth = {
-    initForm,
-    initDocumentField,
-  };
-})();
+}

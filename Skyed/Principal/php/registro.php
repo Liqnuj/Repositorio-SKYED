@@ -1,6 +1,6 @@
 <?php
 header('Content-Type: application/json');
-require __DIR__ . '/conexion.php';
+require __DIR__ . '/../../conexion.php';
 
 $data = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
@@ -50,12 +50,8 @@ if ($edad < 10) {
 // 4. Hashear contraseña (solo necesitamos una)
 $hash = password_hash($data['password'], PASSWORD_DEFAULT);
 
-// 4. Valores por defecto para cumplir con los campos NOT NULL de tu tabla
-$rolPorDefecto = 'participante'; 
-
 try {
     $sql = "INSERT INTO usuario (
-                rol_u, 
                 tipo_documento_u,
                 documento_u,
                 nombre_u, 
@@ -65,12 +61,11 @@ try {
                 correo_u, 
                 fecha_nacimiento_u, 
                 contrasena_u
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             
     $stmt = $pdo->prepare($sql);
 
     $stmt->execute([
-        $rolPorDefecto,
         $data['tipoDocumento'], 
         $data['documento'], 
         $data['nombre'], 
@@ -79,7 +74,7 @@ try {
         $data['telefono'], 
         strtolower($data['email']),    
         $fechaNac, 
-        $hash // Único envío del hash
+        $hash
     ]);
     
     // Todo salió bien, devolvemos el ID al JS para que redirija al login
@@ -87,9 +82,10 @@ try {
     
 } catch (PDOException $e) {
     if ($e->getCode() == 23000) {
-        echo json_encode(['ok'=>false, 'error'=>'El documento o correo ya se encuentran registrados en SKYED.']);
+        echo json_encode(['ok'=>false, 'error'=>'El documento, teléfono o correo ya se encuentran registrados en SKYED.']);
     } else {
-        // echo json_encode(['ok'=>false, 'error'=>'Error BD: ' . $e->getMessage()]);
+        echo json_encode(['ok'=>false, 'error'=>'Error en el servidor. Intenta de nuevo.']);
+        error_log('registro SKYED: ' . $e->getMessage());
     }
 }
 ?>
