@@ -664,6 +664,33 @@ function validateForm(form) {
 }
 
 /* ================================================================
+   TOAST (usa las clases .toast / .show / .success / .error de auth.css)
+   ================================================================ */
+function showToast(mensaje, tipo = 'info') {
+  let toast = document.getElementById('sky-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'sky-toast';
+    document.body.appendChild(toast);
+  }
+
+  toast.className = 'toast';
+  if (tipo === 'success' || tipo === 'error') {
+    toast.classList.add(tipo);
+  }
+
+  toast.textContent = mensaje;
+
+  void toast.offsetWidth;
+  toast.classList.add('show');
+
+  clearTimeout(toast._timeout);
+  toast._timeout = setTimeout(() => {
+    toast.classList.remove('show');
+  }, 3000);
+}
+
+/* ================================================================
    FORMULARIO DE REGISTRO
    ================================================================ */
 
@@ -718,19 +745,22 @@ if (regForm) {
       password      : regForm.password?.value              || '',
     };
 
-    if (result.ok) {
-        showToast(`¡Bienvenido, ${result.usuario.nombre}!`, 'success');
+   try {
+      const response = await fetch('php/registro.php', {
+        method  : 'POST',
+        headers : { 'Content-Type': 'application/json' },
+        body    : JSON.stringify(formData),
+      });
+      const result = await response.json();
 
-        localStorage.removeItem('cicloUser');
-        localStorage.removeItem('cicloVentas');
-        localStorage.removeItem('cicloNotif');
-
-        setTimeout(() => {
-            location.href = '../principal.html';
-        }, 1000);
-
-    } else {
-        showToast(result.error || 'Correo o contraseña incorrectos', 'error');
+      if (result.ok) {
+        showToast('¡Registro exitoso! Bienvenido a SKYED.', 'success');
+        setTimeout(() => location.href = 'login.html', 1400);
+      } else {
+        showToast(result.error || 'Error en el servidor. Intenta de nuevo.', 'error');
+      }
+    } catch {
+      showToast('Error de conexión. Verifica tu internet.', 'error');
     }
   });
 }
@@ -757,7 +787,7 @@ if (pwInput && pwBar) {
 const loginForm = document.getElementById('login-form');
 if (loginForm) {
   attachFilters(loginForm);
-  iniciarVigilanciaDeCampos(regForm); 
+  iniciarVigilanciaDeCampos(loginForm); 
   
   loginForm.addEventListener('submit', async e => {
     e.preventDefault();
@@ -782,13 +812,10 @@ if (loginForm) {
         if (result.ok) {
             showToast(`¡Bienvenido, ${result.usuario.nombre}!`, 'success');
             
-            // Limpiar datos del usuario anterior antes de guardar el nuevo
             localStorage.removeItem('cicloUser');
             localStorage.removeItem('cicloVentas');
             localStorage.removeItem('cicloNotif');
 
-            // El rol ahora depende del contexto (social/deportivo),
-            // así que tras el login se elige el mundo en principal.html
             setTimeout(() => {
                 location.href = 'principal.html';
             }, 1000);
@@ -806,7 +833,7 @@ if (loginForm) {
 const resetPassForm = document.getElementById('reset-password-form');
 if (resetPassForm) {
     attachFilters(resetPassForm);
-    iniciarVigilanciaDeCampos(regForm);
+    iniciarVigilanciaDeCampos(resetPassForm);
     
     initPasswordStrength(resetPassForm);
 
