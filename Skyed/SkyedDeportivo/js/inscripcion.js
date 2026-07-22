@@ -257,6 +257,16 @@
       // Los datos del invitado se recogen por separado, no sobreescriben los del usuario
     };
 
+    const obtenerPrecioBase = () => {
+      const base = Number(evento.precio_e || 0);
+      return estado.quiereJersey ? base + PRECIO_JERSEY : base;
+    };
+
+    const obtenerPrecioFinal = () => {
+      const precioBase = obtenerPrecioBase();
+      return precioBase * (guestMode ? 2 : 1);
+    };
+
     // Fecha de nacimiento
     const fechaInput = fechaField;
     const possibleDates = [normalizedSession.fechaNac, session.fechaNacimiento, session.fecha_nacimiento, session.fechaNac, session.fecha, session.birthdate, session.birthday];
@@ -275,7 +285,8 @@
         if (guestSection) guestSection.style.display = 'block';
         invitadosBtn.style.display = 'none';
         guestMode = true;
-        showToast('Complete los datos del invitado.', 'success');
+        actualizarPrecio();
+        showToast('Complete los datos del invitado. Se cobrarán 2 entradas.', 'success');
       });
     }
     const cancelarInvitadoBtn = document.getElementById('btn-quitar-invitado');
@@ -284,6 +295,7 @@
         if (guestSection) guestSection.style.display = 'none';
         if (invitadosBtn) invitadosBtn.style.display = 'inline-flex';
         guestMode = false;
+        actualizarPrecio();
         [guestTipoDocInput, guestDocInput, guestNameInput, guestApellidoInput,
          guestTelInput, guestRhInput, guestFechaInput, guestCorreoInput]
           .forEach(inp => { if (inp) { inp.value = ''; inp.classList.remove('invalid'); } });
@@ -422,8 +434,8 @@
     document.getElementById('ev-dist').textContent       = evento.distancia_total_e;
     document.getElementById('ev-desnivel').textContent   = evento.desnivel_e + ' desnivel';
     document.getElementById('ev-cupos-text').textContent = evento.cupos_disponibles_e + ' cupos disponibles';
-    document.getElementById('ev-precio-base').textContent = fmtMoney(evento.precio_e);
-    document.getElementById('ev-precio-total').textContent = fmtMoney(evento.precio_e);
+    document.getElementById('ev-precio-base').textContent = fmtMoney(obtenerPrecioBase());
+    document.getElementById('ev-precio-total').textContent = fmtMoney(obtenerPrecioFinal());
     document.getElementById('ev-img').src = evento.imagen_e;
 
     // Badge cupos
@@ -493,10 +505,11 @@
     estado.quiereJersey = null; // null = no elegido aún
 
     function actualizarPrecio() {
-      const total = estado.quiereJersey ? evento.precio_e + PRECIO_JERSEY : evento.precio_e;
+      const precioBase = obtenerPrecioBase();
+      const total = obtenerPrecioFinal();
       const baseEl  = document.getElementById('ev-precio-base');
       const totalEl = document.getElementById('ev-precio-total');
-      if (baseEl) baseEl.textContent = fmtMoney(evento.precio_e);
+      if (baseEl) baseEl.textContent = fmtMoney(precioBase);
       if (totalEl) totalEl.textContent = fmtMoney(total);
 
       // Mostrar/ocultar fila del jersey en el precio
@@ -953,7 +966,7 @@
       const metodoLabel = { transferencia:'Transferencia bancaria', nequi:'Nequi / Daviplata', efectivo:'Efectivo en punto autorizado' };
       document.getElementById('rs-metodo').textContent    = metodoLabel[estado.metodo];
       document.getElementById('rs-comprobante').textContent = estado.comprobante ? estado.comprobante.name : (estado.metodo === 'efectivo' ? 'Pago presencial' : '—');
-      const precioFinal = estado.quiereJersey ? evento.precio_e + PRECIO_JERSEY : evento.precio_e;
+      const precioFinal = obtenerPrecioFinal();
       document.getElementById('rs-precio').textContent    = fmtMoney(precioFinal);
     }
 
@@ -1015,7 +1028,9 @@
       btn.innerHTML = '<i class="ti ti-loader" style="animation:spin .8s linear infinite"></i> Procesando…';
 
       // Payload que coincide con los campos de la tabla inscripciones
-      const precioPagado = estado.quiereJersey ? evento.precio_e + PRECIO_JERSEY : evento.precio_e;
+      const precioBase = obtenerPrecioBase();
+      const cantidadEntradas = guestMode ? 2 : 1;
+      const precioPagado = precioBase * cantidadEntradas;
       const payload = {
         evento_id:            evento.id_e,
         doc_u:                estado.doc_u,
@@ -1028,6 +1043,8 @@
         dorsal:               estado.dorsal,
         condiciones_medicas:  estado.condiciones_medicas,
         metodo_pago:          estado.metodo,
+        precio_base:          precioBase,
+        cantidad_entradas:    cantidadEntradas,
         precio:               precioPagado,
         quiere_jersey:        !!estado.quiereJersey,
         talla_camiseta:       estado.talla || '',

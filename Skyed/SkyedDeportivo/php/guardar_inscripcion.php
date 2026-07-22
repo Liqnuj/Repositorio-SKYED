@@ -59,11 +59,13 @@ try {
 
     // ── 4. Datos del formulario ─────────────────────────────────────────────
     $metodo_pago    = $d['metodo_pago']          ?? 'transferencia';
-    $precio_pagado  = round((float)($d['precio'] ?? 0), 2);
+    $invitado       = $d['invitado']             ?? null;
+    $cantidad_entradas = max(1, (int)($d['cantidad_entradas'] ?? (!empty($invitado) ? 2 : 1)));
+    $precio_base    = round((float)($d['precio_base'] ?? $d['precio'] ?? 0), 2);
+    $precio_pagado  = round($precio_base * $cantidad_entradas, 2);
     $contacto_nom   = trim($d['contacto_nombre']     ?? '');
     $contacto_tel   = trim($d['contacto_telefono']   ?? '');
     $parentesco     = trim($d['contacto_parentesco'] ?? ($d['parentesco'] ?? ''));
-    $invitado       = $d['invitado']             ?? null;
 
     // estado_i solo acepta: 'pendiente', 'confirmada', 'cancelada'
     $estado_i = 'pendiente';
