@@ -310,10 +310,11 @@ body.dark-mode .sky-bottom-links a:hover {
   display: inline-flex;
   align-items: center;
   gap: 0;
+  color:#2c9caf;
 }
 
 .auth-logo .accent {
-  color: var(--blue);
+  color: #b200ff;
   font-weight: 800;
 }
 

@@ -67,7 +67,7 @@ body {
 
 .nav-brand span em {
   font-family: Playfair Display, serif;
-  color: #680991;
+  color: #b200ff;
 }
 
 .nav-gem img {
@@ -467,14 +467,14 @@ body {
 
 .choose-social .choose-icon-wrap {
   background: rgba(166, 64, 200, 0.14);
-  color: #680991;
+  color: rgb(178, 0, 255);;
   border: 1px solid rgb(127, 20, 180);
 }
 
 .choose-sport .choose-icon-wrap {
   background: rgba(29, 139, 158, 0.14);
   color: #1d7a9e;
-  border: 1px solid rgba(29, 128, 158, 0.25);
+  border: 1px solid rgba(22, 160, 202, 0.552);
 }
 
 /* Tag / nombre / desc */
@@ -486,7 +486,7 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.choose-social .choose-tag { color: #680991; }
+.choose-social .choose-tag { color:#b200ff; }
 .choose-sport  .choose-tag { color: #1d8b9e; }
 
 .choose-name {
@@ -611,7 +611,7 @@ body {
   color: rgba(255, 255, 255, 0.808);
 }
 
-.choose-social .cs-num { color: #680991; }
+.choose-social .cs-num { color: rgb(178, 0, 255);; }
 .choose-sport  .cs-num { color: #1d849e; }
 
 /* ================================================
