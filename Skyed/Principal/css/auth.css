@@ -1,7 +1,3 @@
-/* ================================================
-   SKYED — AUTH PAGES (login / signup / recuperar)
-   Paleta: azul #38bdf8 · dorado #f5a623 · morado #8b5cf6
-   ================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
 
@@ -32,6 +28,7 @@
 }
 
 body.dark-mode {
+  color-scheme: dark;
   --bg: #0d0a1a;
   --bg-alt: #120e24;
   --panel: #15112b;
@@ -566,7 +563,10 @@ body.dark-mode .ticket-card {
   transition: color 0.2s;
 }
 
-.auth-back:hover { color: var(--blue); }
+.dark-mode .auth-back {
+  color: rgba(255, 255, 255, 0.871);
+}
+.auth-back:hover { color: var(--accent); }
 
 .auth-heading {
   font-family: 'Playfair Display', serif;
@@ -609,8 +609,8 @@ body.dark-mode .ticket-card {
 .form-select {
   width: 100%;
   padding: 12px 14px;
-  background: var(--panel);
-  border: 1px solid var(--border);
+  background: none;
+  border: 1px solid var(--accent);
   border-radius: var(--radius-sm);
   color: var(--text);
   font-family: 'Manrope', sans-serif;
@@ -628,12 +628,16 @@ body.dark-mode .ticket-card {
   padding-right: 34px;
 }
 
+body.dark-mode .form-select {
+  color-scheme: dark;
+}
+
 .form-input::placeholder { color: var(--text-dimmer); }
 
 .form-input:focus,
 .form-select:focus {
   border-color: var(--blue);
-  background: var(--panel-alt);
+  /* background: var(--panel-alt); */
   box-shadow: 0 0 0 3px var(--blue-soft);
 }
 
@@ -835,7 +839,7 @@ body.dark-mode .ticket-card {
   padding: 14px;
   border-radius: var(--radius-sm);
   border: none;
-  background: var(--blue);
+  background: linear-gradient(135deg, var(--blue), #9d02aeb7 80%);
   color: #0d0a1a;
   font-family: 'Manrope', sans-serif;
   font-size: 15px;
@@ -850,9 +854,9 @@ body.dark-mode .ticket-card {
 }
 
 .form-submit:hover {
-  background: #5fc9f9;
+  background: linear-gradient(135deg, var(--blue), #9d02aeb7 80%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(56, 189, 248, 0.32);
+  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.32);
 }
 
 .form-submit:active { transform: translateY(0); }
@@ -1672,10 +1676,10 @@ body.dark-mode .ticket-card {
 
 
 /* ---------- Estados válido / inválido (coinciden con las clases que pone auth.js) ---------- */
-.form-input.valid,
+/* .form-input.valid,
 .form-select.valid {
   border-color: rgba(74, 222, 128, 0.55);
-}
+} */
 
 .form-input.invalid,
 .form-select.invalid {
@@ -1701,10 +1705,10 @@ body.dark-mode .ticket-card {
 .form-input:-webkit-autofill:hover,
 .form-input:-webkit-autofill:focus,
 .form-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px var(--panel) inset !important;
+  /* -webkit-box-shadow: 0 0 0 1000px var(--panel) inset !important; */
   -webkit-text-fill-color: var(--text) !important;
   caret-color: var(--text) !important;
-  border-color: var(--border) !important;
+  border-color: var(--accent) !important;
   transition: background-color 9999s ease-in-out 0s;
 }
 
@@ -1712,8 +1716,9 @@ body.dark-mode .form-input:-webkit-autofill,
 body.dark-mode .form-input:-webkit-autofill:hover,
 body.dark-mode .form-input:-webkit-autofill:focus,
 body.dark-mode .form-input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 1000px var(--panel) inset !important;
-  -webkit-text-fill-color: var(--text) !important;
+  /* -webkit-box-shadow: 0 0 0 1000px var(--panel) inset !important;*/
+  -webkit-text-fill-color: var(--text) !important; 
+  border-color: var(--accent) !important;
 }
 
 @keyframes onAutoFillStart {
@@ -1724,4 +1729,105 @@ body.dark-mode .form-input:-webkit-autofill:active {
 .form-input:-webkit-autofill {
   animation-name: onAutoFillStart;
   animation-duration: 0.001s;
+}
+/* ---------- Custom select (dropdown de Tipo de documento) ---------- */
+.sr-only-select {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.custom-select {
+  position: relative;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: none;
+  border: 1px solid var(--accent, var(--blue));
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.custom-select-trigger:focus,
+.custom-select.open .custom-select-trigger {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-soft);
+  outline: none;
+}
+
+.custom-select.invalid .custom-select-trigger {
+  border-color: rgba(248, 113, 113, 0.6);
+}
+
+.custom-select-value.placeholder {
+  color: var(--text-dimmer);
+}
+
+.custom-select-arrow {
+  flex-shrink: 0;
+  margin-left: 8px;
+  color: var(--text-dimmer);
+  transition: transform 0.2s ease;
+}
+
+.custom-select.open .custom-select-arrow {
+  transform: rotate(180deg);
+}
+
+.custom-select-options {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 6px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+  z-index: 20;
+  max-height: 220px;
+  overflow-y: auto;
+  display: none;
+}
+
+.custom-select.open .custom-select-options {
+  display: block;
+}
+
+.custom-select-option {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.custom-select-option:hover,
+.custom-select-option.active {
+  background: color-mix(in srgb, var(--accent) 80%, #ffffff);
+  color: #000000;
+}
+
+.custom-select-option.selected {
+  font-weight: 700;
+  color: var(--accent);
 }

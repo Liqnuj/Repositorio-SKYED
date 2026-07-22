@@ -696,6 +696,70 @@ function showToast(mensaje, tipo = 'info') {
 
 const regForm = document.getElementById('register-form');
 if (regForm) {
+  function initCustomSelect(wrapper) {
+  const group = wrapper.closest('.form-group');
+  const nativeSelect = group?.querySelector('select[data-validate="select"]');
+  if (!nativeSelect) return;
+
+  const trigger = wrapper.querySelector('.custom-select-trigger');
+  const valueEl = wrapper.querySelector('.custom-select-value');
+  const options = [...wrapper.querySelectorAll('.custom-select-option')];
+
+  function closeDropdown() {
+    wrapper.classList.remove('open');
+    trigger.setAttribute('aria-expanded', 'false');
+  }
+
+  function openDropdown() {
+    wrapper.classList.add('open');
+    trigger.setAttribute('aria-expanded', 'true');
+  }
+
+  function selectOption(opt, fireChange = true) {
+    options.forEach(o => o.classList.remove('selected'));
+    opt.classList.add('selected');
+    valueEl.textContent = opt.textContent;
+    valueEl.classList.toggle('placeholder', opt.dataset.value === '');
+    nativeSelect.value = opt.dataset.value;
+    if (fireChange) {
+      nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    closeDropdown();
+  }
+
+  trigger.addEventListener('click', () => {
+    wrapper.classList.contains('open') ? closeDropdown() : openDropdown();
+  });
+
+  options.forEach(opt => opt.addEventListener('click', () => selectOption(opt)));
+
+  document.addEventListener('click', e => {
+    if (!wrapper.contains(e.target)) closeDropdown();
+  });
+
+  trigger.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      wrapper.classList.contains('open') ? closeDropdown() : openDropdown();
+    } else if (e.key === 'Escape') {
+      closeDropdown();
+    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      openDropdown();
+      const current = options.findIndex(o => o.classList.contains('selected'));
+      let next = e.key === 'ArrowDown' ? current + 1 : current - 1;
+      next = Math.max(0, Math.min(options.length - 1, next));
+      selectOption(options[next]);
+    }
+  });
+
+  const observer = new MutationObserver(() => {
+    wrapper.classList.toggle('invalid', nativeSelect.classList.contains('invalid'));
+  });
+  observer.observe(nativeSelect, { attributes: true, attributeFilter: ['class'] });
+}
+
+document.querySelectorAll('.custom-select').forEach(initCustomSelect);
   initTipoDocumento();
   attachFilters(regForm);
   iniciarVigilanciaDeCampos(regForm);
