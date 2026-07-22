@@ -49,96 +49,91 @@
         <h2 class="auth-heading">Crear cuenta</h2>
         <p class="auth-subheading">Solo te tomará un minuto.</p>
 
-        <form id="signupForm" novalidate>
+        <form id="register-form" novalidate>
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label" for="docType">Tipo de documento<span class="req">*</span></label>
-              <select id="docType" class="form-select">
+              <label class="form-label" for="tipoDocumento">Tipo de documento<span class="req">*</span></label>
+              <select id="tipoDocumento" name="tipoDocumento" class="form-select" data-validate="select">
                 <option value="">Selecciona</option>
                 <option value="cedula_ciudadania">Cédula de ciudadanía</option>
                 <option value="tarjeta_identidad">Tarjeta de identidad</option>
                 <option value="cedula_extranjeria">Cédula de extranjería</option>
                 <option value="pasaporte">Pasaporte</option>
               </select>
-              <div class="form-error"></div>
+              <div class="form-error error"></div>
             </div>
             <div class="form-group">
-              <label class="form-label" for="docNumber">Número de documento<span class="req">*</span></label>
-              <input type="text" id="docNumber" class="form-input" placeholder="Selecciona primero el tipo" maxlength="20" disabled>
-              <div class="form-error"></div>
+              <label class="form-label" for="documento">Número de documento<span class="req">*</span></label>
+              <input type="text" id="documento" name="documento" class="form-input" placeholder="Selecciona primero el tipo" maxlength="20" disabled data-validate="documento">
+              <div class="form-error error"></div>
             </div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label" for="firstName">Nombre<span class="req">*</span></label>
-              <input type="text" id="firstName" class="form-input" placeholder="Juan" autocomplete="given-name">
-              <div class="form-error"></div>
+              <label class="form-label" for="nombre">Nombre<span class="req">*</span></label>
+              <input type="text" id="nombre" name="nombre" class="form-input" placeholder="Juan" autocomplete="given-name" data-validate="nombre">
+              <div class="form-error error"></div>
             </div>
             <div class="form-group">
-              <label class="form-label" for="lastName">Apellido<span class="req">*</span></label>
-              <input type="text" id="lastName" class="form-input" placeholder="Pérez" autocomplete="family-name">
-              <div class="form-error"></div>
+              <label class="form-label" for="apellido">Apellido<span class="req">*</span></label>
+              <input type="text" id="apellido" name="apellido" class="form-input" placeholder="Pérez" autocomplete="family-name" data-validate="apellido">
+              <div class="form-error error"></div>
             </div>
           </div>
           <p class="form-hint" style="margin: -0.75rem 0 1.25rem;">Solo letras y espacios.</p>
 
           <div class="form-group">
-            <label class="form-label" for="signupEmail">Correo electrónico<span class="req">*</span></label>
-            <input type="email" id="signupEmail" class="form-input" placeholder="tucorreo@ejemplo.com" autocomplete="email" maxlength="80">
-            <div class="form-error"></div>
+            <label class="form-label" for="email">Correo electrónico<span class="req">*</span></label>
+            <input type="email" id="email" name="email" class="form-input" placeholder="tucorreo@ejemplo.com" autocomplete="email" maxlength="80" data-validate="email">
+            <div class="form-error error"></div>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label" for="phone">Teléfono<span class="req">*</span></label>
-              <input type="text" id="phone" class="form-input" placeholder="3001234567" inputmode="numeric" data-digits-only maxlength="15">
+              <label class="form-label" for="telefono">Teléfono<span class="req">*</span></label>
+              <input type="text" id="telefono" name="telefono" class="form-input" placeholder="3001234567" inputmode="numeric" maxlength="15" data-validate="telefono">
               <div class="form-hint">Solo números (7-15)</div>
-              <div class="form-error"></div>
+              <div class="form-error error"></div>
             </div>
             <div class="form-group">
-              <label class="form-label" for="birthdate">Fecha de nacimiento<span class="req">*</span></label>
-              <input type="date" id="birthdate" class="form-input" max="">
+              <label class="form-label" for="fechaNac">Fecha de nacimiento<span class="req">*</span></label>
+              <input type="date" id="fechaNac" name="fechaNac" class="form-input" data-validate="fecha-nacimiento">
               <div class="form-hint">Debes tener al menos 10 años para registrarte.</div>
-              <div class="form-error"></div>
+              <div class="form-error error"></div>
             </div>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="signupPassword">Contraseña<span class="req">*</span></label>
+            <label class="form-label" for="password">Contraseña<span class="req">*</span></label>
             <div class="input-wrap">
-              <input type="password" id="signupPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" maxlength="50">
-              <button type="button" class="input-toggle" data-toggle-for="signupPassword" aria-label="Mostrar contraseña">
-                <i class="ti ti-eye"></i>
-              </button>
+              <input type="password" id="password" name="password" class="form-input" placeholder="••••••••" autocomplete="new-password" maxlength="50" data-validate="password">
+            <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
             </div>
-            <div class="strength-meter" id="pwMeter">
-              <div class="strength-bars"><span></span><span></span><span></span><span></span></div>
-              <span class="strength-label">Muy débil</span>
+            <div class="password-strength">
+              <div class="bar"></div>
             </div>
             <div class="form-hint">Mínimo 8 caracteres, una mayúscula, una minúscula y un número.</div>
-            <div class="form-error"></div>
+            <div class="form-error error"></div>
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="confirmPassword">Confirmar contraseña<span class="req">*</span></label>
+            <label class="form-label" for="password-confirm">Confirmar contraseña<span class="req">*</span></label>
             <div class="input-wrap">
-              <input type="password" id="confirmPassword" class="form-input" placeholder="••••••••" autocomplete="new-password" maxlength="50">
-              <button type="button" class="input-toggle" data-toggle-for="confirmPassword" aria-label="Mostrar contraseña">
-                <i class="ti ti-eye"></i>
-              </button>
+              <input type="password" id="password-confirm" name="password-confirm" class="form-input" placeholder="••••••••" autocomplete="new-password" maxlength="50" data-validate="password-confirm">
+            <button type="button" class="toggle-pass" aria-label="Mostrar contraseña">👁</button>
             </div>
-            <div class="form-error"></div>
+            <div class="form-error error"></div>
           </div>
 
           <div class="checkbox-row">
-            <input type="checkbox" id="acceptTerms">
-            <label for="acceptTerms">
+            <input type="checkbox" id="terms" data-validate="checkbox">
+            <label for="terms">
               Acepto los <a href="#" class="link-terminos" data-modal="terminos">términos y condiciones</a> y la <a href="#" class="link-terminos" data-modal="privacidad">política de privacidad</a><span class="req">*</span>
             </label>
           </div>
-          <div class="form-error" id="termsError" style="margin-top: -1.1rem; margin-bottom: 1rem;"></div>
+          <div class="form-error error" id="termsError" style="margin-top: -1.1rem; margin-bottom: 1rem;"></div>
 
           <button type="submit" class="form-submit" id="signupSubmit">
             Crear cuenta <i class="ti ti-arrow-right"></i>
@@ -613,102 +608,6 @@
   </script>
 
   <script src="js/accesibilidad.js"></script>
-  <script src="js/global.js"></script>
   <script src="js/auth.js"></script>
-  <script>
-    SkyedAuth.initDocumentField('docNumber', 'docType');
-
-    (function () {
-      var birthdate = document.getElementById('birthdate');
-      if (birthdate) {
-        var today = new Date();
-        var yyyy = today.getFullYear();
-        var mm = String(today.getMonth() + 1).padStart(2, '0');
-        var dd = String(today.getDate()).padStart(2, '0');
-        birthdate.max = yyyy + '-' + mm + '-' + dd;
-        birthdate.addEventListener('change', function () {
-          if (this.value && this.value > this.max) {
-            this.value = '';
-            if (typeof window.showToast === 'function') {
-              window.showToast('No puedes seleccionar una fecha futura.', 'error');
-            }
-          }
-        });
-      }
-    })();
-
-    var termsInput = document.getElementById('acceptTerms');
-    var termsErrorEl = document.getElementById('termsError');
-
-    SkyedAuth.initForm(
-      document.getElementById('signupForm'),
-      [
-        { id: 'docType', type: 'select', label: 'el tipo de documento' },
-        { id: 'docNumber', type: 'document', docTypeId: 'docType' },
-        { id: 'firstName', type: 'name', label: 'El nombre' },
-        { id: 'lastName', type: 'name', label: 'El apellido' },
-        { id: 'signupEmail', type: 'email' },
-        { id: 'phone', type: 'phone' },
-        { id: 'birthdate', type: 'birthdate' },
-        { id: 'signupPassword', type: 'password', meterId: 'pwMeter' },
-        { id: 'confirmPassword', type: 'confirmPassword', matches: 'signupPassword' },
-      ],
-      async function (form) {
-        if (!termsInput.checked) {
-          termsErrorEl.textContent = 'Debes aceptar los términos y la política de privacidad.';
-          termsErrorEl.classList.add('show');
-          termsInput.focus();
-          return;
-        }
-        termsErrorEl.textContent = '';
-        termsErrorEl.classList.remove('show');
-
-        var btn = document.getElementById('signupSubmit');
-        btn.disabled = true;
-        btn.innerHTML = 'Creando cuenta… <i class="ti ti-loader-2"></i>';
-
-        var payload = {
-          tipoDocumento: document.getElementById('docType').value,
-          documento: document.getElementById('docNumber').value.trim(),
-          nombre: document.getElementById('firstName').value.trim(),
-          apellido: document.getElementById('lastName').value.trim(),
-          email: document.getElementById('signupEmail').value.trim().toLowerCase(),
-          telefono: document.getElementById('phone').value.trim(),
-          fechaNac: document.getElementById('birthdate').value,
-          rh: '',
-          password: document.getElementById('signupPassword').value,
-        };
-
-        try {
-          const response = await fetch('../SkyedDeportivo/php/registro.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          const result = await response.json();
-
-          if (result.ok) {
-            showToast('¡Registro exitoso! Bienvenido a SKYED.', 'success');
-            setTimeout(() => { location.href = 'login.html'; }, 1400);
-          } else {
-            showToast(result.error || 'Error en el servidor. Intenta de nuevo.', 'error');
-            btn.disabled = false;
-            btn.innerHTML = 'Crear cuenta <i class="ti ti-arrow-right"></i>';
-          }
-        } catch (err) {
-          showToast('Error de conexión. Verifica tu internet.', 'error');
-          btn.disabled = false;
-          btn.innerHTML = 'Crear cuenta <i class="ti ti-arrow-right"></i>';
-        }
-      }
-    );
-
-    termsInput.addEventListener('change', function () {
-      if (termsInput.checked) {
-        termsErrorEl.textContent = '';
-        termsErrorEl.classList.remove('show');
-      }
-    });
-  </script>
 </body>
 </html>
