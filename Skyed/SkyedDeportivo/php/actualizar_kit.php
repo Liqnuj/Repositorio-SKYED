@@ -1,7 +1,7 @@
 <?php
 header('Content-Type: application/json');
 session_start();
-require __DIR__ . '/conexion.php';
+require __DIR__ . '/../../conexion.php';
 
 if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'adminDeportivo') {
     echo json_encode(['ok' => false, 'error' => 'No autorizado']); exit;

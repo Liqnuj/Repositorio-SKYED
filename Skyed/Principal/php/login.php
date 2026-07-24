@@ -33,8 +33,18 @@ $_SESSION['telefono'] = $u['telefono_u'] ?? '';
 $_SESSION['fecha_nacimiento'] = $u['fecha_nacimiento_u'] ?? '';
 $_SESSION['documento'] = $u['documento_u'] ?? '';
 
+
+$ADMINS = require __DIR__ . '/../../admins_config.php';
+$redirect = 'principal.html';
+if (in_array($email, $ADMINS['deportivo'], true)) {
+    $redirect = 'php/asignar_rol.php?destino=deportivo';
+} elseif (in_array($email, $ADMINS['social'], true)) {
+    $redirect = 'php/asignar_rol.php?destino=social';
+}
+
 echo json_encode([
     'ok' => true,
+    'redirect' => $redirect,
     'usuario' => [
         'id' => $u['id_u'],
         'nombre' => $u['nombre_u'],

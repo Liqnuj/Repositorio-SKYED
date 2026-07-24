@@ -38,9 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pageFile = location.pathname.split('/').pop() || 'index.html';
         const isAdminPage = pageFile === 'admin.php';
         const isParticipantePage = pageFile === 'participante.php';
-
-        // Mostrar nombre de usuario como botón
-        const redirectPath = user.rol === 'admin'
+        const redirectPath = user.rol === 'adminDeportivo'
           ? (isSubdir ? '../admin.php' : 'admin.php')
           : (isSubdir ? 'participante.php' : 'php/participante.php');
 
