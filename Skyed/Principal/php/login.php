@@ -1,4 +1,5 @@
 <?php
+ini_set('session.cookie_path', '/GitSkyed/Repositorio-SKYED/');
 session_start();
 header('Content-Type: application/json');
 require __DIR__ . '/../../conexion.php';

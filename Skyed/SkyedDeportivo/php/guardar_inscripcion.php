@@ -1,16 +1,18 @@
 <?php
+ini_set('session.cookie_path', '/GitSkyed/Repositorio-SKYED/');
 header('Content-Type: application/json');
 session_start();
 require __DIR__ . '/../../conexion.php';
 
-if (empty($_SESSION['user_id'])) {
+$sessionUserId = $_SESSION['usuario_id'] ?? $_SESSION['user_id'] ?? null;
+if (empty($sessionUserId)) {
     http_response_code(401);
     echo json_encode(['ok' => false, 'error' => 'No autenticado']);
     exit;
 }
 
 $d         = json_decode(file_get_contents('php://input'), true) ?: $_POST;
-$id_u      = (int)$_SESSION['user_id'];
+$id_u      = (int)$sessionUserId;
 $id_e      = (int)($d['evento_id'] ?? 0);
 
 if ($id_e <= 0) {
@@ -129,9 +131,8 @@ try {
             $pago_comprobante = $raw_comprobante;
         }
 
-        // monto_p: guardar como entero (sin decimales) para evitar overflow de DECIMAL(10,7)
-        // Si tienes control de la BD, cambia monto_p a DECIMAL(12,2)
-        $monto_db = (int)$precio_pagado;
+        // monto_p ahora es DECIMAL(12,2): ya soporta precios normales sin overflow
+        $monto_db = round($precio_pagado, 2);
 
         $pdo->prepare("INSERT INTO pago (metodo_pago_p, referencia_p, comprobante_p, monto_p, estado_p, id_i)
                        VALUES (?, ?, ?, ?, 'pendiente', ?)")
@@ -148,8 +149,19 @@ try {
     $inv_error = null;
     if (!empty($invitado) && !empty($invitado['documento_inv'])) {
         try {
-            $chkInv = $pdo->prepare("SELECT id_inv FROM invitado WHERE documento_inv = ? LIMIT 1");
-            $chkInv->execute([(int)$invitado['documento_inv']]);
+            $inv_telefono = trim($invitado['telefono_inv'] ?? '');
+            $inv_correo   = !empty($invitado['correo_inv']) ? trim($invitado['correo_inv']) : null;
+
+            // documento_inv, telefono_inv y correo_inv son UNIQUE en la BD:
+            // hay que revisar coincidencia en cualquiera de los tres, no solo el documento.
+            $chkInv = $pdo->prepare(
+                "SELECT id_inv FROM invitado
+                 WHERE documento_inv = ?
+                    OR telefono_inv = ?
+                    OR (correo_inv IS NOT NULL AND correo_inv = ?)
+                 LIMIT 1"
+            );
+            $chkInv->execute([(int)$invitado['documento_inv'], $inv_telefono, $inv_correo]);
             $invExistente = $chkInv->fetch(PDO::FETCH_ASSOC);
 
             if ($invExistente) {
@@ -165,9 +177,9 @@ try {
                     trim($invitado['nombre_inv']       ?? ''),
                     trim($invitado['apellido_inv']     ?? ''),
                     $invitado['rh_inv']                ?? '',
-                    $invitado['telefono_inv']           ?? '',
+                    $inv_telefono,
                     !empty($invitado['fecha_nacimiento_inv']) ? $invitado['fecha_nacimiento_inv'] : null,
-                    !empty($invitado['correo_inv'])           ? $invitado['correo_inv']           : null,
+                    $inv_correo,
                 ]);
                 $id_inv = (int)$pdo->lastInsertId();
             }
