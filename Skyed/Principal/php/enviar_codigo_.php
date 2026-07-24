@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("/../../conexion.php"); 
+require __DIR__ . '/../../conexion.php';
 include("correo.php");
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

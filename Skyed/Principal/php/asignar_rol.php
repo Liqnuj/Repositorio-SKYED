@@ -14,10 +14,7 @@ if (!in_array($destino, ['social', 'deportivo'], true)) {
     die("Destino inválido");
 }
 
-$ADMINS = [
-    'deportivo' => ['correoadmindeportivo@gmail.com'],
-    'social'    => ['correoadminsocial@gmail.com'],
-];
+$ADMINS = require __DIR__ . '/../../admins_config.php';
 
 $es_admin = in_array($email_u, $ADMINS[$destino], true);
 
@@ -33,6 +30,7 @@ try {
 
         $_SESSION['contexto_actual'] = $destino;
         $_SESSION['rol_actual'] = $rol_admin;
+        $_SESSION['rol'] = $rol_admin;
 
     } else {
         $sqlCheck = "SELECT r.nombre_rol 
@@ -47,6 +45,7 @@ try {
         if ($rol_existente) {
             $_SESSION['contexto_actual'] = $destino;
             $_SESSION['rol_actual'] = $rol_existente;
+            $_SESSION['rol'] = $rol_existente;
 
         } else {
             $id_rol_asignar = ($destino === 'deportivo') ? 2 : 1;
@@ -56,15 +55,22 @@ try {
             $stmtInsert->execute([$id_u, $id_rol_asignar, $destino]);
             $_SESSION['contexto_actual'] = $destino;
             $_SESSION['rol_actual'] = ($destino === 'deportivo') ? 'participante' : 'cliente';
+            $_SESSION['rol'] = $_SESSION['rol_actual'];
         }
     }
 
-    if ($destino === 'deportivo') {
-        header("Location: ../../SkyedDeportivo/index.html");
-    } else {
-        header("Location: ../../SkyedSocial/index.html");
-    }
-    exit;
+    if ($es_admin) {
+            if ($destino === 'deportivo') {
+                header("Location: ../../SkyedDeportivo/admin.php");
+            } else {
+                header("Location: ../../SkyedSocial/admin.php");
+            }
+        } elseif ($destino === 'deportivo') {
+            header("Location: ../../SkyedDeportivo/index.html");
+        } else {
+            header("Location: ../../SkyedSocial/index.html");
+        }
+        exit;
 
 } catch (PDOException $e) {
     error_log('asignar_rol SKYED: ' . $e->getMessage());

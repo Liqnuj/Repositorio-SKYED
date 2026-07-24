@@ -6,16 +6,16 @@
   <meta name="description" content="Recupera tu contraseña en SKYED mediante un código de verificación." />
   <title>Recuperar contraseña — SKYED</title>
   <link rel="icon" href="img/logo_deportivo_nav.png" />
-  <link rel="stylesheet" href="css/global.css" />
   <link rel="stylesheet" href="css/auth.css" />
   <link rel="stylesheet" href="css/accesibilidad.css" />
+  <link rel="stylesheet" href="css/cambiar_contrasena.css">
 </head>
 <body>
-  <header class="site-header" role="banner">
-    <nav class="nav" aria-label="Navegación principal">
-      <a href="index.html" class="brand"><img src="img/logo_deportivo.png" alt="" /><span>SKY<em>ED</em></span></a>
-
-    </nav>
+  <header class="auth-topbar">
+    <a href="principal.html" class="auth-logo">
+      <img src="img/logoP.png" alt="SKYED" class="auth-logo-icon">
+      <span class="auth-logo-text">SKY<span class="accent">ED</span></span>
+    </a>
   </header>
 
   <main id="main" class="auth-wrapper">
@@ -42,7 +42,9 @@
             <span class="error"></span>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-block">Enviar código</button>
+          <button type="submit" class="form-submit" id="loginSubmit">
+            Enviar código
+          </button>
 
           <div class="auth-footer">
             <a href="login.html">← Volver a iniciar sesión</a>
@@ -60,7 +62,7 @@
     <!-- Columna SKYED -->
     <div class="sky-footer-col">
       <div class="sky-logo-row">
-        <img src="img/logo_deportivo.png" alt="SKYED" class="sky-logo-icon">
+        <img src="img/logoP.png" alt="SKYED" class="sky-logo-icon">
         <div class="sky-logo-text">SKY<span>ED</span></div>
       </div>
       <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
@@ -130,41 +132,6 @@
         </div>
       </div>
 
-      <!-- Tipografía -->
-      <div class="acc-section">
-        <span class="acc-label">Tipografía</span>
-        <div class="font-family-grid">
-          <div
-            class="font-option active"
-            data-font="'DM Sans', sans-serif"
-            style="font-family: &quot;DM Sans&quot;, sans-serif"
-          >
-            DM Sans
-          </div>
-          <div
-            class="font-option"
-            data-font="'Playfair Display', Georgia, serif"
-            style="font-family: &quot;Playfair Display&quot;, serif"
-          >
-            Serif
-          </div>
-          <div
-            class="font-option"
-            data-font="'Courier New', monospace"
-            style="font-family: &quot;Courier New&quot;, monospace"
-          >
-            Mono
-          </div>
-          <div
-            class="font-option"
-            data-font="Montserrat"
-            style="font-family: Montserrat"
-          >
-            Sistema
-          </div>
-        </div>
-      </div>
-
       <div class="acc-section">
         <span class="acc-label">Dislexia</span>
         <div class="mode-row">
@@ -229,6 +196,5 @@
     </div>
   <script src="js/accesibilidad.js"></script>
   <script src="js/global.js"></script>
-  <script src="js/index.js"></script>
 </body>
 </html>

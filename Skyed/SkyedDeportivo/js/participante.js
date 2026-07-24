@@ -4,9 +4,6 @@
   const $ = (s, c = document) => c.querySelector(s);
   const $$ = (s, c = document) => Array.from(c.querySelectorAll(s));
 
-  // Esta página vive en /php/, pero las rutas de imagen guardadas (ej. "img/event1.jpg")
-  // son relativas a la raíz del sitio. Sin este ajuste, el navegador buscaría
-  // la imagen en /php/img/... y nunca la encontraría.
   const imgPath = p => {
     if (!p) return '';
     if (/^https?:\/\//i.test(p) || p.startsWith('../') || p.startsWith('/')) return p;
@@ -23,16 +20,26 @@
     setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 3000);
   };
 
+  const parseFechaLocal = iso => {
+    if (!iso) return null;
+    const soloFecha = String(iso).split('T')[0].split(' ')[0];
+    const partes = soloFecha.split('-').map(Number);
+    if (partes.length !== 3 || partes.some(isNaN)) return new Date(iso);
+    const [y, m, d] = partes;
+    return new Date(y, m - 1, d);
+  };
+
   const fmtFechaCorta = iso => {
     if (!iso) return '—';
-    try { return new Date(iso).toLocaleDateString('es-CO', { year: 'numeric', month: 'short' }); }
+    try { return parseFechaLocal(iso).toLocaleDateString('es-CO', { year: 'numeric', month: 'short' }); }
     catch { return '—'; }
   };
   const fmtFechaLarga = iso => {
     if (!iso) return '—';
-    try { return new Date(iso).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }); }
+    try { return parseFechaLocal(iso).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }); }
     catch { return '—'; }
   };
+
   const fmtMoney = n => '$' + (Number(n) || 0).toLocaleString('es-CO');
   const daysUntil = iso => {
     if (!iso) return null;

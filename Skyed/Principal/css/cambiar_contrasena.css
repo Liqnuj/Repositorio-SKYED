@@ -4,7 +4,7 @@
 }
 .auth-side{
   background:linear-gradient(231deg,rgb(35 34 34 / 92%),rgba(0, 0, 0, 0.85)),
-             url('../img/hero1.jpg') center/cover;
+             url('../img/hero.jpg') center/cover;
   color:#fff;padding:3rem;display:flex;flex-direction:column;justify-content:center;
   position:relative;
 }

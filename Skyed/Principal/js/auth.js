@@ -925,7 +925,7 @@ if (loginForm) {
             localStorage.removeItem('cicloNotif');
 
             setTimeout(() => {
-                location.href = 'principal.html';
+                location.href = result.redirect || 'principal.html';
             }, 1000);
             
         } else {

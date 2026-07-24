@@ -1,6 +1,6 @@
 <?php
 session_start();
-include("/../../conexion.php"); 
+require __DIR__ . '/../../conexion.php';
 
 
 $email_sesion = $_SESSION['email'] ?? '';
@@ -34,18 +34,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Recupera tu contraseña en SKYED y vuelve a acceder a tu cuenta." />
   <title>Recuperar contraseña — SKYED</title>
-  <link rel="icon" href="../img/logo_deportivo_nav.png" />
-  <link rel="stylesheet" href="../css/global.css" />
+  <link rel="icon" href="../img/logoP.png" />
   <link rel="stylesheet" href="../css/auth.css" />
   <link rel="stylesheet" href="../css/accesibilidad.css" />
+  <link rel="stylesheet" href="../css/cambiar_contrasena.css" />
 </head>
 <body>
-
-  <header class="site-header" role="banner">
-    <nav class="nav" aria-label="Navegación principal">
-      <a href="../index.html" class="brand"><img src="../img/logo_deportivo.png" alt="" /><span>SKY<em>ED</em></span></a>
-      <button class="menu-toggle" aria-expanded="false" aria-controls="nav-list" aria-label="Abrir menú">☰</button>
-    </nav>
+  <header class="auth-topbar">
+    <a href="principal.html" class="auth-logo">
+      <img src="../img/logoP.png" alt="SKYED" class="auth-logo-icon">
+      <span class="auth-logo-text">SKY<span class="accent">ED</span></span>
+    </a>
   </header>
     <main id="main" class="auth-wrapper">
     <aside class="auth-side" aria-hidden="true">
@@ -78,7 +77,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
                 </div>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Verificar código</button>
+          <button type="submit" class="form-submit" id="loginSubmit">
+            Enviar código
+          </button>
         <div class="auth-footer">
             <a href="../login.html">← Volver a iniciar sesión</a>
         </div>
@@ -93,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
     <!-- Columna SKYED -->
     <div class="sky-footer-col">
       <div class="sky-logo-row">
-        <img src="../img/logo_deportivo.png" alt="SKYED" class="sky-logo-icon">
+        <img src="../img/logoP.png" alt="SKYED" class="sky-logo-icon">
         <div class="sky-logo-text">SKY<span>ED</span></div>
       </div>
       <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>

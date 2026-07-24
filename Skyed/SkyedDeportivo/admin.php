@@ -28,10 +28,19 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
     }
 }
 
+
 $usuariosRegistrados = [];
 try {
     $stmt = $pdo->query("SELECT * FROM usuario ORDER BY nombre_u ASC");
     $usuariosRegistrados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error al conectar con la base de datos: " . $e->getMessage());
+}
+
+$rolUsuario = [];
+try {
+    $stmt = $pdo->query("SELECT * FROM rol ORDER BY nombre_rol ASC");
+    $rolUsuario = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     die("Error al conectar con la base de datos: " . $e->getMessage());
 }
@@ -436,7 +445,12 @@ try {
                 <tr>
                   <td><?= htmlspecialchars($u['tipo_documento_u']) ?></td>
                   <td><?= htmlspecialchars($u['documento_u']) ?></td>
-                  <td><?= htmlspecialchars($u['rol_u']) ?></td>
+                  <?php
+                    $stmt = $pdo->prepare("SELECT r.nombre_rol FROM rol r JOIN usuario_contexto_rol ucr ON r.id_rol = ucr.id_rol WHERE ucr.id_u = ? AND ucr.contexto = 'deportivo' LIMIT 1");
+                    $stmt->execute([$u['id_u']]);
+                    $rolUsuario = $stmt->fetchColumn();
+                  ?>
+                  <td><?= htmlspecialchars($rolUsuario) ?></td>
                   <td>
                     <strong><?= htmlspecialchars($u['nombre_u'] . ' ' . $u['apellido_u']) ?></strong><br>
                     <small style="color:var(--muted)"><?= htmlspecialchars($u['correo_u']) ?></small>
