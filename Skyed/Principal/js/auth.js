@@ -53,6 +53,25 @@ const DOCUMENTO_RULES = {
   },
 };
 
+/* ─── Reglas de edad permitida según el tipo de documento ────── */
+/* null = sin restricción de edad (solo se valida que no sea fecha futura / absurda) */
+const EDAD_RULES = {
+  cedula_ciudadania : { min: 18, max: 120, msg: 'Con cédula de ciudadanía debes ser mayor de edad (18 años o más).' },
+  tarjeta_identidad : { min: 7,  max: 17,  msg: 'La tarjeta de identidad es para personas entre 7 y 17 años.' },
+  cedula_extranjeria: { min: 18, max: 120, msg: 'Con cédula de extranjería debes ser mayor de edad (18 años o más).' },
+  pasaporte         : null,
+};
+const EDAD_DEFAULT = { min: 10, max: 120, msg: 'Debes tener al menos 10 años para registrarte.' };
+const EDAD_SIN_RESTRICCION = { min: 0, max: 120, msg: 'Ingresa una fecha de nacimiento válida.' };
+
+/** Resuelve la regla de edad a aplicar según el tipo de documento. */
+function getEdadRegla(tipoDocumento) {
+  if (!tipoDocumento) return EDAD_DEFAULT;
+  if (!(tipoDocumento in EDAD_RULES)) return EDAD_DEFAULT;
+  const regla = EDAD_RULES[tipoDocumento];
+  return regla === null ? EDAD_SIN_RESTRICCION : regla;
+}
+
 /* ─── Mensajes de ayuda generales por campo ──────────────────── */
 const HINTS = {
   nombre           : 'Solo letras, primera en mayúscula, máx. 30 caracteres, sin números ni más de un espacio entre palabras.',
@@ -355,7 +374,8 @@ function validateField(input) {
 
   /* ── Fecha de nacimiento ── */
   if (t === 'fecha-nacimiento') {
-    const res = validarFechaNacimiento(v);
+    const tipoSel = document.getElementById('tipoDocumento');
+    const res = validarFechaNacimiento(v, tipoSel?.value || '');
     if (!res.ok) { setField(input, false, res.msg); return false; }
   }
 
@@ -376,7 +396,7 @@ function validateField(input) {
 
 
 
-function validarFechaNacimiento(valor) {
+function validarFechaNacimiento(valor, tipoDocumento) {
   if (!valor) return { ok: false, msg: 'La fecha de nacimiento es obligatoria.' };
 
   let dia, mes, anio;
@@ -401,12 +421,15 @@ function validarFechaNacimiento(valor) {
   if (anio === hoy.getFullYear())
     return { ok: false, msg: `El año de nacimiento no puede ser ${hoy.getFullYear()}.` };
 
-  const cumple10 = new Date(anio + 10, mes - 1, dia);
-  if (hoy < cumple10)
-    return { ok: false, msg: 'Debes tener al menos 10 años para registrarte.' };
+  const regla = getEdadRegla(tipoDocumento);
 
-  if (hoy.getFullYear() - anio > 120)
-    return { ok: false, msg: 'Ingresa una fecha de nacimiento válida.' };
+  const cumpleMin = new Date(anio + regla.min, mes - 1, dia);
+  if (hoy < cumpleMin)
+    return { ok: false, msg: regla.msg };
+
+  const cumpleMax = new Date(anio + regla.max + 1, mes - 1, dia);
+  if (hoy >= cumpleMax)
+    return { ok: false, msg: regla.msg };
 
   return { ok: true, msg: '' };
 }
@@ -616,17 +639,36 @@ document.addEventListener('DOMContentLoaded', () => {
    LÍMITES EN EL SELECTOR DE FECHA
    ================================================================ */
 
-function initDateLimits() {
+function initDateLimits(tipoDocumento) {
   const fechaInput = document.querySelector('[data-validate="fecha-nacimiento"]');
   if (!fechaInput) return;
 
-  const ayer = new Date();
-  ayer.setDate(ayer.getDate() - 1);
-  fechaInput.setAttribute('max', ayer.toISOString().split('T')[0]);
+  const esSinRestriccion = tipoDocumento && EDAD_RULES[tipoDocumento] === null;
+  const regla = getEdadRegla(tipoDocumento);
+  const hoy = new Date();
 
-  const min120 = new Date();
-  min120.setFullYear(min120.getFullYear() - 120);
-  fechaInput.setAttribute('min', min120.toISOString().split('T')[0]);
+  // max: la fecha más reciente permitida (para cumplir la edad mínima hoy)
+  const maxFecha = new Date(hoy.getFullYear() - regla.min, hoy.getMonth(), hoy.getDate());
+  fechaInput.setAttribute('max', maxFecha.toISOString().split('T')[0]);
+
+  // min: la fecha más antigua permitida (para no superar la edad máxima)
+  const minFecha = new Date(hoy.getFullYear() - regla.max - 1, hoy.getMonth(), hoy.getDate() + 1);
+  fechaInput.setAttribute('min', minFecha.toISOString().split('T')[0]);
+
+  // Actualizar el hint visible con el rango de edad vigente
+  const hintEl = fechaInput.closest('.form-group')?.querySelector('.form-hint');
+  if (hintEl) {
+    if (!tipoDocumento) {
+      hintEl.textContent = 'Selecciona primero el tipo de documento.';
+    } else if (esSinRestriccion) {
+      hintEl.textContent = 'Pasaporte: se permite cualquier fecha de nacimiento válida.';
+    } else {
+      hintEl.textContent = `Edad permitida para este documento: ${regla.min}–${regla.max} años.`;
+    }
+  }
+
+  // Si ya había una fecha escrita y quedó fuera del nuevo rango, se revalida
+  if (fechaInput.value) validateField(fechaInput);
 }
 
 /* ================================================================
@@ -645,6 +687,8 @@ function initTipoDocumento() {
     actualizarCampoDocumento(tipoSel.value);
     /* Revalidar el select de tipo */
     validateField(tipoSel);
+    /* Ajustar el rango de fechas permitido según el nuevo tipo */
+    initDateLimits(tipoSel.value);
   });
 
   /* Si al cargar la página ya hay un valor (ej. back del navegador) */
@@ -764,7 +808,7 @@ document.querySelectorAll('.custom-select').forEach(initCustomSelect);
   attachFilters(regForm);
   iniciarVigilanciaDeCampos(regForm);
   initPasswordStrength(regForm);
-  initDateLimits();
+  initDateLimits(document.getElementById('tipoDocumento')?.value || '');
 
   window.addEventListener('load', () => {
     setTimeout(() => {

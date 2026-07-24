@@ -140,7 +140,7 @@
   }
 
   // Cargar inscripciones desde la BD
-  fetch('../php/get_inscripciones.php')
+  fetch('../php/get_inscripciones.php', { credentials: 'include' })
     .then(r => r.json())
     .then(data => {
       if (data.ok && Array.isArray(data.inscripciones) && data.inscripciones.length > 0) {

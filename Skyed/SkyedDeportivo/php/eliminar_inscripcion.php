@@ -1,15 +1,17 @@
 <?php
+ini_set('session.cookie_path', '/GitSkyed/Repositorio-SKYED/');
 header('Content-Type: application/json');
 session_start();
 require __DIR__ . '/../../conexion.php';
 
-if (empty($_SESSION['user_id'])) {
+$sessionUserId = $_SESSION['usuario_id'] ?? $_SESSION['user_id'] ?? null;
+if (empty($sessionUserId)) {
     http_response_code(401);
     echo json_encode(['ok' => false, 'error' => 'No autenticado']);
     exit;
 }
 
-$id_u = (int)$_SESSION['user_id'];
+$id_u = (int)$sessionUserId;
 $d    = json_decode(file_get_contents('php://input'), true) ?: $_POST;
 
 // Aceptar id_i, id o ref_id
