@@ -711,9 +711,9 @@ body.dark-mode .event-stats small {
   color: #a09890 !important;
 }
 
-body.dark-mode .auth-form-box{
+/* body.dark-mode .auth-form-box{
   background:linear-gradient(311deg,#1f1c19 0%,#131517 100%) !important;
-}
+} */
 
 /* ── BORDE FLIP CARDS CON ACENTO ── */
 .flip-card-front,
