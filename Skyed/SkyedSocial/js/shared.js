@@ -73,6 +73,28 @@ function closeNav(){
   document.getElementById('navLinks').classList.remove('open');
 }
 
+// Botón "Reservar ahora" -> nombre de usuario si hay sesión activa
+function initNavSession(){
+  const cta = document.querySelector('.nav-cta');
+  if(!cta) return;
+
+  fetch('PHP/check-auth.php')
+    .then(res => res.json())
+    .then(data => {
+      if(data.loggedin && data.usuario){
+        cta.textContent = data.usuario.nombre || 'Mi cuenta';
+        cta.href = 'cliente.php';
+      }
+    })
+    .catch(()=>{ /* si falla la petición, se deja "Reservar ahora" */ });
+}
+
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', initNavSession);
+} else {
+  initNavSession();
+}
+
 // Reveal observer
 const observer=new IntersectionObserver((entries)=>{
   entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
