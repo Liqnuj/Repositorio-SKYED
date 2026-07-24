@@ -379,13 +379,18 @@ body.dark-mode .sky-bottom-links a:hover {
   padding: 5px 14px;
   border-radius: 999px;
   background: var(--blue-soft);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  color: #7dd3fc;
+  border: 1px solid rgb(56, 191, 248);
+  color: #1b86b0;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 1.75rem;
+}
+
+.dark-mode .aside-eyebrow {
+  border: 1px solid rgb(87, 149, 176);
+  color: #8ec5db;
 }
 
 .aside-title {
@@ -394,8 +399,12 @@ body.dark-mode .sky-bottom-links a:hover {
   font-weight: 700;
   line-height: 1.15;
   margin: 0 0 1rem;
+  color: #000000;
 }
 
+.dark-mode .aside-title {
+  color: #ffffff;
+}
 .aside-title .hl {
   background: linear-gradient(90deg, var(--blue), var(--purple));
   -webkit-background-clip: text;
@@ -574,6 +583,10 @@ body.dark-mode .ticket-card {
   font-size: 2rem;
   font-weight: 700;
   margin: 0 0 0.5rem;
+  color: #000000;
+}
+.dark-mode .auth-heading {
+  color: #ffffff;
 }
 
 .auth-subheading {
@@ -741,19 +754,25 @@ body.dark-mode .form-select {
   width: 18px;
   height: 18px;
   min-width: 18px;
-  border: 1px solid var(--border);
+  border: 1px solid #000000;
   border-radius: 5px;
-  background: var(--panel);
+  background: none;
   cursor: pointer;
   margin-top: 1px;
   position: relative;
   transition: border-color 0.2s, background 0.2s;
 }
 
+.dark-mode .checkbox-row input[type="checkbox"] {
+  border-color: rgba(255, 255, 255, 0.705);
+}
+
 .checkbox-row input[type="checkbox"]:checked {
   background: var(--blue);
   border-color: var(--blue);
 }
+
+
 
 .checkbox-row input[type="checkbox"]:checked::after {
   content: '';
@@ -802,13 +821,16 @@ body.dark-mode .form-select {
   -webkit-appearance: none;
   width: 16px;
   height: 16px;
-  border: 1px solid var(--border);
+  border: 1px solid #000000;
   border-radius: 4px;
   background: var(--panel);
   cursor: pointer;
   position: relative;
 }
 
+.dark-mode .remember-row input[type="checkbox"] {
+  border-color: rgba(255, 255, 255, 0.705);
+}
 .remember-row input[type="checkbox"]:checked {
   background: var(--blue);
   border-color: var(--blue);

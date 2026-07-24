@@ -117,9 +117,9 @@ body {
 }
 
 .nav-login {
-  background: #ffffff;
+  background: none;
   color: #0c0b14;
-  border: none;
+  border: 1px solid #0c0b14;
   border-radius: 999px;
   padding: 9px 22px;
   font-size: 13px;
@@ -134,7 +134,8 @@ body {
 }
 
 .dark-mode .nav-login {
-  background: #4d4d4d;
+  border: 1px solid #ffffff;
+  background: none;
   color: #ffffff;
 }
 
@@ -148,15 +149,21 @@ body {
   align-items: center;
   gap: 8px;
   padding: 9px 16px;
-  border: 1px solid rgba(255,255,255,0.16);
+  border: 1px solid #000000;
   border-radius: 999px;
-  background: rgba(255,255,255,0.12);
-  color: #ffffff;
+  background: none;
+  color: #000000;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
   font-family: inherit;
   transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.dark-mode .nav-user{
+  background: none;
+  color:#ffffffe5;
+  border: 1px solid #ffffffe5;
 }
 
 .nav-user:hover {
@@ -168,8 +175,9 @@ body {
 .mobile-user[data-mode="confirm"] {
   background: rgba(248, 113, 113, 0.16);
   border-color: rgba(248, 113, 113, 0.48);
-  color: #fff1f2;
+  color: #ff0101fb;
 }
+
 
 .mobile-user {
   display: none;
@@ -739,20 +747,31 @@ body {
 
 .fch-social {
   background: #68099129;
-  color: #680991;
+  color: #4a0c64;
   border: 1px solid #680991;
 }
 
 .fch-sport {
   background: #1d7a9e5e;
-  color: #1d7a9e;
+  color: #0c5572;
   border: 1px solid #1d7a9e;
 }
 
+.dark-mode .fch-social {
+  background: #68099129;
+  color: #c53dff;
+  border: 1px solid #680991;
+}
+
+.dark-mode .fch-sport {
+  background: #1d7a9e5e;
+  color: #4fc0eb;
+  border: 1px solid #1d7a9e;
+}
 /* Cards */
 .find-card {
   background: rgba(255, 255, 255, 0.04);
-  border: 2px solid #4d147b51;
+  border: 1px solid #680991;
   border-radius: 16px;
   padding: 1.2rem 1.3rem;
   display: flex;
@@ -761,14 +780,15 @@ body {
   transition: background 0.2s, border-color 0.2s;
 }
 
-.find-card:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(0, 0, 0, 0.658);
-}
-
-.dark-mode .find-card:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.258);
+.find-card_event{
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid #1d7a9e;
+  border-radius: 16px;
+  padding: 1.2rem 1.3rem;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: background 0.2s, border-color 0.2s;
 }
 
 .find-ic {
@@ -784,14 +804,21 @@ body {
 
 .find-ic.gold-ic {
   background: #68099129;
-  color: #680991;
+  color: #4a0c64;
 }
 
+.dark-mode .find-ic.gold-ic {
+  background: #68099129;
+  color: #c53dff;
+}
 .find-ic.teal-ic {
   background: #1d809e5a;
-  color: #1d809e;
+  color: #0c5572;
 }
-
+.dark-mode .find-ic.teal-ic {
+  background: #1d809e5a;
+  color: #4fc0eb;
+}
 .find-info h4 {
   font-size: 14px;
   font-weight: 700;
@@ -930,24 +957,34 @@ body {
   padding: 1.5rem 2.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(0, 0, 0, 0.63);
   flex-wrap: wrap;
   gap: 1rem;
 }
 
+.dark-mode .footer {
+  color:rgba(255, 255, 255, 0.425);
+}
 .footer-links {
   display: flex;
   gap: 1.5rem;
 }
 
 .footer-links a {
-  color: rgba(255, 255, 255, 0.22);
+  color: rgba(0, 0, 0, 0.63);
   text-decoration: none;
   transition: color 0.2s;
 }
 
+.dark-mode .footer-links a {
+  color: rgba(255, 255, 255, 0.425);
+}
 .footer-links a:hover {
-  color: rgba(255, 255, 255, 0.6);
+  color: rgb(0, 0, 0);
+}
+
+.dark-mode .footer-links a:hover {
+  color: rgb(241, 236, 236);
 }
 
 /* ================================================
