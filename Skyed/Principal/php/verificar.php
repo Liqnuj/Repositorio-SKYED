@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
       <span class="auth-logo-text">SKY<span class="accent">ED</span></span>
     </a>
   </header>
-    <main id="main" class="auth-wrapper">
+    <!-- <main id="main" class="auth-wrapper">
     <aside class="auth-side" aria-hidden="true">
       <h2>Recupera tu <em>acceso</em></h2>
       <p>Te enviaremos un código de 6 dígitos a tu correo para restablecer tu contraseña de forma segura.</p>
@@ -55,6 +55,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
         <li>Cambio de contraseña inmediato</li>
         <li>Tu cuenta siempre protegida</li>
       </ul>
+    </aside> -->
+    <div class="auth-grid" id="main">
+
+    <!-- ================= ASIDE ================= -->
+    <aside class="auth-aside">
+      <div class="aside-blob aside-blob--blue"></div>
+      <div class="aside-blob aside-blob--purple"></div>
+      <div class="aside-blob aside-blob--gold"></div>
+
+      <div class="aside-content">
+        <span class="aside-eyebrow"><i class="ti ti-calendar-event"></i>&nbsp; Eventos</span>
+        <h1 class="aside-title">Ingresa tu <span class="hl">CODIGO</span></h1>
+        <p class="aside-subtitle">
+          Digita el codigo que te llego al correo para continuar.
+        </p>
+
+        <ul class="aside-features">
+          <li><span class="feat-ico"><i class="ti ti-calendar"></i></span>No compartas este codigo con nadie.</li>
+          <li><span class="feat-ico"><i class="ti ti-ticket"></i></span>Este codigo es único y solo puede ser usado una vez.</li>
+          <li><span class="feat-ico"><i class="ti ti-users"></i></span> Este código es válido por 24 horas.</li>  
+        </ul>
+
+        <div class="ticket-card">
+          <div class="ticket-main">
+            <div class="ticket-kicker">Tu próximo evento</div>
+            <div class="ticket-title">Feria SKYED </div>
+            <div class="ticket-meta">Acceso general · Válido con tu cuenta</div>
+          </div>
+          <div class="ticket-stub">
+            <span>PASE</span>
+            <strong>#00 SKYED</strong>
+          </div>
+        </div>
+      </div>
     </aside>
     <section class="auth-form-box">
     <form class="auth-form" id="reset-form" method="POST">
@@ -87,62 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['codigo'])) {
     </main>
     </form>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<footer class="sky-footer">
-  <div class="sky-accent-bar"></div>
-  <div class="sky-footer-top">
- 
-    <!-- Columna SKYED -->
-    <div class="sky-footer-col">
-      <div class="sky-logo-row">
-        <img src="../img/logoP.png" alt="SKYED" class="sky-logo-icon">
-        <div class="sky-logo-text">SKY<span>ED</span></div>
-      </div>
-      <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
-      <div class="sky-social-row">
-        <a class="sky-social-btn" href="#" aria-label="Facebook">F</a>
-        <a class="sky-social-btn" href="#" aria-label="Instagram">IG</a>
-        <a class="sky-social-btn" href="#" aria-label="X / Twitter">X</a>
-      </div>
-    </div>
- 
-    <!-- Columna Contacto -->
-    <div class="sky-footer-col">
-      <p class="sky-col-title">Contacto</p>
-      <ul class="sky-contact-list">
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
-          <div class="sky-contact-text">
-            <strong>Email</strong>
-            skyed@gmail.com
-          </div>
-        </li>
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
-          <div class="sky-contact-text">
-            <strong>Teléfono</strong>
-            +57 313 201 3573
-          </div>
-        </li>
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-map-pin"></i></div>
-          <div class="sky-contact-text">
-            <strong>Ubicación</strong>
-            Sogamoso, Boyacá
-          </div>
-        </li>
-      </ul>
-    </div>
- 
-  </div>
- 
-  <div class="sky-footer-bottom">
-    <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
-    <div class="sky-bottom-links">
-      <a href="#">Términos de uso</a>
-      <a href="#">Privacidad</a>
-    </div>
-  </div>
-</footer>
+
 
   <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

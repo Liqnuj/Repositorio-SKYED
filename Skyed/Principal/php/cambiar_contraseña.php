@@ -46,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <link rel="stylesheet" href="../css/accesibilidad.css" />
   <link rel="stylesheet" href="../css/cambiar_contrasena.css" />
   <link rel="stylesheet" href="../css/auth.css" />
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
 </head>
 <body>
 
@@ -55,15 +57,39 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <span class="auth-logo-text">SKY<span class="accent">ED</span></span>
     </a>
   </header>
-    <main id="main" class="auth-wrapper">
-    <aside class="auth-side" aria-hidden="true">
-      <h2>Recupera tu <em>acceso</em></h2>
-      <p>Te enviaremos un código de 6 dígitos a tu correo para restablecer tu contraseña de forma segura.</p>
-      <ul>
-        <li>Verificación por código</li>
-        <li>Cambio de contraseña inmediato</li>
-        <li>Tu cuenta siempre protegida</li>
-      </ul>
+    <div class="auth-grid" id="main">
+
+    <!-- ================= ASIDE ================= -->
+    <aside class="auth-aside">
+      <div class="aside-blob aside-blob--blue"></div>
+      <div class="aside-blob aside-blob--purple"></div>
+      <div class="aside-blob aside-blob--gold"></div>
+
+      <div class="aside-content">
+        <span class="aside-eyebrow"><i class="ti ti-calendar-event"></i>&nbsp; Eventos</span>
+        <h1 class="aside-title">Crea una nueva <span class="hl">CONTRASEÑA</span></h1>
+        <p class="aside-subtitle">
+          Ingresa tu nueva contraseña, facil de recordar pero difícil de adivinar.
+        </p>
+
+        <ul class="aside-features">
+          <li><span class="feat-ico"><i class="ti ti-calendar"></i></span>Contraseña segura.</li>
+          <li><span class="feat-ico"><i class="ti ti-ticket"></i></span>Contraseña difícil de adivinar.</li>
+          <li><span class="feat-ico"><i class="ti ti-users"></i></span> Tu cuenta siempre protegida.</li>
+        </ul>
+
+        <div class="ticket-card">
+          <div class="ticket-main">
+            <div class="ticket-kicker">Tu próximo evento</div>
+            <div class="ticket-title">Feria SKYED </div>
+            <div class="ticket-meta">Acceso general · Válido con tu cuenta</div>
+          </div>
+          <div class="ticket-stub">
+            <span>PASE</span>
+            <strong>#00 SKYED</strong>
+          </div>
+        </div>
+      </div>
     </aside>
 <section class="auth-form-box">
       <form class="auth-form" id="reset-password-form" action="cambiar_contraseña.php" method="POST">
@@ -95,63 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </form>
     </section>
     </main>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-<footer class="sky-footer">
-  <div class="sky-accent-bar"></div>
-  <div class="sky-footer-top">
- 
-    <!-- Columna SKYED -->
-    <div class="sky-footer-col">
-      <div class="sky-logo-row">
-        <img src="../img/logoP.png" alt="SKYED" class="sky-logo-icon">
-        <div class="sky-logo-text">SKY<span>ED</span></div>
-      </div>
-      <p class="sky-tagline">La plataforma profesional para eventos de ciclismo en Latinoamérica.</p>
-      <div class="sky-social-row">
-        <a class="sky-social-btn" href="#" aria-label="Facebook">F</a>
-        <a class="sky-social-btn" href="#" aria-label="Instagram">IG</a>
-        <a class="sky-social-btn" href="#" aria-label="X / Twitter">X</a>
-      </div>
-    </div>
- 
-    <!-- Columna Contacto -->
-    <div class="sky-footer-col">
-      <p class="sky-col-title">Contacto</p>
-      <ul class="sky-contact-list">
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-mail"></i></div>
-          <div class="sky-contact-text">
-            <strong>Email</strong>
-            skyed@gmail.com
-          </div>
-        </li>
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-phone"></i></div>
-          <div class="sky-contact-text">
-            <strong>Teléfono</strong>
-            +57 313 201 3573
-          </div>
-        </li>
-        <li class="sky-contact-item">
-          <div class="sky-contact-icon"><i class="ti ti-map-pin"></i></div>
-          <div class="sky-contact-text">
-            <strong>Ubicación</strong>
-            Sogamoso, Boyacá
-          </div>
-        </li>
-      </ul>
-    </div>
- 
-  </div>
- 
-  <div class="sky-footer-bottom">
-    <p class="sky-copy">© 2026 <span>SKYED</span>. Todos los derechos reservados.</p>
-    <div class="sky-bottom-links">
-      <a href="#">Términos de uso</a>
-      <a href="#">Privacidad</a>
-    </div>
-  </div>
-</footer>
+       
 
   <button class="acc-toggle" id="accToggle" aria-label="Opciones de accesibilidad">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

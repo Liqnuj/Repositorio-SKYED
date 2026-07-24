@@ -20,7 +20,7 @@
 }
 
 .auth-form-box{
-  display:flex;align-items:center;justify-content:center;padding:3rem 2rem;background:#fff;
+  display:flex;align-items:center;justify-content:center;padding:3rem 2rem;background:var(--bg);
 }
 .auth-form{width:100%;max-width:440px}
 .auth-form h1{color:var(--primary);font-size:2rem;margin-bottom:.4rem;font-weight:900}
@@ -45,22 +45,34 @@
 .form-group textarea {
     width: 100%;
     padding: .85rem 1rem;
-    border: 2px solid var(--border);
+    border: 2px solid var(--accent);
     border-radius: 10px;
     font-size: 1rem;
     transition: var(--transition);
     background: #fff;
     color: var(--text);
     font-family: inherit;
-    box-sizing: border-box; /* Asegura que el padding no desborde la caja */
+    box-sizing: border-box; 
 }
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
     outline: none;
     border-color: var(--accent);
-    box-shadow: 0 0 0 4px rgba(255,106,0,.12);
+  /* background: var(--panel-alt); */
+    box-shadow: 0 0 0 3px var(--blue-soft);
 }
+
+.dark-mode .form-group input:focus,
+.dark-mode .form-group select:focus,
+.dark-mode .form-group textarea:focus {
+    outline: none;
+    border-color: var(--blue);
+  /* background: var(--panel-alt); */
+    box-shadow: 0 0 0 3px var(--blue-soft);
+}
+
+
 .form-group input.invalid { border-color: var(--danger); }
 .form-group input.valid { border-color: var(--success); }
 .form-group .help { font-size: .82rem; color: var(--muted); margin-top: .3rem; display: block; }
@@ -86,13 +98,21 @@
 .toggle-pass:hover {
     color: var(--accent);
 }
+.auth-form h1 { font-family:'Playfair Display', serif;color: #040404 !important; }
+.auth-form .lead { color: #3e4347 !important; }
+.form-group label { color: #1f2021 !important; }
+.form-group input {
+    background: none;
+    border-color: var(--blue);
+    color: #040404 !important;
+}
 
 body.dark-mode .auth-form h1 { color: #e2e8f0 !important; }
 body.dark-mode .auth-form .lead { color: #7a96b2 !important; }
 body.dark-mode .form-group label { color: #c8d6e8 !important; }
 body.dark-mode .form-group input {
-    background: #1a2d3d !important;
-    border-color: #1e3a4a !important;
+    background: none;
+    border-color: var(--accent);
     color: #e2e8f0 !important;
 }
 
@@ -101,13 +121,22 @@ body.dark-mode .form-group input {
 .auth-form-box .form-group input:-webkit-autofill:hover,
 .auth-form-box .form-group input:-webkit-autofill:focus,
 .auth-form-box .form-group input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 1000px #1e2535 inset !important;
-    -webkit-text-fill-color: #c8d4e4 !important;
-    caret-color: #c8d4e4 !important;
-    border: 1.5px solid #2e3a50 !important;
+    /* -webkit-box-shadow: 0 0 0 1000px #1e2535 inset !important; */
+    -webkit-text-fill-color: #070707 !important;
+    caret-color: #0d0d0d !important;
+    border: 2px solid var(--blue)!important;
     transition: background-color 9999s ease-in-out 0s;
 }
-
+.dark-mode .auth-form-box .form-group input:-webkit-autofill,
+.dark-mode .auth-form-box .form-group input:-webkit-autofill:hover,
+.dark-mode .auth-form-box .form-group input:-webkit-autofill:focus,
+.dark-mode .auth-form-box .form-group input:-webkit-autofill:active {
+    /* -webkit-box-shadow: 0 0 0 1000px #1e2535 inset !important; */
+    -webkit-text-fill-color: #fafafa !important;
+    caret-color: #0d0d0d !important;
+    border: 2px solid var(--accent)!important;
+    transition: background-color 9999s ease-in-out 0s;
+}
 .password-strength{
   height:4px;background:var(--border);border-radius:2px;overflow:hidden;margin-top:.5rem;
 }
@@ -131,13 +160,15 @@ body.dark-mode .form-group input {
 .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border)}
 
 .auth-footer{text-align:center;margin-top:1.5rem;color:var(--muted)}
-.auth-footer a{color:var(--accent);font-weight:700}
+.auth-footer a{color:var(--blue);font-weight:700; text-decoration: none;}
+.auth-footer a:hover{text-decoration: underline;}
 
+.dark-mode .auth-footer a{color:var(--accent)}
 /* OTP */
 .otp-inputs{display:flex;gap:.5rem;justify-content:center;margin:1rem 0}
 .otp-inputs input{
   width:54px;height:60px;text-align:center;font-size:1.5rem;font-weight:700;
-  border:2px solid var(--border);border-radius:10px;
+  border:2px solid var(--blue);border-radius:10px;
 }
 .otp-inputs input:focus{outline:none;border-color:var(--accent)}
 
@@ -185,7 +216,7 @@ body.dark-mode .form-group input {
 }
 
 body.dark-mode .auth-form-box {
-  background: linear-gradient(160deg,#191c21 0%, #191c21 100%) !important;
+  background: #010101;
 }
 
 
