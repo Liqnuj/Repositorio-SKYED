@@ -2,7 +2,6 @@
 session_start();
 require __DIR__ . '/../conexion.php';
 
-
 switch (method()) {
 
     case 'GET':
@@ -11,7 +10,13 @@ switch (method()) {
                                      ubicacion_a AS ubicacion, contacto_a AS contacto,
                                      estado_a AS estado, imagen_principal_a AS imagen
                               FROM ambiente ORDER BY id_a DESC");
-        json_out($stmt->fetchAll());
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$row) {
+            $row['id'] = (int) $row['id'];
+            $row['capacidad'] = $row['capacidad'] !== null ? (int) $row['capacidad'] : 0;
+            $row['precio'] = $row['precio'] !== null ? (float) $row['precio'] : 0;
+        }
+        json_out($rows);
         break;
 
     case 'POST':
@@ -29,7 +34,7 @@ switch (method()) {
             ':estado'      => $d['estado'] ?? 'disponible',
             ':imagen'      => $d['imagen'] ?? null,
         ]);
-        json_out(['id' => (int) db()->lastInsertId()], 201);
+        json_out(['id' => (int) db()->lastInsertId(), 'ok' => true], 201);
         break;
 
     case 'PUT':
@@ -58,8 +63,9 @@ switch (method()) {
     case 'DELETE':
         $id = (int) ($_GET['id'] ?? 0);
         if (!$id) json_error('Falta el id del lugar', 422);
-        // Si el lugar está en uso por un evento, se desvincula.
+        // Si el lugar está en uso por un evento, se desvincula primero.
         db()->prepare("UPDATE evento_realizado SET id_a = NULL WHERE id_a = :id")->execute([':id' => $id]);
+        db()->prepare("DELETE FROM ambiente_servicio WHERE id_a = :id")->execute([':id' => $id]);
         db()->prepare("DELETE FROM ambiente WHERE id_a = :id")->execute([':id' => $id]);
         json_out(['ok' => true]);
         break;

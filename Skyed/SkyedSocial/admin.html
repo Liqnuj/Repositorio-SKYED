@@ -298,7 +298,7 @@
               </label>
               <label class="event-field">
                 <span>Capacidad (personas)</span>
-                <input id="lugarCapacidad" type="number" min="1" placeholder="Ej. 150">
+                <input id="lugarCapacidad" type="number" min="100" max="100000" placeholder="Ej. 150">
               </label>
               <label class="event-field">
                 <span>Ubicación</span>
@@ -306,7 +306,7 @@
               </label>
               <label class="event-field">
                 <span>Precio de referencia (COP)</span>
-                <input id="lugarPrecio" type="number" min="0" step="1000" placeholder="Ej. 2500000">
+                <input id="lugarPrecio" type="number" min="1000" max="10000000" step="1000" placeholder="Ej. 2500000">
               </label>
               <label class="event-field">
                 <span>Estado</span>
@@ -361,7 +361,7 @@
               </label>
               <label class="event-field">
                 <span>Precio de referencia (COP)</span>
-                <input id="servicioPrecio" type="number" min="0" step="1000" placeholder="Ej. 450000">
+                <input id="servicioPrecio" type="number" min="1000" max="100000" step="1000" placeholder="Ej. 450000">
               </label>
               <label class="event-field">
                 <span>Estado</span>
@@ -668,6 +668,9 @@
 <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Ir arriba">↑</button>
 
 <script src="js/accesibilidad.js"></script>
+<script src="js/validaciones-lugares.js"></script>
+<script src="js/validaciones-servicios.js"></script>
+<script src="js/validaciones-eventos.js"></script>
 
 
 <script>

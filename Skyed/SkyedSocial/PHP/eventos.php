@@ -2,28 +2,27 @@
 session_start();
 require __DIR__ . '/../conexion.php';
 
+/**
+ * Busca un cliente existente por correo o teléfono; si no existe lo crea.
+ * Devuelve el id_u del cliente.
+ */
 function find_or_create_cliente(PDO $pdo, array $c): int {
-    // Busca por correo o teléfono .
     $stmt = $pdo->prepare("SELECT id_u FROM usuario WHERE correo_u = :correo OR telefono_u = :telefono LIMIT 1");
     $stmt->execute([':correo' => $c['correo'] ?? '', ':telefono' => $c['telefono'] ?? '']);
     $row = $stmt->fetch();
     if ($row) {
-        // Actualiza datos básicos .
         $upd = $pdo->prepare("UPDATE usuario SET nombre_u = :nombre, apellido_u = :apellido WHERE id_u = :id");
         $upd->execute([':nombre' => $c['nombre'], ':apellido' => $c['apellido'] ?? '', ':id' => $row['id_u']]);
         return (int) $row['id_u'];
     }
 
-
-    
-
-    $documento = !empty($c['documento']) ? (int) $c['documento'] : random_int(100000000, 999999999);
+    $documento = !empty($c['documento']) ? (int) $c['documento'] : random_int(10000000, 999999999);
     $tipoDoc = $c['tipoDocumento'] ?? 'cedula_ciudadania';
     $hash = password_hash((string) $documento, PASSWORD_DEFAULT);
 
     $ins = $pdo->prepare("INSERT INTO usuario
-        (tipo_documento_u, documento_u, rol_u, nombre_u, apellido_u, telefono_u, correo_u, contrasena_u)
-        VALUES (:tipoDoc, :documento, 'cliente', :nombre, :apellido, :telefono, :correo, :contrasena)");
+        (tipo_documento_u, documento_u, nombre_u, apellido_u, telefono_u, correo_u, contrasena_u)
+        VALUES (:tipoDoc, :documento, :nombre, :apellido, :telefono, :correo, :contrasena)");
     $ins->execute([
         ':tipoDoc'    => $tipoDoc,
         ':documento'  => $documento,
@@ -34,6 +33,25 @@ function find_or_create_cliente(PDO $pdo, array $c): int {
         ':contrasena' => $hash,
     ]);
     return (int) $pdo->lastInsertId();
+}
+
+/** Encuentra o crea el tipo de evento (categoría) según lo enviado por el formulario. */
+function resolve_tipo_evento(PDO $pdo, array $d): ?int {
+    if (!empty($d['categoriaId'])) {
+        return (int) $d['categoriaId'];
+    }
+    if (!empty($d['categoriaNombre'])) {
+        $chk = $pdo->prepare("SELECT id_tipo_eves FROM tipo_evento WHERE nombre_tipo_eves = :n");
+        $chk->execute([':n' => $d['categoriaNombre']]);
+        $existing = $chk->fetch();
+        if ($existing) {
+            return (int) $existing['id_tipo_eves'];
+        }
+        $insTipo = $pdo->prepare("INSERT INTO tipo_evento (nombre_tipo_eves, color_tipo_eves) VALUES (:n, :c)");
+        $insTipo->execute([':n' => $d['categoriaNombre'], ':c' => $d['categoriaColor'] ?? '#7c3aed']);
+        return (int) $pdo->lastInsertId();
+    }
+    return null;
 }
 
 switch (method()) {
@@ -79,12 +97,14 @@ switch (method()) {
         $svcStmt = db()->prepare("SELECT id_s FROM reserva_servicio WHERE id_rese = :id");
         foreach ($rows as &$row) {
             $svcStmt->execute([':id' => $row['id']]);
-            $row['servicioIds'] = array_map('intval', array_column($svcStmt->fetchAll(), 'id_s'));
-            $row['invitados'] = $row['invitados'] !== null ? (int) $row['invitados'] : null;
-            $row['presupuesto'] = $row['presupuesto'] !== null ? (float) $row['presupuesto'] : 0;
-            $row['total'] = $row['total'] !== null ? (float) $row['total'] : 0;
-            $row['lugarId'] = $row['lugarId'] !== null ? (int) $row['lugarId'] : null;
-            $row['categoriaId'] = $row['categoriaId'] !== null ? (int) $row['categoriaId'] : null;
+            $row['id'] = (int) $row['id'];
+            $row['servicioIds']  = array_map('intval', array_column($svcStmt->fetchAll(), 'id_s'));
+            $row['invitados']    = $row['invitados'] !== null ? (int) $row['invitados'] : null;
+            $row['presupuesto']  = $row['presupuesto'] !== null ? (float) $row['presupuesto'] : 0;
+            $row['total']        = $row['total'] !== null ? (float) $row['total'] : 0;
+            $row['lugarId']      = $row['lugarId'] !== null ? (int) $row['lugarId'] : null;
+            $row['categoriaId']  = $row['categoriaId'] !== null ? (int) $row['categoriaId'] : null;
+            $row['clienteId']    = (int) $row['clienteId'];
         }
         json_out($rows);
         break;
@@ -98,23 +118,7 @@ switch (method()) {
         $pdo->beginTransaction();
         try {
             $idCliente = find_or_create_cliente($pdo, $cliente);
-
-            // Categoría: puede venir por id (categoriaId) o por nombre+color (nueva).
-            $idTipo = null;
-            if (!empty($d['categoriaId'])) {
-                $idTipo = (int) $d['categoriaId'];
-            } elseif (!empty($d['categoriaNombre'])) {
-                $chk = $pdo->prepare("SELECT id_tipo_eves FROM tipo_evento WHERE nombre_tipo_eves = :n");
-                $chk->execute([':n' => $d['categoriaNombre']]);
-                $existing = $chk->fetch();
-                if ($existing) {
-                    $idTipo = (int) $existing['id_tipo_eves'];
-                } else {
-                    $insTipo = $pdo->prepare("INSERT INTO tipo_evento (nombre_tipo_eves, color_tipo_eves) VALUES (:n, :c)");
-                    $insTipo->execute([':n' => $d['categoriaNombre'], ':c' => $d['categoriaColor'] ?? '#7c3aed']);
-                    $idTipo = (int) $pdo->lastInsertId();
-                }
-            }
+            $idTipo = resolve_tipo_evento($pdo, $d);
 
             $insEr = $pdo->prepare("INSERT INTO evento_realizado (nombre_er, descripcion_er, fecha_er, hora_er, id_tipo_eves, id_a)
                                      VALUES (:titulo, :descripcion, :fecha, :hora, :idTipo, :idA)");
@@ -154,7 +158,7 @@ switch (method()) {
             }
 
             $pdo->commit();
-            json_out(['id' => $idRese], 201);
+            json_out(['id' => $idRese, 'ok' => true], 201);
         } catch (Throwable $e) {
             $pdo->rollBack();
             json_error('No se pudo guardar la reserva: ' . $e->getMessage(), 500);
@@ -177,22 +181,7 @@ switch (method()) {
         $pdo->beginTransaction();
         try {
             $idCliente = find_or_create_cliente($pdo, $cliente);
-
-            $idTipo = null;
-            if (!empty($d['categoriaId'])) {
-                $idTipo = (int) $d['categoriaId'];
-            } elseif (!empty($d['categoriaNombre'])) {
-                $chk = $pdo->prepare("SELECT id_tipo_eves FROM tipo_evento WHERE nombre_tipo_eves = :n");
-                $chk->execute([':n' => $d['categoriaNombre']]);
-                $existingCat = $chk->fetch();
-                if ($existingCat) {
-                    $idTipo = (int) $existingCat['id_tipo_eves'];
-                } else {
-                    $insTipo = $pdo->prepare("INSERT INTO tipo_evento (nombre_tipo_eves, color_tipo_eves) VALUES (:n, :c)");
-                    $insTipo->execute([':n' => $d['categoriaNombre'], ':c' => $d['categoriaColor'] ?? '#7c3aed']);
-                    $idTipo = (int) $pdo->lastInsertId();
-                }
-            }
+            $idTipo = resolve_tipo_evento($pdo, $d);
 
             $updEr = $pdo->prepare("UPDATE evento_realizado SET
                 nombre_er = :titulo, descripcion_er = :descripcion, fecha_er = :fecha,
@@ -254,6 +243,7 @@ switch (method()) {
 
         $pdo->beginTransaction();
         try {
+            $pdo->prepare("DELETE FROM reserva_servicio WHERE id_rese = :id")->execute([':id' => $id]);
             $pdo->prepare("DELETE FROM reserva WHERE id_rese = :id")->execute([':id' => $id]);
             $pdo->prepare("DELETE FROM evento_realizado WHERE id_er = :id")->execute([':id' => $row['id_er']]);
             $pdo->commit();

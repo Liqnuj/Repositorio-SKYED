@@ -11,12 +11,17 @@ switch (method()) {
                                      descripcion_s AS descripcion, precio_referencia_s AS precio,
                                      estado_s AS estado
                               FROM servicio ORDER BY categoria_s, id_s");
-        json_out($stmt->fetchAll());
+        $rows = $stmt->fetchAll();
+        foreach ($rows as &$row) {
+            $row['id'] = (int) $row['id'];
+            $row['precio'] = $row['precio'] !== null ? (float) $row['precio'] : 0;
+        }
+        json_out($rows);
         break;
 
     case 'POST':
         $d = body_or_error(['nombre', 'categoria']);
-        if (!in_array($d['categoria'], $GLOBALS['CATS'], true)) {
+        if (!in_array($d['categoria'], $CATS, true)) {
             json_error('Categoría de servicio inválida', 422);
         }
         $stmt = db()->prepare("INSERT INTO servicio (nombre_s, categoria_s, descripcion_s, precio_referencia_s, estado_s)
@@ -28,14 +33,14 @@ switch (method()) {
             ':precio'      => $d['precio'] ?? 0,
             ':estado'      => $d['estado'] ?? 'disponible',
         ]);
-        json_out(['id' => (int) db()->lastInsertId()], 201);
+        json_out(['id' => (int) db()->lastInsertId(), 'ok' => true], 201);
         break;
 
     case 'PUT':
         $id = (int) ($_GET['id'] ?? 0);
         if (!$id) json_error('Falta el id del servicio', 422);
         $d = body_or_error(['nombre', 'categoria']);
-        if (!in_array($d['categoria'], $GLOBALS['CATS'], true)) {
+        if (!in_array($d['categoria'], $CATS, true)) {
             json_error('Categoría de servicio inválida', 422);
         }
         $stmt = db()->prepare("UPDATE servicio SET
@@ -58,6 +63,7 @@ switch (method()) {
         if (!$id) json_error('Falta el id del servicio', 422);
 
         db()->prepare("DELETE FROM ambiente_servicio WHERE id_s = :id")->execute([':id' => $id]);
+        db()->prepare("DELETE FROM reserva_servicio WHERE id_s = :id")->execute([':id' => $id]);
         db()->prepare("DELETE FROM servicio WHERE id_s = :id")->execute([':id' => $id]);
         json_out(['ok' => true]);
         break;
